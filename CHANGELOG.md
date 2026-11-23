@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-23
+
 ### Changed
 
 - The generated Dart file imports `package:material_ui/material_ui.dart` instead of `package:flutter/material.dart`.
@@ -30,5 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - pnpm scripts: `build`, `check`, `format`, `format:check`, `lint`, `typecheck`, `test`. Node is pinned in `engines.node`.
 - oxfmt (`.oxfmtrc.json`), oxlint (`.oxlintrc.json`) and Lefthook Git hooks (`lefthook.yml`).
 
-[Unreleased]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/vhnam/meta-frames-design-tokens/releases/tag/v0.1.0
