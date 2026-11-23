@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "options": {
+        "singleQuote": true,
+        "sortImports": {
+          "newlinesBetween": true,
+          "groups": [
+            "builtin",
+            "external",
+            "internal",
+            ["parent", "sibling", "index", "side_effect_style"],
+            "unknown"
+          ]
+        }
+      }
+    }
+  ],
+  "ignorePatterns": ["tokens/**", "pnpm-lock.yaml"]
+}
