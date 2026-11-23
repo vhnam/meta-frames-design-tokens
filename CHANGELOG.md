@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The generated Dart file imports `package:material_ui/material_ui.dart` instead of `package:flutter/material.dart`.
 - Folder layout: sources in `src/`, tests in `test/`, token data in `tokens/`. Run the generator with `node src/build.ts`.
 - oxfmt sorts imports (`sortImports` in `.oxfmtrc.json`) and puts a blank line between import groups.
 
