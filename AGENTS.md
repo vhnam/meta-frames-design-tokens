@@ -38,7 +38,7 @@ Run from this repository unless the line says otherwise.
 
 ## Validation
 
-Before review, run in this repository: `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm check`. Lefthook (`lefthook.yml`) runs format (fixes and restages), lint, typecheck and check on pre-commit, and format check and test on pre-push. oxfmt (`.oxfmtrc.json`) does not format `tokens/**` or `pnpm-lock.yaml`: their bytes go into the generated headers. If a generated file changed, also run the checks of that repository (see the workspace `AGENTS.md`, Workflow §4).
+Before review, run in this repository: `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm check`. Lefthook (`lefthook.yml`) runs format (fixes and restages), lint, typecheck and check on pre-commit, and format check, test and Trivy (HIGH and CRITICAL, needs `trivy` installed) on pre-push. oxfmt (`.oxfmtrc.json`) does not format `tokens/**` or `pnpm-lock.yaml`: their bytes go into the generated headers. If a generated file changed, also run the checks of that repository (see the workspace `AGENTS.md`, Workflow §4).
 
 ## Git Commits
 

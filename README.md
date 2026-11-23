@@ -61,6 +61,6 @@ pnpm test
 4. Commit the regenerated file in each client repository, with a `CHANGELOG.md` entry there if users can see the change.
 5. Add the change under `## [Unreleased]` in this repository's [CHANGELOG.md](CHANGELOG.md).
 
-`pnpm install` also installs the Git hooks in `lefthook.yml`: format, lint, typecheck and check on pre-commit, format check and test on pre-push.
+`pnpm install` also installs the Git hooks in `lefthook.yml`: format, lint, typecheck and check on pre-commit, format check, test and Trivy on pre-push.
 
 See [AGENTS.md](AGENTS.md) for the rules agents follow in this repository.

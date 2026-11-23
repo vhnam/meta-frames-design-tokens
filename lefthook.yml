@@ -22,3 +22,9 @@ pre-push:
       run: pnpm format:check
     - name: test
       run: pnpm test
+    - name: trivy
+      run: >-
+        command -v trivy >/dev/null ||
+        { echo "trivy is not installed. Install it with 'brew install trivy' (https://trivy.dev)." >&2; exit 1; };
+        trivy fs --quiet --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed
+        --scanners vuln,secret,misconfig --skip-dirs node_modules .

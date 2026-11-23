@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `.vscode/settings.json` and `.vscode/extensions.json`: oxc is the default formatter in the editor.
+- Trivy scan (`trivy fs`, HIGH and CRITICAL) in the Lefthook pre-push job.
 
 ## [0.1.0] - 2026-11-23
 
