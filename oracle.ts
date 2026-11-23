@@ -159,7 +159,7 @@ export const SPACING_PATH = "semantic.space.gap.xs";
 /** Parses the source text. Returns { leaves: Map(path -> { type, value, dark }) } with inherited types. */
 export function readSource(text: string): { leaves: Leaves } {
   const tree: unknown = JSON.parse(text);
-  if (!isObject(tree)) throw new Error("oracle: v2/tokens.json root must be an object");
+  if (!isObject(tree)) throw new Error("oracle: tokens.json root must be an object");
   const leaves: Leaves = new Map();
   const walk = (node: JsonObject, trail: string[], inherited: string | undefined): void => {
     const type = (node.$type ?? inherited) as string | undefined;

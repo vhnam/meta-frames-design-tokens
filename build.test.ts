@@ -23,7 +23,7 @@ type Changes = Record<string, string | null>;
 
 const here = import.meta.dirname;
 const read = (name: string) => readFileSync(join(here, name), "utf8");
-const source = read("v2/tokens.json");
+const source = read("tokens.json");
 const files: Record<string, string> = {
   "build.mjs": read("build.mjs"),
   "build.ts": read("build.ts"),
@@ -32,7 +32,7 @@ const files: Record<string, string> = {
   "package.json": read("package.json"),
   "package-lock.json": read("package-lock.json"),
   ".node-version": read(".node-version"),
-  "v2/tokens.json": source,
+  "tokens.json": source,
 };
 const bindingsSource = files["bindings.json"];
 const tokenAt = (tokens: Tree, path: string): Tree => path.split(".").reduce((group: Tree, key: string) => group[key], tokens);
@@ -112,7 +112,7 @@ const mutate = (json: string, change: (value: Tree) => void) => {
   change(value);
   return JSON.stringify(value, null, 2);
 };
-const changeSource = (change: (value: Tree) => void) => ({ "v2/tokens.json": mutate(source, change) });
+const changeSource = (change: (value: Tree) => void) => ({ "tokens.json": mutate(source, change) });
 const changeBindings = (change: (value: Tree) => void) => ({ "bindings.json": mutate(bindingsSource, change) });
 const firstLeaf = (tokens: Tree, group: string) => {
   const walk = (node: Tree, trail: string[]): string | undefined => {
@@ -228,7 +228,7 @@ test("rejects an unknown flag", (context: TestContext) => {
 test("accepts a forward reference (component group before primitives)", (context: TestContext) => {
   const tokens = JSON.parse(source);
   const reordered = { $description: tokens.$description, component: tokens.component, semantic: tokens.semantic, primitive: tokens.primitive };
-  const { summary } = acceptsInput(context, { "v2/tokens.json": JSON.stringify(reordered) });
+  const { summary } = acceptsInput(context, { "tokens.json": JSON.stringify(reordered) });
   assert.deepEqual(summary, { light: 184, dark: 184 });
 });
 
@@ -274,10 +274,10 @@ const tokens = JSON.parse(source);
 const spaceLeaf = firstLeaf(tokens, "primitive.space");
 
 for (const [name, changes, expected] of ([
-  ["missing source", { "v2/tokens.json": null }, "meta-frames-design-tokens/v2/tokens.json: source missing"],
-  ["invalid JSON", { "v2/tokens.json": "{" }, "meta-frames-design-tokens/v2/tokens.json: invalid JSON"],
-  ["falsy source root", { "v2/tokens.json": "false" }, "meta-frames-design-tokens/v2/tokens.json: root must be an object"],
-  ["duplicate key", { "v2/tokens.json": source.replace('"white": {', '"white": {"$value": "#FFFFFF"}, "white": {') }, "primitive.color.white: duplicate path in meta-frames-design-tokens/v2/tokens.json"],
+  ["missing source", { "tokens.json": null }, "meta-frames-design-tokens/tokens.json: source missing"],
+  ["invalid JSON", { "tokens.json": "{" }, "meta-frames-design-tokens/tokens.json: invalid JSON"],
+  ["falsy source root", { "tokens.json": "false" }, "meta-frames-design-tokens/tokens.json: root must be an object"],
+  ["duplicate key", { "tokens.json": source.replace('"white": {', '"white": {"$value": "#FFFFFF"}, "white": {') }, "primitive.color.white: duplicate path in meta-frames-design-tokens/tokens.json"],
   ["missing type", changeSource((value: Tree) => { delete value.primitive.color.$type; }), `${colorLeaf}: missing $type`],
   ["unsupported type", changeSource((value: Tree) => { value.primitive.color.$type = "gradient"; }), `${colorLeaf}: unsupported $type "gradient"`],
   ["invalid colour literal", changeSource((value: Tree) => { tokenAt(value, colorLeaf).$value = "#12345"; }), `${colorLeaf}: color must be # plus six or eight hex digits`],
@@ -655,7 +655,7 @@ test("headers carry the source digest and one generator digest, with no timestam
   const sourceDigest = sha(source);
   const generator = (text: string) => /Generator: sha256 ([0-9a-f]{64}) of/.exec(text)![1];
   for (const text of [css, dart]) {
-    assert.ok(text.includes(`Source: meta-frames-design-tokens/v2/tokens.json (not in Git), sha256 ${sourceDigest}`));
+    assert.ok(text.includes(`Source: meta-frames-design-tokens/tokens.json (not in Git), sha256 ${sourceDigest}`));
     assert.doesNotMatch(text, /\d{4}-\d{2}-\d{2}|\/Users\/|\/tmp\//);
     assert.ok(text.includes("Regenerate: node meta-frames-design-tokens/build.mjs. Verify: node meta-frames-design-tokens/build.mjs --check"));
   }
@@ -716,7 +716,7 @@ test("an invalid graph leaves both outputs byte-identical", (context: TestContex
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   const bytes = outputBytes(made);
-  writeFileSync(join(made.directory, "meta-frames-design-tokens/v2/tokens.json"), mutate(source, (tree: Tree) => { tokenAt(tree, canvas).$value = `{${surface}}`; }));
+  writeFileSync(join(made.directory, "meta-frames-design-tokens/tokens.json"), mutate(source, (tree: Tree) => { tokenAt(tree, canvas).$value = `{${surface}}`; }));
   const result = made.generate();
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("same-layer edge"), result.stderr);
@@ -829,7 +829,7 @@ test("the source digest comes from the same read as the parse", (context: TestCo
   assert.equal(made.generate().status, 0);
   assert.ok(String(readFileSync(made.outputs.dart)).includes(`sha256 ${sha(source)}`));
   const changed = mutate(source, (tree: Tree) => { tree.$description = "changed"; });
-  writeFileSync(join(made.directory, "meta-frames-design-tokens/v2/tokens.json"), changed);
+  writeFileSync(join(made.directory, "meta-frames-design-tokens/tokens.json"), changed);
   assert.equal(made.generate().status, 0);
   assert.ok(String(readFileSync(made.outputs.dart)).includes(`sha256 ${sha(changed)}`));
 });

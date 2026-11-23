@@ -1,4 +1,4 @@
-// Style Dictionary hooks and validators for meta-frames-design-tokens/v2/tokens.json.
+// Style Dictionary hooks and validators for meta-frames-design-tokens/tokens.json.
 // Source profile, reference graph, mode projection, bindings checks, native value transforms and
 // the CSS and Dart formats (one fragment per mode). No file writes: build.mjs owns the filesystem.
 import StyleDictionary from "style-dictionary";

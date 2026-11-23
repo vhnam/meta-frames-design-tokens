@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import {
   APP_FAMILY, canonical as oracleCanonical, COLOR_SCHEME, cssNameOf, DASHBOARD_PUBLIC, expectedApp as oracleExpectedApp,
   DASHBOARD_RADII, expectedCss as oracleExpectedCss, FONT_ROLES, INVERSE_PRIMARY, RADIUS_PATH, readSource, semanticAndComponentPaths, TEXT_STEPS,
-} from '../../oracle.ts';
+} from '../oracle.ts';
 
 // Parsed capture JSON (the file boundary). Every read below goes through ?. and a run-time check, so a
 // missing field is a reported mismatch, not a crash.

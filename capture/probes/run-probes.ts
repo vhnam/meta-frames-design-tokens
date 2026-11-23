@@ -1,4 +1,4 @@
-// Slice 4 probes. Run from the workspace root: node meta-frames-design-tokens/v2/capture/probes/run-probes.ts [listener|fonts]
+// Slice 4 probes. Run from the workspace root: node meta-frames-design-tokens/capture/probes/run-probes.ts [listener|fonts]
 // Listener probes open real sockets through a fake `vp` (fake-vp.ts) and run the real dashboard-capture.ts.
 // Font probes run the real captures against a temporary dashboard copy or a temporary app asset folder.
 // Each failing probe must exit nonzero and write nothing. Prints one line per probe, exits 1 if any probe misbehaves.
@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 const here = import.meta.dirname;
-const root = path.resolve(here, '../../../..'); // the workspace root: v2/capture/probes is four levels below it
+const root = path.resolve(here, '../../..'); // the workspace root: capture/probes is three levels below it
 const capture = path.join(here, '..', 'dashboard-capture.ts');
 const appTest = path.join(here, '..', 'app_capture_test.dart');
 const workDir = mkdtempSync(path.join(tmpdir(), 'mf-probes-'));

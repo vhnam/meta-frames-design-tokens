@@ -21,7 +21,7 @@ import {
   APP_TEXT_SLOTS,
   expectedApp as oracleExpectedApp,
 } from "./oracle.ts";
-import { compareApp, compareDashboard } from "./v2/capture/compare.ts";
+import { compareApp, compareDashboard } from "./capture/compare.ts";
 
 // A parsed or captured JSON document that a test reads at arbitrary keys.
 type Tree = any;
@@ -34,7 +34,7 @@ const expectedApp = oracleExpectedApp as (leaves: Tree) => Tree;
 type Present<Value> = { get(key: string): Value } & Map<string, Value>;
 
 const here = import.meta.dirname;
-const sourceText = readFileSync(join(here, "v2/tokens.json"), "utf8");
+const sourceText = readFileSync(join(here, "tokens.json"), "utf8");
 const cssPath = join(here, "../meta-frames-dashboard/src/styles/design-tokens.generated.css");
 const dartPath = join(here, "../meta-frames-app/lib/ui/core/design_tokens.g.dart");
 
@@ -692,9 +692,9 @@ const changedSource = (change: (tree: Tree) => void) => {
 };
 
 test("readSource rejects a root that is not an object", () => {
-  assert.throws(() => readSource("42"), { message: "oracle: v2/tokens.json root must be an object" });
-  assert.throws(() => readSource("[]"), { message: "oracle: v2/tokens.json root must be an object" });
-  assert.throws(() => readSource("null"), { message: "oracle: v2/tokens.json root must be an object" });
+  assert.throws(() => readSource("42"), { message: "oracle: tokens.json root must be an object" });
+  assert.throws(() => readSource("[]"), { message: "oracle: tokens.json root must be an object" });
+  assert.throws(() => readSource("null"), { message: "oracle: tokens.json root must be an object" });
 });
 
 test("readSource names a child that is not an object", () => {

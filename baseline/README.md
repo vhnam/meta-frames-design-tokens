@@ -92,4 +92,4 @@ b35395fd7065950c689f638336346a7a00b6ba43ded28f8706ba9e9c65d419e3  app/scaffold-d
 8bbdce244841cf18a1c9fae70a1492e923c00771860c7c72ace37f26c1384638  app/scaffold-light.png
 ```
 
-v1 baselines are frozen before-images. v2 evidence lives in `design-tokens/v2/evidence/`.
+v1 baselines are frozen before-images. v2 evidence lives in `design-tokens/evidence/`.

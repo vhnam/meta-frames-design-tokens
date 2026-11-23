@@ -17,7 +17,7 @@ const scriptDir = import.meta.dirname;
 // This script lives in the untracked workspace directory meta-frames-design-tokens/. The repositories are its
 // siblings: ../meta-frames-dashboard and ../meta-frames-app.
 const workspaceRoot = path.resolve(scriptDir, "..");
-const sourceFile = path.join(scriptDir, "v2", "tokens.json");
+const sourceFile = path.join(scriptDir, "tokens.json");
 const bindingsFile = path.join(scriptDir, "bindings.json");
 const nodeVersionFile = path.join(scriptDir, ".node-version");
 const manifestFile = path.join(scriptDir, "package.json");

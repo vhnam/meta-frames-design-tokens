@@ -7,14 +7,14 @@ import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import { DASHBOARD_PUBLIC, expectedCss, FONT_ROLES, readSource, TEXT_STEPS } from '../../oracle.ts';
+import { DASHBOARD_PUBLIC, expectedCss, FONT_ROLES, readSource, TEXT_STEPS } from '../oracle.ts';
 
 // DASHBOARD_DIR overrides the checkout (used for the forced run on a temporary copy).
 // Playwright objects and capture results are untyped at the boundary; every check below is a run-time check.
 type Tree = any;
 type Face = { role: string; property: string; className: string; stack: string; face: string; prefix: string };
 
-const dashboardDir = path.resolve(process.env.DASHBOARD_DIR ?? path.join(import.meta.dirname, '../../../meta-frames-dashboard'));
+const dashboardDir = path.resolve(process.env.DASHBOARD_DIR ?? path.join(import.meta.dirname, '../../meta-frames-dashboard'));
 const outDir = path.resolve(process.argv[2]);
 const { chromium } = createRequire(dashboardDir + '/')('@playwright/test');
 
