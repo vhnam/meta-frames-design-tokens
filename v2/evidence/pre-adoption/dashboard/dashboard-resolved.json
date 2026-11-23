@@ -1,0 +1,8114 @@
+{
+  "schema": 2,
+  "rootSizes": [
+    "16px",
+    "20px"
+  ],
+  "faces": {
+    "probes": {
+      "heading": {
+        "computedFontFamily": "\"Space Grotesk Variable\", ui-sans-serif, sans-serif",
+        "faceStatusesAtInsert": [
+          "unloaded",
+          "unloaded",
+          "loaded"
+        ],
+        "expectedStack": "\"Space Grotesk Variable\", ui-sans-serif, sans-serif",
+        "usedFonts": [
+          {
+            "familyName": "Space Grotesk Light",
+            "isCustomFont": true,
+            "glyphCount": 36
+          }
+        ]
+      },
+      "body": {
+        "computedFontFamily": "\"Geist Mono Variable\", ui-monospace, monospace",
+        "faceStatusesAtInsert": [
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "loaded"
+        ],
+        "expectedStack": "\"Geist Mono Variable\", ui-monospace, monospace",
+        "usedFonts": [
+          {
+            "familyName": "Geist Mono",
+            "isCustomFont": true,
+            "glyphCount": 36
+          }
+        ]
+      },
+      "mono": {
+        "computedFontFamily": "\"JetBrains Mono Variable\", ui-monospace, monospace",
+        "faceStatusesAtInsert": [
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "loading"
+        ],
+        "expectedStack": "\"JetBrains Mono Variable\", ui-monospace, monospace",
+        "usedFonts": [
+          {
+            "familyName": "JetBrains Mono",
+            "isCustomFont": true,
+            "glyphCount": 36
+          }
+        ]
+      }
+    },
+    "loaded": [
+      "Geist Mono Variable 100 900",
+      "Space Grotesk Variable 300 700",
+      "JetBrains Mono Variable 100 800"
+    ]
+  },
+  "modes": {
+    "light": {
+      "mode": "light",
+      "properties": {
+        "--mf-semantic-color-bg-canvas": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-surface": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-surface-raised": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-subtle": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-inverse": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-scrim": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-default": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-muted": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-subtle": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-inverse": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-on-primary": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-on-accent": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-on-danger": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-border-default": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-border-control": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-border-focus": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-primary": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-primary-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-accent": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-accent-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-secondary": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-secondary-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-danger": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-danger-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-success-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-success-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-warning-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-warning-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-danger-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-danger-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-info-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-info-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-neutral-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-neutral-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-1": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-2": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-3": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-4": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-5": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-space-inset-xs": {
+          "declared": ""
+        },
+        "--mf-semantic-space-inset-sm": {
+          "declared": ""
+        },
+        "--mf-semantic-space-inset-md": {
+          "declared": ""
+        },
+        "--mf-semantic-space-inset-lg": {
+          "declared": ""
+        },
+        "--mf-semantic-space-inset-xl": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-xs": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-sm": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-md": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-lg": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-xl": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-2xl": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gutter-compact": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gutter-wide": {
+          "declared": ""
+        },
+        "--mf-semantic-size-touch-min": {
+          "declared": ""
+        },
+        "--mf-semantic-size-control-sm": {
+          "declared": ""
+        },
+        "--mf-semantic-size-control-md": {
+          "declared": ""
+        },
+        "--mf-semantic-size-control-lg": {
+          "declared": ""
+        },
+        "--mf-semantic-size-icon-sm": {
+          "declared": ""
+        },
+        "--mf-semantic-size-icon-md": {
+          "declared": ""
+        },
+        "--mf-semantic-size-icon-lg": {
+          "declared": ""
+        },
+        "--mf-semantic-radius-control": {
+          "declared": ""
+        },
+        "--mf-semantic-radius-surface": {
+          "declared": ""
+        },
+        "--mf-semantic-radius-pill": {
+          "declared": ""
+        },
+        "--mf-semantic-border-width-default": {
+          "declared": ""
+        },
+        "--mf-semantic-border-width-focus": {
+          "declared": ""
+        },
+        "--mf-semantic-text-display-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-display-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-display-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-display-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-1-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-1-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-1-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-1-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-2-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-2-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-2-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-2-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-3-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-3-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-3-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-3-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-sm-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-sm-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-sm-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-sm-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-label-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-label-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-label-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-label-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-caption-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-caption-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-caption-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-caption-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-data-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-data-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-data-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-data-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-duration-enter": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-duration-exit": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-duration-emphasis": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-easing-enter": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-easing-exit": {
+          "declared": ""
+        },
+        "--mf-semantic-opacity-disabled": {
+          "declared": ""
+        },
+        "--mf-component-button-primary-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-primary-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-primary-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-accent-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-accent-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-accent-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-secondary-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-secondary-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-secondary-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-secondary-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-ghost-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-ghost-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-ghost-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-danger-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-danger-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-danger-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-height-sm": {
+          "declared": ""
+        },
+        "--mf-component-button-height-md": {
+          "declared": ""
+        },
+        "--mf-component-button-height-lg": {
+          "declared": ""
+        },
+        "--mf-component-button-padding-x": {
+          "declared": ""
+        },
+        "--mf-component-button-gap": {
+          "declared": ""
+        },
+        "--mf-component-button-radius": {
+          "declared": ""
+        },
+        "--mf-component-button-font-size": {
+          "declared": ""
+        },
+        "--mf-component-button-font-weight": {
+          "declared": ""
+        },
+        "--mf-component-button-disabled-opacity": {
+          "declared": ""
+        },
+        "--mf-component-input-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-placeholder": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-border-focus": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-border-invalid": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-helper": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-error": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-height": {
+          "declared": ""
+        },
+        "--mf-component-input-padding-x": {
+          "declared": ""
+        },
+        "--mf-component-input-radius": {
+          "declared": ""
+        },
+        "--mf-component-input-font-size": {
+          "declared": ""
+        },
+        "--mf-component-card-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-card-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-card-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-card-radius": {
+          "declared": ""
+        },
+        "--mf-component-card-padding": {
+          "declared": ""
+        },
+        "--mf-component-dialog-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-dialog-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-dialog-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-dialog-scrim": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-dialog-radius": {
+          "declared": ""
+        },
+        "--mf-component-dialog-padding": {
+          "declared": ""
+        },
+        "--mf-component-badge-neutral-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-neutral-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-success-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-success-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-warning-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-warning-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-danger-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-danger-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-info-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-info-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-radius": {
+          "declared": ""
+        },
+        "--mf-component-badge-padding-x": {
+          "declared": ""
+        },
+        "--mf-component-badge-font-size": {
+          "declared": ""
+        },
+        "--mf-component-table-header-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-table-header-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-table-row-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-table-row-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-table-cell-padding-x": {
+          "declared": ""
+        },
+        "--mf-component-table-cell-padding-y": {
+          "declared": ""
+        },
+        "--mf-component-table-font-size": {
+          "declared": ""
+        },
+        "--mf-component-nav-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-item-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-item-fg-active": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-item-bg-active": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-indicator": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-item-height": {
+          "declared": ""
+        },
+        "--mf-component-focus-ring-color": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-focus-ring-width": {
+          "declared": ""
+        },
+        "--mf-component-focus-ring-offset": {
+          "declared": ""
+        },
+        "--background": {
+          "declared": "oklch(0.951 0.013 84)",
+          "painted": "oklch(0.951 0.013 84)",
+          "rgbaAlone": [
+            243,
+            238,
+            229,
+            255
+          ],
+          "rgbaOverWhite": [
+            243,
+            238,
+            229,
+            255
+          ],
+          "rgbaOverBlack": [
+            243,
+            238,
+            229,
+            255
+          ]
+        },
+        "--foreground": {
+          "declared": "oklch(0.21 0.012 70)",
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--card-foreground": {
+          "declared": "oklch(0.21 0.012 70)",
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--popover-foreground": {
+          "declared": "oklch(0.21 0.012 70)",
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--secondary-foreground": {
+          "declared": "oklch(0.25 0.014 70)",
+          "painted": "oklch(0.25 0.014 70)",
+          "rgbaAlone": [
+            38,
+            33,
+            26,
+            255
+          ],
+          "rgbaOverWhite": [
+            38,
+            33,
+            26,
+            255
+          ],
+          "rgbaOverBlack": [
+            38,
+            33,
+            26,
+            255
+          ]
+        },
+        "--accent-foreground": {
+          "declared": "oklch(0.21 0.012 70)",
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--card": {
+          "declared": "oklch(0.982 0.008 84)",
+          "painted": "oklch(0.982 0.008 84)",
+          "rgbaAlone": [
+            252,
+            249,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            252,
+            249,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            252,
+            249,
+            243,
+            255
+          ]
+        },
+        "--popover": {
+          "declared": "oklch(0.985 0.007 84)",
+          "painted": "oklch(0.985 0.007 84)",
+          "rgbaAlone": [
+            252,
+            250,
+            245,
+            255
+          ],
+          "rgbaOverWhite": [
+            252,
+            250,
+            245,
+            255
+          ],
+          "rgbaOverBlack": [
+            252,
+            250,
+            245,
+            255
+          ]
+        },
+        "--primary": {
+          "declared": "oklch(0.565 0.178 37)",
+          "painted": "oklch(0.565 0.178 37)",
+          "rgbaAlone": [
+            200,
+            66,
+            21,
+            255
+          ],
+          "rgbaOverWhite": [
+            200,
+            66,
+            21,
+            255
+          ],
+          "rgbaOverBlack": [
+            200,
+            66,
+            21,
+            255
+          ]
+        },
+        "--primary-foreground": {
+          "declared": "oklch(0.985 0.012 70)",
+          "painted": "oklch(0.985 0.012 70)",
+          "rgbaAlone": [
+            255,
+            249,
+            242,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            249,
+            242,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            249,
+            242,
+            255
+          ]
+        },
+        "--secondary": {
+          "declared": "oklch(0.925 0.018 80)",
+          "painted": "oklch(0.925 0.018 80)",
+          "rgbaAlone": [
+            237,
+            229,
+            217,
+            255
+          ],
+          "rgbaOverWhite": [
+            237,
+            229,
+            217,
+            255
+          ],
+          "rgbaOverBlack": [
+            237,
+            229,
+            217,
+            255
+          ]
+        },
+        "--muted": {
+          "declared": "oklch(0.94 0.015 82)",
+          "painted": "oklch(0.94 0.015 82)",
+          "rgbaAlone": [
+            240,
+            234,
+            224,
+            255
+          ],
+          "rgbaOverWhite": [
+            240,
+            234,
+            224,
+            255
+          ],
+          "rgbaOverBlack": [
+            240,
+            234,
+            224,
+            255
+          ]
+        },
+        "--accent": {
+          "declared": "oklch(0.925 0.018 80)",
+          "painted": "oklch(0.925 0.018 80)",
+          "rgbaAlone": [
+            237,
+            229,
+            217,
+            255
+          ],
+          "rgbaOverWhite": [
+            237,
+            229,
+            217,
+            255
+          ],
+          "rgbaOverBlack": [
+            237,
+            229,
+            217,
+            255
+          ]
+        },
+        "--muted-foreground": {
+          "declared": "oklch(0.5 0.022 70)",
+          "painted": "oklch(0.5 0.022 70)",
+          "rgbaAlone": [
+            108,
+            97,
+            86,
+            255
+          ],
+          "rgbaOverWhite": [
+            108,
+            97,
+            86,
+            255
+          ],
+          "rgbaOverBlack": [
+            108,
+            97,
+            86,
+            255
+          ]
+        },
+        "--destructive": {
+          "declared": "oklch(0.56 0.205 27)",
+          "painted": "oklch(0.56 0.205 27)",
+          "rgbaAlone": [
+            210,
+            40,
+            40,
+            255
+          ],
+          "rgbaOverWhite": [
+            210,
+            40,
+            40,
+            255
+          ],
+          "rgbaOverBlack": [
+            210,
+            40,
+            40,
+            255
+          ]
+        },
+        "--border": {
+          "declared": "oklch(0.88 0.02 80)",
+          "painted": "oklch(0.88 0.02 80)",
+          "rgbaAlone": [
+            222,
+            214,
+            201,
+            255
+          ],
+          "rgbaOverWhite": [
+            222,
+            214,
+            201,
+            255
+          ],
+          "rgbaOverBlack": [
+            222,
+            214,
+            201,
+            255
+          ]
+        },
+        "--input": {
+          "declared": "oklch(0.86 0.022 80)",
+          "painted": "oklch(0.86 0.022 80)",
+          "rgbaAlone": [
+            217,
+            208,
+            193,
+            255
+          ],
+          "rgbaOverWhite": [
+            217,
+            208,
+            193,
+            255
+          ],
+          "rgbaOverBlack": [
+            217,
+            208,
+            193,
+            255
+          ]
+        },
+        "--ring": {
+          "declared": "oklch(0.565 0.178 37 / 45%)",
+          "painted": "oklch(0.565 0.178 37 / 0.45)",
+          "rgbaAlone": [
+            200,
+            67,
+            20,
+            115
+          ],
+          "rgbaOverWhite": [
+            230,
+            170,
+            149,
+            255
+          ],
+          "rgbaOverBlack": [
+            90,
+            30,
+            9,
+            255
+          ]
+        },
+        "--chart-1": {
+          "declared": "oklch(0.837 0.128 66.29)",
+          "painted": "oklch(0.837 0.128 66.29)",
+          "rgbaAlone": [
+            255,
+            184,
+            106,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            184,
+            106,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            184,
+            106,
+            255
+          ]
+        },
+        "--chart-2": {
+          "declared": "oklch(0.705 0.213 47.604)",
+          "painted": "oklch(0.705 0.213 47.604)",
+          "rgbaAlone": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            105,
+            0,
+            255
+          ]
+        },
+        "--chart-3": {
+          "declared": "oklch(0.646 0.222 41.116)",
+          "painted": "oklch(0.646 0.222 41.116)",
+          "rgbaAlone": [
+            245,
+            74,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            245,
+            74,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            245,
+            74,
+            0,
+            255
+          ]
+        },
+        "--chart-4": {
+          "declared": "oklch(0.553 0.195 38.402)",
+          "painted": "oklch(0.553 0.195 38.402)",
+          "rgbaAlone": [
+            202,
+            53,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            202,
+            53,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            202,
+            53,
+            0,
+            255
+          ]
+        },
+        "--chart-5": {
+          "declared": "oklch(0.47 0.157 37.304)",
+          "painted": "oklch(0.47 0.157 37.304)",
+          "rgbaAlone": [
+            159,
+            45,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            159,
+            45,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            159,
+            45,
+            0,
+            255
+          ]
+        },
+        "--sidebar": {
+          "declared": "oklch(0.972 0.01 84)",
+          "painted": "oklch(0.972 0.01 84)",
+          "rgbaAlone": [
+            249,
+            245,
+            238,
+            255
+          ],
+          "rgbaOverWhite": [
+            249,
+            245,
+            238,
+            255
+          ],
+          "rgbaOverBlack": [
+            249,
+            245,
+            238,
+            255
+          ]
+        },
+        "--sidebar-foreground": {
+          "declared": "oklch(0.21 0.012 70)",
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--sidebar-primary": {
+          "declared": "oklch(0.565 0.178 37)",
+          "painted": "oklch(0.565 0.178 37)",
+          "rgbaAlone": [
+            200,
+            66,
+            21,
+            255
+          ],
+          "rgbaOverWhite": [
+            200,
+            66,
+            21,
+            255
+          ],
+          "rgbaOverBlack": [
+            200,
+            66,
+            21,
+            255
+          ]
+        },
+        "--sidebar-primary-foreground": {
+          "declared": "oklch(0.985 0.012 70)",
+          "painted": "oklch(0.985 0.012 70)",
+          "rgbaAlone": [
+            255,
+            249,
+            242,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            249,
+            242,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            249,
+            242,
+            255
+          ]
+        },
+        "--sidebar-accent": {
+          "declared": "oklch(0.932 0.017 80)",
+          "painted": "oklch(0.932 0.017 80)",
+          "rgbaAlone": [
+            239,
+            232,
+            220,
+            255
+          ],
+          "rgbaOverWhite": [
+            239,
+            232,
+            220,
+            255
+          ],
+          "rgbaOverBlack": [
+            239,
+            232,
+            220,
+            255
+          ]
+        },
+        "--sidebar-accent-foreground": {
+          "declared": "oklch(0.21 0.012 70)",
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--sidebar-border": {
+          "declared": "oklch(0.885 0.02 80)",
+          "painted": "oklch(0.885 0.02 80)",
+          "rgbaAlone": [
+            224,
+            216,
+            203,
+            255
+          ],
+          "rgbaOverWhite": [
+            224,
+            216,
+            203,
+            255
+          ],
+          "rgbaOverBlack": [
+            224,
+            216,
+            203,
+            255
+          ]
+        },
+        "--sidebar-ring": {
+          "declared": "oklch(0.565 0.178 37 / 45%)",
+          "painted": "oklch(0.565 0.178 37 / 0.45)",
+          "rgbaAlone": [
+            200,
+            67,
+            20,
+            115
+          ],
+          "rgbaOverWhite": [
+            230,
+            170,
+            149,
+            255
+          ],
+          "rgbaOverBlack": [
+            90,
+            30,
+            9,
+            255
+          ]
+        },
+        "--dot": {
+          "declared": "oklch(0.21 0.012 70 / 10%)",
+          "painted": "oklch(0.21 0.012 70 / 0.1)",
+          "rgbaAlone": [
+            29,
+            20,
+            20,
+            26
+          ],
+          "rgbaOverWhite": [
+            232,
+            231,
+            231,
+            255
+          ],
+          "rgbaOverBlack": [
+            3,
+            2,
+            2,
+            255
+          ]
+        },
+        "--radius": {
+          "declared": "0.45rem"
+        }
+      },
+      "swatches": {
+        "--background": {
+          "painted": "oklch(0.951 0.013 84)",
+          "rgbaAlone": [
+            243,
+            238,
+            229,
+            255
+          ],
+          "rgbaOverWhite": [
+            243,
+            238,
+            229,
+            255
+          ],
+          "rgbaOverBlack": [
+            243,
+            238,
+            229,
+            255
+          ]
+        },
+        "--foreground": {
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--card-foreground": {
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--popover-foreground": {
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--secondary-foreground": {
+          "painted": "oklch(0.25 0.014 70)",
+          "rgbaAlone": [
+            38,
+            33,
+            26,
+            255
+          ],
+          "rgbaOverWhite": [
+            38,
+            33,
+            26,
+            255
+          ],
+          "rgbaOverBlack": [
+            38,
+            33,
+            26,
+            255
+          ]
+        },
+        "--accent-foreground": {
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--card": {
+          "painted": "oklch(0.982 0.008 84)",
+          "rgbaAlone": [
+            252,
+            249,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            252,
+            249,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            252,
+            249,
+            243,
+            255
+          ]
+        },
+        "--popover": {
+          "painted": "oklch(0.985 0.007 84)",
+          "rgbaAlone": [
+            252,
+            250,
+            245,
+            255
+          ],
+          "rgbaOverWhite": [
+            252,
+            250,
+            245,
+            255
+          ],
+          "rgbaOverBlack": [
+            252,
+            250,
+            245,
+            255
+          ]
+        },
+        "--primary": {
+          "painted": "oklch(0.565 0.178 37)",
+          "rgbaAlone": [
+            200,
+            66,
+            21,
+            255
+          ],
+          "rgbaOverWhite": [
+            200,
+            66,
+            21,
+            255
+          ],
+          "rgbaOverBlack": [
+            200,
+            66,
+            21,
+            255
+          ]
+        },
+        "--primary-foreground": {
+          "painted": "oklch(0.985 0.012 70)",
+          "rgbaAlone": [
+            255,
+            249,
+            242,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            249,
+            242,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            249,
+            242,
+            255
+          ]
+        },
+        "--secondary": {
+          "painted": "oklch(0.925 0.018 80)",
+          "rgbaAlone": [
+            237,
+            229,
+            217,
+            255
+          ],
+          "rgbaOverWhite": [
+            237,
+            229,
+            217,
+            255
+          ],
+          "rgbaOverBlack": [
+            237,
+            229,
+            217,
+            255
+          ]
+        },
+        "--muted": {
+          "painted": "oklch(0.94 0.015 82)",
+          "rgbaAlone": [
+            240,
+            234,
+            224,
+            255
+          ],
+          "rgbaOverWhite": [
+            240,
+            234,
+            224,
+            255
+          ],
+          "rgbaOverBlack": [
+            240,
+            234,
+            224,
+            255
+          ]
+        },
+        "--accent": {
+          "painted": "oklch(0.925 0.018 80)",
+          "rgbaAlone": [
+            237,
+            229,
+            217,
+            255
+          ],
+          "rgbaOverWhite": [
+            237,
+            229,
+            217,
+            255
+          ],
+          "rgbaOverBlack": [
+            237,
+            229,
+            217,
+            255
+          ]
+        },
+        "--muted-foreground": {
+          "painted": "oklch(0.5 0.022 70)",
+          "rgbaAlone": [
+            108,
+            97,
+            86,
+            255
+          ],
+          "rgbaOverWhite": [
+            108,
+            97,
+            86,
+            255
+          ],
+          "rgbaOverBlack": [
+            108,
+            97,
+            86,
+            255
+          ]
+        },
+        "--destructive": {
+          "painted": "oklch(0.56 0.205 27)",
+          "rgbaAlone": [
+            210,
+            40,
+            40,
+            255
+          ],
+          "rgbaOverWhite": [
+            210,
+            40,
+            40,
+            255
+          ],
+          "rgbaOverBlack": [
+            210,
+            40,
+            40,
+            255
+          ]
+        },
+        "--border": {
+          "painted": "oklch(0.88 0.02 80)",
+          "rgbaAlone": [
+            222,
+            214,
+            201,
+            255
+          ],
+          "rgbaOverWhite": [
+            222,
+            214,
+            201,
+            255
+          ],
+          "rgbaOverBlack": [
+            222,
+            214,
+            201,
+            255
+          ]
+        },
+        "--input": {
+          "painted": "oklch(0.86 0.022 80)",
+          "rgbaAlone": [
+            217,
+            208,
+            193,
+            255
+          ],
+          "rgbaOverWhite": [
+            217,
+            208,
+            193,
+            255
+          ],
+          "rgbaOverBlack": [
+            217,
+            208,
+            193,
+            255
+          ]
+        },
+        "--ring": {
+          "painted": "oklch(0.565 0.178 37 / 0.45)",
+          "rgbaAlone": [
+            200,
+            67,
+            20,
+            115
+          ],
+          "rgbaOverWhite": [
+            230,
+            170,
+            149,
+            255
+          ],
+          "rgbaOverBlack": [
+            90,
+            30,
+            9,
+            255
+          ]
+        },
+        "--chart-1": {
+          "painted": "oklch(0.837 0.128 66.29)",
+          "rgbaAlone": [
+            255,
+            184,
+            106,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            184,
+            106,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            184,
+            106,
+            255
+          ]
+        },
+        "--chart-2": {
+          "painted": "oklch(0.705 0.213 47.604)",
+          "rgbaAlone": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            105,
+            0,
+            255
+          ]
+        },
+        "--chart-3": {
+          "painted": "oklch(0.646 0.222 41.116)",
+          "rgbaAlone": [
+            245,
+            74,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            245,
+            74,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            245,
+            74,
+            0,
+            255
+          ]
+        },
+        "--chart-4": {
+          "painted": "oklch(0.553 0.195 38.402)",
+          "rgbaAlone": [
+            202,
+            53,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            202,
+            53,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            202,
+            53,
+            0,
+            255
+          ]
+        },
+        "--chart-5": {
+          "painted": "oklch(0.47 0.157 37.304)",
+          "rgbaAlone": [
+            159,
+            45,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            159,
+            45,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            159,
+            45,
+            0,
+            255
+          ]
+        },
+        "--sidebar": {
+          "painted": "oklch(0.972 0.01 84)",
+          "rgbaAlone": [
+            249,
+            245,
+            238,
+            255
+          ],
+          "rgbaOverWhite": [
+            249,
+            245,
+            238,
+            255
+          ],
+          "rgbaOverBlack": [
+            249,
+            245,
+            238,
+            255
+          ]
+        },
+        "--sidebar-foreground": {
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--sidebar-primary": {
+          "painted": "oklch(0.565 0.178 37)",
+          "rgbaAlone": [
+            200,
+            66,
+            21,
+            255
+          ],
+          "rgbaOverWhite": [
+            200,
+            66,
+            21,
+            255
+          ],
+          "rgbaOverBlack": [
+            200,
+            66,
+            21,
+            255
+          ]
+        },
+        "--sidebar-primary-foreground": {
+          "painted": "oklch(0.985 0.012 70)",
+          "rgbaAlone": [
+            255,
+            249,
+            242,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            249,
+            242,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            249,
+            242,
+            255
+          ]
+        },
+        "--sidebar-accent": {
+          "painted": "oklch(0.932 0.017 80)",
+          "rgbaAlone": [
+            239,
+            232,
+            220,
+            255
+          ],
+          "rgbaOverWhite": [
+            239,
+            232,
+            220,
+            255
+          ],
+          "rgbaOverBlack": [
+            239,
+            232,
+            220,
+            255
+          ]
+        },
+        "--sidebar-accent-foreground": {
+          "painted": "oklch(0.21 0.012 70)",
+          "rgbaAlone": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverWhite": [
+            28,
+            23,
+            18,
+            255
+          ],
+          "rgbaOverBlack": [
+            28,
+            23,
+            18,
+            255
+          ]
+        },
+        "--sidebar-border": {
+          "painted": "oklch(0.885 0.02 80)",
+          "rgbaAlone": [
+            224,
+            216,
+            203,
+            255
+          ],
+          "rgbaOverWhite": [
+            224,
+            216,
+            203,
+            255
+          ],
+          "rgbaOverBlack": [
+            224,
+            216,
+            203,
+            255
+          ]
+        },
+        "--sidebar-ring": {
+          "painted": "oklch(0.565 0.178 37 / 0.45)",
+          "rgbaAlone": [
+            200,
+            67,
+            20,
+            115
+          ],
+          "rgbaOverWhite": [
+            230,
+            170,
+            149,
+            255
+          ],
+          "rgbaOverBlack": [
+            90,
+            30,
+            9,
+            255
+          ]
+        },
+        "--dot": {
+          "painted": "oklch(0.21 0.012 70 / 0.1)",
+          "rgbaAlone": [
+            29,
+            20,
+            20,
+            26
+          ],
+          "rgbaOverWhite": [
+            232,
+            231,
+            231,
+            255
+          ],
+          "rgbaOverBlack": [
+            3,
+            2,
+            2,
+            255
+          ]
+        }
+      },
+      "sidebar": {
+        "container": {
+          "backgroundColor": {
+            "painted": "oklch(0.972 0.01 84)",
+            "rgbaAlone": [
+              249,
+              245,
+              238,
+              255
+            ],
+            "rgbaOverWhite": [
+              249,
+              245,
+              238,
+              255
+            ],
+            "rgbaOverBlack": [
+              249,
+              245,
+              238,
+              255
+            ]
+          },
+          "color": {
+            "painted": "oklch(0.21 0.012 70)",
+            "rgbaAlone": [
+              28,
+              23,
+              18,
+              255
+            ],
+            "rgbaOverWhite": [
+              28,
+              23,
+              18,
+              255
+            ],
+            "rgbaOverBlack": [
+              28,
+              23,
+              18,
+              255
+            ]
+          }
+        },
+        "active": {
+          "backgroundColor": {
+            "painted": "oklch(0.932 0.017 80)",
+            "rgbaAlone": [
+              239,
+              232,
+              220,
+              255
+            ],
+            "rgbaOverWhite": [
+              239,
+              232,
+              220,
+              255
+            ],
+            "rgbaOverBlack": [
+              239,
+              232,
+              220,
+              255
+            ]
+          },
+          "color": {
+            "painted": "oklch(0.21 0.012 70)",
+            "rgbaAlone": [
+              28,
+              23,
+              18,
+              255
+            ],
+            "rgbaOverWhite": [
+              28,
+              23,
+              18,
+              255
+            ],
+            "rgbaOverBlack": [
+              28,
+              23,
+              18,
+              255
+            ]
+          }
+        },
+        "idle": {
+          "backgroundColor": {
+            "painted": "rgba(0, 0, 0, 0)",
+            "rgbaAlone": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "rgbaOverWhite": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "rgbaOverBlack": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          "color": {
+            "painted": "oklch(0.21 0.012 70)",
+            "rgbaAlone": [
+              28,
+              23,
+              18,
+              255
+            ],
+            "rgbaOverWhite": [
+              28,
+              23,
+              18,
+              255
+            ],
+            "rgbaOverBlack": [
+              28,
+              23,
+              18,
+              255
+            ]
+          }
+        },
+        "primary": {
+          "backgroundColor": {
+            "painted": "oklch(0.565 0.178 37)",
+            "rgbaAlone": [
+              200,
+              66,
+              21,
+              255
+            ],
+            "rgbaOverWhite": [
+              200,
+              66,
+              21,
+              255
+            ],
+            "rgbaOverBlack": [
+              200,
+              66,
+              21,
+              255
+            ]
+          },
+          "color": {
+            "painted": "oklch(0.985 0.012 70)",
+            "rgbaAlone": [
+              255,
+              249,
+              242,
+              255
+            ],
+            "rgbaOverWhite": [
+              255,
+              249,
+              242,
+              255
+            ],
+            "rgbaOverBlack": [
+              255,
+              249,
+              242,
+              255
+            ]
+          }
+        }
+      },
+      "fonts": {
+        "--font-heading": {
+          "declared": "",
+          "computedFontFamily": "\"Space Grotesk Variable\", ui-sans-serif, sans-serif"
+        },
+        "--font-sans": {
+          "declared": "",
+          "computedFontFamily": "\"Geist Mono Variable\", ui-monospace, monospace"
+        },
+        "--font-mono": {
+          "declared": "",
+          "computedFontFamily": "\"JetBrains Mono Variable\", ui-monospace, monospace"
+        }
+      },
+      "sizes": {
+        "16px": {
+          "text": {
+            "xs": {
+              "fontSize": "12px",
+              "lineHeight": "16px",
+              "fontWeight": "400"
+            },
+            "sm": {
+              "fontSize": "14px",
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            },
+            "base": {
+              "fontSize": "16px",
+              "lineHeight": "24px",
+              "fontWeight": "400"
+            },
+            "lg": {
+              "fontSize": "18px",
+              "lineHeight": "28px",
+              "fontWeight": "400"
+            },
+            "xl": {
+              "fontSize": "20px",
+              "lineHeight": "28px",
+              "fontWeight": "400"
+            },
+            "2xl": {
+              "fontSize": "24px",
+              "lineHeight": "32px",
+              "fontWeight": "400"
+            },
+            "3xl": {
+              "fontSize": "30px",
+              "lineHeight": "36px",
+              "fontWeight": "400"
+            },
+            "4xl": {
+              "fontSize": "36px",
+              "lineHeight": "40px",
+              "fontWeight": "400"
+            }
+          },
+          "spacing": {
+            "p-0.5": "2px",
+            "p-1": "4px",
+            "p-2.5": "10px",
+            "p-4": "16px",
+            "p-96": "384px"
+          },
+          "radii": {
+            "--radius": "0.45rem",
+            "rounded-sm": "3.2px",
+            "rounded-md": "5.2px",
+            "rounded-lg": "7.2px",
+            "rounded-xl": "11.2px"
+          }
+        },
+        "20px": {
+          "text": {
+            "xs": {
+              "fontSize": "15px",
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            },
+            "sm": {
+              "fontSize": "17.5px",
+              "lineHeight": "25px",
+              "fontWeight": "400"
+            },
+            "base": {
+              "fontSize": "20px",
+              "lineHeight": "30px",
+              "fontWeight": "400"
+            },
+            "lg": {
+              "fontSize": "22.5px",
+              "lineHeight": "35px",
+              "fontWeight": "400"
+            },
+            "xl": {
+              "fontSize": "25px",
+              "lineHeight": "35px",
+              "fontWeight": "400"
+            },
+            "2xl": {
+              "fontSize": "30px",
+              "lineHeight": "40px",
+              "fontWeight": "400"
+            },
+            "3xl": {
+              "fontSize": "37.5px",
+              "lineHeight": "45px",
+              "fontWeight": "400"
+            },
+            "4xl": {
+              "fontSize": "45px",
+              "lineHeight": "50px",
+              "fontWeight": "400"
+            }
+          },
+          "spacing": {
+            "p-0.5": "2.5px",
+            "p-1": "5px",
+            "p-2.5": "12.5px",
+            "p-4": "20px",
+            "p-96": "480px"
+          },
+          "radii": {
+            "--radius": "0.45rem",
+            "rounded-sm": "5px",
+            "rounded-md": "7px",
+            "rounded-lg": "9px",
+            "rounded-xl": "13px"
+          }
+        }
+      },
+      "focusRing": {
+        "matchesFocusVisible": true,
+        "outlineColor": "oklab(0.565 0.142157 0.107123 / 0.225)",
+        "outlineWidth": "1px",
+        "outlineStyle": "auto",
+        "outlineOffset": "2px",
+        "rgbaOverWhite": [
+          243,
+          213,
+          203,
+          255
+        ],
+        "rgbaOverBlack": [
+          45,
+          15,
+          5,
+          255
+        ],
+        "ringDeclared": "oklch(0.565 0.178 37 / 45%)"
+      },
+      "dots": {
+        "backgroundImage": "radial-gradient(oklch(0.21 0.012 70 / 0.1) 1px, rgba(0, 0, 0, 0) 1px)",
+        "backgroundSize": "16px 16px",
+        "dotPainted": "oklch(0.21 0.012 70 / 0.1)"
+      },
+      "audit": {
+        "fontFamily": "\"JetBrains Mono Variable\", ui-monospace, monospace",
+        "text": "7f3c9a1e-5b2d-4c8e-9a64-0d1f2e3b4c5d",
+        "usedFonts": [
+          {
+            "familyName": "JetBrains Mono",
+            "isCustomFont": true,
+            "glyphCount": 36
+          }
+        ],
+        "faceStatuses": [
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "loaded"
+        ]
+      }
+    },
+    "dark": {
+      "mode": "dark",
+      "properties": {
+        "--mf-semantic-color-bg-canvas": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-surface": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-surface-raised": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-subtle": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-inverse": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-bg-scrim": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-default": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-muted": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-subtle": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-inverse": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-on-primary": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-on-accent": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-fg-on-danger": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-border-default": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-border-control": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-border-focus": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-primary": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-primary-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-accent": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-accent-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-secondary": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-secondary-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-danger": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-action-danger-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-success-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-success-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-warning-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-warning-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-danger-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-danger-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-info-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-info-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-neutral-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-status-neutral-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-1": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-2": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-3": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-4": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-color-chart-5": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-semantic-space-inset-xs": {
+          "declared": ""
+        },
+        "--mf-semantic-space-inset-sm": {
+          "declared": ""
+        },
+        "--mf-semantic-space-inset-md": {
+          "declared": ""
+        },
+        "--mf-semantic-space-inset-lg": {
+          "declared": ""
+        },
+        "--mf-semantic-space-inset-xl": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-xs": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-sm": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-md": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-lg": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-xl": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gap-2xl": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gutter-compact": {
+          "declared": ""
+        },
+        "--mf-semantic-space-gutter-wide": {
+          "declared": ""
+        },
+        "--mf-semantic-size-touch-min": {
+          "declared": ""
+        },
+        "--mf-semantic-size-control-sm": {
+          "declared": ""
+        },
+        "--mf-semantic-size-control-md": {
+          "declared": ""
+        },
+        "--mf-semantic-size-control-lg": {
+          "declared": ""
+        },
+        "--mf-semantic-size-icon-sm": {
+          "declared": ""
+        },
+        "--mf-semantic-size-icon-md": {
+          "declared": ""
+        },
+        "--mf-semantic-size-icon-lg": {
+          "declared": ""
+        },
+        "--mf-semantic-radius-control": {
+          "declared": ""
+        },
+        "--mf-semantic-radius-surface": {
+          "declared": ""
+        },
+        "--mf-semantic-radius-pill": {
+          "declared": ""
+        },
+        "--mf-semantic-border-width-default": {
+          "declared": ""
+        },
+        "--mf-semantic-border-width-focus": {
+          "declared": ""
+        },
+        "--mf-semantic-text-display-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-display-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-display-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-display-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-1-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-1-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-1-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-1-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-2-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-2-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-2-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-2-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-3-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-3-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-3-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-heading-3-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-sm-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-sm-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-sm-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-body-sm-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-label-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-label-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-label-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-label-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-caption-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-caption-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-caption-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-caption-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-text-data-font-family": {
+          "declared": ""
+        },
+        "--mf-semantic-text-data-font-size": {
+          "declared": ""
+        },
+        "--mf-semantic-text-data-line-height": {
+          "declared": ""
+        },
+        "--mf-semantic-text-data-font-weight": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-duration-enter": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-duration-exit": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-duration-emphasis": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-easing-enter": {
+          "declared": ""
+        },
+        "--mf-semantic-motion-easing-exit": {
+          "declared": ""
+        },
+        "--mf-semantic-opacity-disabled": {
+          "declared": ""
+        },
+        "--mf-component-button-primary-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-primary-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-primary-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-accent-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-accent-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-accent-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-secondary-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-secondary-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-secondary-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-secondary-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-ghost-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-ghost-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-ghost-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-danger-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-danger-bg-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-danger-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-button-height-sm": {
+          "declared": ""
+        },
+        "--mf-component-button-height-md": {
+          "declared": ""
+        },
+        "--mf-component-button-height-lg": {
+          "declared": ""
+        },
+        "--mf-component-button-padding-x": {
+          "declared": ""
+        },
+        "--mf-component-button-gap": {
+          "declared": ""
+        },
+        "--mf-component-button-radius": {
+          "declared": ""
+        },
+        "--mf-component-button-font-size": {
+          "declared": ""
+        },
+        "--mf-component-button-font-weight": {
+          "declared": ""
+        },
+        "--mf-component-button-disabled-opacity": {
+          "declared": ""
+        },
+        "--mf-component-input-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-placeholder": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-border-focus": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-border-invalid": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-helper": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-error": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-input-height": {
+          "declared": ""
+        },
+        "--mf-component-input-padding-x": {
+          "declared": ""
+        },
+        "--mf-component-input-radius": {
+          "declared": ""
+        },
+        "--mf-component-input-font-size": {
+          "declared": ""
+        },
+        "--mf-component-card-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-card-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-card-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-card-radius": {
+          "declared": ""
+        },
+        "--mf-component-card-padding": {
+          "declared": ""
+        },
+        "--mf-component-dialog-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-dialog-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-dialog-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-dialog-scrim": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-dialog-radius": {
+          "declared": ""
+        },
+        "--mf-component-dialog-padding": {
+          "declared": ""
+        },
+        "--mf-component-badge-neutral-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-neutral-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-success-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-success-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-warning-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-warning-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-danger-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-danger-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-info-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-info-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-badge-radius": {
+          "declared": ""
+        },
+        "--mf-component-badge-padding-x": {
+          "declared": ""
+        },
+        "--mf-component-badge-font-size": {
+          "declared": ""
+        },
+        "--mf-component-table-header-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-table-header-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-table-row-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-table-row-hover": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-table-cell-padding-x": {
+          "declared": ""
+        },
+        "--mf-component-table-cell-padding-y": {
+          "declared": ""
+        },
+        "--mf-component-table-font-size": {
+          "declared": ""
+        },
+        "--mf-component-nav-bg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-border": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-item-fg": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-item-fg-active": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-item-bg-active": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-indicator": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-nav-item-height": {
+          "declared": ""
+        },
+        "--mf-component-focus-ring-color": {
+          "declared": "",
+          "painted": "rgba(0, 0, 0, 0)",
+          "rgbaAlone": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        "--mf-component-focus-ring-width": {
+          "declared": ""
+        },
+        "--mf-component-focus-ring-offset": {
+          "declared": ""
+        },
+        "--background": {
+          "declared": "#17181c",
+          "painted": "rgb(23, 24, 28)",
+          "rgbaAlone": [
+            23,
+            24,
+            28,
+            255
+          ],
+          "rgbaOverWhite": [
+            23,
+            24,
+            28,
+            255
+          ],
+          "rgbaOverBlack": [
+            23,
+            24,
+            28,
+            255
+          ]
+        },
+        "--foreground": {
+          "declared": "#f1f1f3",
+          "painted": "rgb(241, 241, 243)",
+          "rgbaAlone": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            241,
+            241,
+            243,
+            255
+          ]
+        },
+        "--card-foreground": {
+          "declared": "#f1f1f3",
+          "painted": "rgb(241, 241, 243)",
+          "rgbaAlone": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            241,
+            241,
+            243,
+            255
+          ]
+        },
+        "--popover-foreground": {
+          "declared": "#f1f1f3",
+          "painted": "rgb(241, 241, 243)",
+          "rgbaAlone": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            241,
+            241,
+            243,
+            255
+          ]
+        },
+        "--secondary-foreground": {
+          "declared": "oklch(0.985 0 0)",
+          "painted": "oklch(0.985 0 0)",
+          "rgbaAlone": [
+            250,
+            250,
+            250,
+            255
+          ],
+          "rgbaOverWhite": [
+            250,
+            250,
+            250,
+            255
+          ],
+          "rgbaOverBlack": [
+            250,
+            250,
+            250,
+            255
+          ]
+        },
+        "--accent-foreground": {
+          "declared": "oklch(0.988 0.003 106.5)",
+          "painted": "oklch(0.988 0.003 106.5)",
+          "rgbaAlone": [
+            251,
+            251,
+            249,
+            255
+          ],
+          "rgbaOverWhite": [
+            251,
+            251,
+            249,
+            255
+          ],
+          "rgbaOverBlack": [
+            251,
+            251,
+            249,
+            255
+          ]
+        },
+        "--card": {
+          "declared": "#24262d",
+          "painted": "rgb(36, 38, 45)",
+          "rgbaAlone": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverWhite": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverBlack": [
+            36,
+            38,
+            45,
+            255
+          ]
+        },
+        "--popover": {
+          "declared": "#24262d",
+          "painted": "rgb(36, 38, 45)",
+          "rgbaAlone": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverWhite": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverBlack": [
+            36,
+            38,
+            45,
+            255
+          ]
+        },
+        "--primary": {
+          "declared": "#ffaa73",
+          "painted": "rgb(255, 170, 115)",
+          "rgbaAlone": [
+            255,
+            170,
+            115,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            170,
+            115,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            170,
+            115,
+            255
+          ]
+        },
+        "--primary-foreground": {
+          "declared": "#25160f",
+          "painted": "rgb(37, 22, 15)",
+          "rgbaAlone": [
+            37,
+            22,
+            15,
+            255
+          ],
+          "rgbaOverWhite": [
+            37,
+            22,
+            15,
+            255
+          ],
+          "rgbaOverBlack": [
+            37,
+            22,
+            15,
+            255
+          ]
+        },
+        "--secondary": {
+          "declared": "oklch(0.274 0.006 286.033)",
+          "painted": "oklch(0.274 0.006 286.033)",
+          "rgbaAlone": [
+            39,
+            39,
+            42,
+            255
+          ],
+          "rgbaOverWhite": [
+            39,
+            39,
+            42,
+            255
+          ],
+          "rgbaOverBlack": [
+            39,
+            39,
+            42,
+            255
+          ]
+        },
+        "--muted": {
+          "declared": "oklch(0.286 0.016 107.4)",
+          "painted": "oklch(0.286 0.016 107.4)",
+          "rgbaAlone": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverWhite": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverBlack": [
+            43,
+            43,
+            34,
+            255
+          ]
+        },
+        "--accent": {
+          "declared": "oklch(0.286 0.016 107.4)",
+          "painted": "oklch(0.286 0.016 107.4)",
+          "rgbaAlone": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverWhite": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverBlack": [
+            43,
+            43,
+            34,
+            255
+          ]
+        },
+        "--muted-foreground": {
+          "declared": "#c4c5cf",
+          "painted": "rgb(196, 197, 207)",
+          "rgbaAlone": [
+            196,
+            197,
+            207,
+            255
+          ],
+          "rgbaOverWhite": [
+            196,
+            197,
+            207,
+            255
+          ],
+          "rgbaOverBlack": [
+            196,
+            197,
+            207,
+            255
+          ]
+        },
+        "--destructive": {
+          "declared": "oklch(0.704 0.191 22.216)",
+          "painted": "oklch(0.704 0.191 22.216)",
+          "rgbaAlone": [
+            255,
+            100,
+            103,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            100,
+            103,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            100,
+            103,
+            255
+          ]
+        },
+        "--border": {
+          "declared": "oklch(1 0 0 / 10%)",
+          "painted": "oklch(1 0 0 / 0.1)",
+          "rgbaAlone": [
+            245,
+            255,
+            255,
+            26
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            25,
+            26,
+            26,
+            255
+          ]
+        },
+        "--input": {
+          "declared": "oklch(1 0 0 / 15%)",
+          "painted": "oklch(1 0 0 / 0.15)",
+          "rgbaAlone": [
+            255,
+            255,
+            255,
+            38
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            38,
+            38,
+            38,
+            255
+          ]
+        },
+        "--ring": {
+          "declared": "oklch(0.58 0.031 107.3)",
+          "painted": "oklch(0.58 0.031 107.3)",
+          "rgbaAlone": [
+            124,
+            124,
+            103,
+            255
+          ],
+          "rgbaOverWhite": [
+            124,
+            124,
+            103,
+            255
+          ],
+          "rgbaOverBlack": [
+            124,
+            124,
+            103,
+            255
+          ]
+        },
+        "--chart-1": {
+          "declared": "oklch(0.837 0.128 66.29)",
+          "painted": "oklch(0.837 0.128 66.29)",
+          "rgbaAlone": [
+            255,
+            184,
+            106,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            184,
+            106,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            184,
+            106,
+            255
+          ]
+        },
+        "--chart-2": {
+          "declared": "oklch(0.705 0.213 47.604)",
+          "painted": "oklch(0.705 0.213 47.604)",
+          "rgbaAlone": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            105,
+            0,
+            255
+          ]
+        },
+        "--chart-3": {
+          "declared": "oklch(0.646 0.222 41.116)",
+          "painted": "oklch(0.646 0.222 41.116)",
+          "rgbaAlone": [
+            245,
+            74,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            245,
+            74,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            245,
+            74,
+            0,
+            255
+          ]
+        },
+        "--chart-4": {
+          "declared": "oklch(0.553 0.195 38.402)",
+          "painted": "oklch(0.553 0.195 38.402)",
+          "rgbaAlone": [
+            202,
+            53,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            202,
+            53,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            202,
+            53,
+            0,
+            255
+          ]
+        },
+        "--chart-5": {
+          "declared": "oklch(0.47 0.157 37.304)",
+          "painted": "oklch(0.47 0.157 37.304)",
+          "rgbaAlone": [
+            159,
+            45,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            159,
+            45,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            159,
+            45,
+            0,
+            255
+          ]
+        },
+        "--sidebar": {
+          "declared": "#24262d",
+          "painted": "rgb(36, 38, 45)",
+          "rgbaAlone": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverWhite": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverBlack": [
+            36,
+            38,
+            45,
+            255
+          ]
+        },
+        "--sidebar-foreground": {
+          "declared": "#f1f1f3",
+          "painted": "rgb(241, 241, 243)",
+          "rgbaAlone": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            241,
+            241,
+            243,
+            255
+          ]
+        },
+        "--sidebar-primary": {
+          "declared": "oklch(0.705 0.213 47.604)",
+          "painted": "oklch(0.705 0.213 47.604)",
+          "rgbaAlone": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            105,
+            0,
+            255
+          ]
+        },
+        "--sidebar-primary-foreground": {
+          "declared": "oklch(0.98 0.016 73.684)",
+          "painted": "oklch(0.98 0.016 73.684)",
+          "rgbaAlone": [
+            255,
+            247,
+            237,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            247,
+            237,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            247,
+            237,
+            255
+          ]
+        },
+        "--sidebar-accent": {
+          "declared": "oklch(0.286 0.016 107.4)",
+          "painted": "oklch(0.286 0.016 107.4)",
+          "rgbaAlone": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverWhite": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverBlack": [
+            43,
+            43,
+            34,
+            255
+          ]
+        },
+        "--sidebar-accent-foreground": {
+          "declared": "oklch(0.988 0.003 106.5)",
+          "painted": "oklch(0.988 0.003 106.5)",
+          "rgbaAlone": [
+            251,
+            251,
+            249,
+            255
+          ],
+          "rgbaOverWhite": [
+            251,
+            251,
+            249,
+            255
+          ],
+          "rgbaOverBlack": [
+            251,
+            251,
+            249,
+            255
+          ]
+        },
+        "--sidebar-border": {
+          "declared": "oklch(1 0 0 / 10%)",
+          "painted": "oklch(1 0 0 / 0.1)",
+          "rgbaAlone": [
+            245,
+            255,
+            255,
+            26
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            25,
+            26,
+            26,
+            255
+          ]
+        },
+        "--sidebar-ring": {
+          "declared": "oklch(0.58 0.031 107.3)",
+          "painted": "oklch(0.58 0.031 107.3)",
+          "rgbaAlone": [
+            124,
+            124,
+            103,
+            255
+          ],
+          "rgbaOverWhite": [
+            124,
+            124,
+            103,
+            255
+          ],
+          "rgbaOverBlack": [
+            124,
+            124,
+            103,
+            255
+          ]
+        },
+        "--dot": {
+          "declared": "oklch(1 0 0 / 5%)",
+          "painted": "oklch(1 0 0 / 0.05)",
+          "rgbaAlone": [
+            255,
+            255,
+            255,
+            13
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            13,
+            13,
+            13,
+            255
+          ]
+        },
+        "--radius": {
+          "declared": "0.45rem"
+        }
+      },
+      "swatches": {
+        "--background": {
+          "painted": "rgb(23, 24, 28)",
+          "rgbaAlone": [
+            23,
+            24,
+            28,
+            255
+          ],
+          "rgbaOverWhite": [
+            23,
+            24,
+            28,
+            255
+          ],
+          "rgbaOverBlack": [
+            23,
+            24,
+            28,
+            255
+          ]
+        },
+        "--foreground": {
+          "painted": "rgb(241, 241, 243)",
+          "rgbaAlone": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            241,
+            241,
+            243,
+            255
+          ]
+        },
+        "--card-foreground": {
+          "painted": "rgb(241, 241, 243)",
+          "rgbaAlone": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            241,
+            241,
+            243,
+            255
+          ]
+        },
+        "--popover-foreground": {
+          "painted": "rgb(241, 241, 243)",
+          "rgbaAlone": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            241,
+            241,
+            243,
+            255
+          ]
+        },
+        "--secondary-foreground": {
+          "painted": "oklch(0.985 0 0)",
+          "rgbaAlone": [
+            250,
+            250,
+            250,
+            255
+          ],
+          "rgbaOverWhite": [
+            250,
+            250,
+            250,
+            255
+          ],
+          "rgbaOverBlack": [
+            250,
+            250,
+            250,
+            255
+          ]
+        },
+        "--accent-foreground": {
+          "painted": "oklch(0.988 0.003 106.5)",
+          "rgbaAlone": [
+            251,
+            251,
+            249,
+            255
+          ],
+          "rgbaOverWhite": [
+            251,
+            251,
+            249,
+            255
+          ],
+          "rgbaOverBlack": [
+            251,
+            251,
+            249,
+            255
+          ]
+        },
+        "--card": {
+          "painted": "rgb(36, 38, 45)",
+          "rgbaAlone": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverWhite": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverBlack": [
+            36,
+            38,
+            45,
+            255
+          ]
+        },
+        "--popover": {
+          "painted": "rgb(36, 38, 45)",
+          "rgbaAlone": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverWhite": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverBlack": [
+            36,
+            38,
+            45,
+            255
+          ]
+        },
+        "--primary": {
+          "painted": "rgb(255, 170, 115)",
+          "rgbaAlone": [
+            255,
+            170,
+            115,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            170,
+            115,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            170,
+            115,
+            255
+          ]
+        },
+        "--primary-foreground": {
+          "painted": "rgb(37, 22, 15)",
+          "rgbaAlone": [
+            37,
+            22,
+            15,
+            255
+          ],
+          "rgbaOverWhite": [
+            37,
+            22,
+            15,
+            255
+          ],
+          "rgbaOverBlack": [
+            37,
+            22,
+            15,
+            255
+          ]
+        },
+        "--secondary": {
+          "painted": "oklch(0.274 0.006 286.033)",
+          "rgbaAlone": [
+            39,
+            39,
+            42,
+            255
+          ],
+          "rgbaOverWhite": [
+            39,
+            39,
+            42,
+            255
+          ],
+          "rgbaOverBlack": [
+            39,
+            39,
+            42,
+            255
+          ]
+        },
+        "--muted": {
+          "painted": "oklch(0.286 0.016 107.4)",
+          "rgbaAlone": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverWhite": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverBlack": [
+            43,
+            43,
+            34,
+            255
+          ]
+        },
+        "--accent": {
+          "painted": "oklch(0.286 0.016 107.4)",
+          "rgbaAlone": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverWhite": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverBlack": [
+            43,
+            43,
+            34,
+            255
+          ]
+        },
+        "--muted-foreground": {
+          "painted": "rgb(196, 197, 207)",
+          "rgbaAlone": [
+            196,
+            197,
+            207,
+            255
+          ],
+          "rgbaOverWhite": [
+            196,
+            197,
+            207,
+            255
+          ],
+          "rgbaOverBlack": [
+            196,
+            197,
+            207,
+            255
+          ]
+        },
+        "--destructive": {
+          "painted": "oklch(0.704 0.191 22.216)",
+          "rgbaAlone": [
+            255,
+            100,
+            103,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            100,
+            103,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            100,
+            103,
+            255
+          ]
+        },
+        "--border": {
+          "painted": "oklch(1 0 0 / 0.1)",
+          "rgbaAlone": [
+            245,
+            255,
+            255,
+            26
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            25,
+            26,
+            26,
+            255
+          ]
+        },
+        "--input": {
+          "painted": "oklch(1 0 0 / 0.15)",
+          "rgbaAlone": [
+            255,
+            255,
+            255,
+            38
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            38,
+            38,
+            38,
+            255
+          ]
+        },
+        "--ring": {
+          "painted": "oklch(0.58 0.031 107.3)",
+          "rgbaAlone": [
+            124,
+            124,
+            103,
+            255
+          ],
+          "rgbaOverWhite": [
+            124,
+            124,
+            103,
+            255
+          ],
+          "rgbaOverBlack": [
+            124,
+            124,
+            103,
+            255
+          ]
+        },
+        "--chart-1": {
+          "painted": "oklch(0.837 0.128 66.29)",
+          "rgbaAlone": [
+            255,
+            184,
+            106,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            184,
+            106,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            184,
+            106,
+            255
+          ]
+        },
+        "--chart-2": {
+          "painted": "oklch(0.705 0.213 47.604)",
+          "rgbaAlone": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            105,
+            0,
+            255
+          ]
+        },
+        "--chart-3": {
+          "painted": "oklch(0.646 0.222 41.116)",
+          "rgbaAlone": [
+            245,
+            74,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            245,
+            74,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            245,
+            74,
+            0,
+            255
+          ]
+        },
+        "--chart-4": {
+          "painted": "oklch(0.553 0.195 38.402)",
+          "rgbaAlone": [
+            202,
+            53,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            202,
+            53,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            202,
+            53,
+            0,
+            255
+          ]
+        },
+        "--chart-5": {
+          "painted": "oklch(0.47 0.157 37.304)",
+          "rgbaAlone": [
+            159,
+            45,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            159,
+            45,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            159,
+            45,
+            0,
+            255
+          ]
+        },
+        "--sidebar": {
+          "painted": "rgb(36, 38, 45)",
+          "rgbaAlone": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverWhite": [
+            36,
+            38,
+            45,
+            255
+          ],
+          "rgbaOverBlack": [
+            36,
+            38,
+            45,
+            255
+          ]
+        },
+        "--sidebar-foreground": {
+          "painted": "rgb(241, 241, 243)",
+          "rgbaAlone": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverWhite": [
+            241,
+            241,
+            243,
+            255
+          ],
+          "rgbaOverBlack": [
+            241,
+            241,
+            243,
+            255
+          ]
+        },
+        "--sidebar-primary": {
+          "painted": "oklch(0.705 0.213 47.604)",
+          "rgbaAlone": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            105,
+            0,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            105,
+            0,
+            255
+          ]
+        },
+        "--sidebar-primary-foreground": {
+          "painted": "oklch(0.98 0.016 73.684)",
+          "rgbaAlone": [
+            255,
+            247,
+            237,
+            255
+          ],
+          "rgbaOverWhite": [
+            255,
+            247,
+            237,
+            255
+          ],
+          "rgbaOverBlack": [
+            255,
+            247,
+            237,
+            255
+          ]
+        },
+        "--sidebar-accent": {
+          "painted": "oklch(0.286 0.016 107.4)",
+          "rgbaAlone": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverWhite": [
+            43,
+            43,
+            34,
+            255
+          ],
+          "rgbaOverBlack": [
+            43,
+            43,
+            34,
+            255
+          ]
+        },
+        "--sidebar-accent-foreground": {
+          "painted": "oklch(0.988 0.003 106.5)",
+          "rgbaAlone": [
+            251,
+            251,
+            249,
+            255
+          ],
+          "rgbaOverWhite": [
+            251,
+            251,
+            249,
+            255
+          ],
+          "rgbaOverBlack": [
+            251,
+            251,
+            249,
+            255
+          ]
+        },
+        "--sidebar-border": {
+          "painted": "oklch(1 0 0 / 0.1)",
+          "rgbaAlone": [
+            245,
+            255,
+            255,
+            26
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            25,
+            26,
+            26,
+            255
+          ]
+        },
+        "--sidebar-ring": {
+          "painted": "oklch(0.58 0.031 107.3)",
+          "rgbaAlone": [
+            124,
+            124,
+            103,
+            255
+          ],
+          "rgbaOverWhite": [
+            124,
+            124,
+            103,
+            255
+          ],
+          "rgbaOverBlack": [
+            124,
+            124,
+            103,
+            255
+          ]
+        },
+        "--dot": {
+          "painted": "oklch(1 0 0 / 0.05)",
+          "rgbaAlone": [
+            255,
+            255,
+            255,
+            13
+          ],
+          "rgbaOverWhite": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "rgbaOverBlack": [
+            13,
+            13,
+            13,
+            255
+          ]
+        }
+      },
+      "sidebar": {
+        "container": {
+          "backgroundColor": {
+            "painted": "rgb(36, 38, 45)",
+            "rgbaAlone": [
+              36,
+              38,
+              45,
+              255
+            ],
+            "rgbaOverWhite": [
+              36,
+              38,
+              45,
+              255
+            ],
+            "rgbaOverBlack": [
+              36,
+              38,
+              45,
+              255
+            ]
+          },
+          "color": {
+            "painted": "rgb(241, 241, 243)",
+            "rgbaAlone": [
+              241,
+              241,
+              243,
+              255
+            ],
+            "rgbaOverWhite": [
+              241,
+              241,
+              243,
+              255
+            ],
+            "rgbaOverBlack": [
+              241,
+              241,
+              243,
+              255
+            ]
+          }
+        },
+        "active": {
+          "backgroundColor": {
+            "painted": "oklch(0.286 0.016 107.4)",
+            "rgbaAlone": [
+              43,
+              43,
+              34,
+              255
+            ],
+            "rgbaOverWhite": [
+              43,
+              43,
+              34,
+              255
+            ],
+            "rgbaOverBlack": [
+              43,
+              43,
+              34,
+              255
+            ]
+          },
+          "color": {
+            "painted": "oklch(0.988 0.003 106.5)",
+            "rgbaAlone": [
+              251,
+              251,
+              249,
+              255
+            ],
+            "rgbaOverWhite": [
+              251,
+              251,
+              249,
+              255
+            ],
+            "rgbaOverBlack": [
+              251,
+              251,
+              249,
+              255
+            ]
+          }
+        },
+        "idle": {
+          "backgroundColor": {
+            "painted": "rgba(0, 0, 0, 0)",
+            "rgbaAlone": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "rgbaOverWhite": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "rgbaOverBlack": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          "color": {
+            "painted": "rgb(241, 241, 243)",
+            "rgbaAlone": [
+              241,
+              241,
+              243,
+              255
+            ],
+            "rgbaOverWhite": [
+              241,
+              241,
+              243,
+              255
+            ],
+            "rgbaOverBlack": [
+              241,
+              241,
+              243,
+              255
+            ]
+          }
+        },
+        "primary": {
+          "backgroundColor": {
+            "painted": "oklch(0.705 0.213 47.604)",
+            "rgbaAlone": [
+              255,
+              105,
+              0,
+              255
+            ],
+            "rgbaOverWhite": [
+              255,
+              105,
+              0,
+              255
+            ],
+            "rgbaOverBlack": [
+              255,
+              105,
+              0,
+              255
+            ]
+          },
+          "color": {
+            "painted": "oklch(0.98 0.016 73.684)",
+            "rgbaAlone": [
+              255,
+              247,
+              237,
+              255
+            ],
+            "rgbaOverWhite": [
+              255,
+              247,
+              237,
+              255
+            ],
+            "rgbaOverBlack": [
+              255,
+              247,
+              237,
+              255
+            ]
+          }
+        }
+      },
+      "fonts": {
+        "--font-heading": {
+          "declared": "",
+          "computedFontFamily": "\"Space Grotesk Variable\", ui-sans-serif, sans-serif"
+        },
+        "--font-sans": {
+          "declared": "",
+          "computedFontFamily": "\"Geist Mono Variable\", ui-monospace, monospace"
+        },
+        "--font-mono": {
+          "declared": "",
+          "computedFontFamily": "\"JetBrains Mono Variable\", ui-monospace, monospace"
+        }
+      },
+      "sizes": {
+        "16px": {
+          "text": {
+            "xs": {
+              "fontSize": "12px",
+              "lineHeight": "16px",
+              "fontWeight": "400"
+            },
+            "sm": {
+              "fontSize": "14px",
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            },
+            "base": {
+              "fontSize": "16px",
+              "lineHeight": "24px",
+              "fontWeight": "400"
+            },
+            "lg": {
+              "fontSize": "18px",
+              "lineHeight": "28px",
+              "fontWeight": "400"
+            },
+            "xl": {
+              "fontSize": "20px",
+              "lineHeight": "28px",
+              "fontWeight": "400"
+            },
+            "2xl": {
+              "fontSize": "24px",
+              "lineHeight": "32px",
+              "fontWeight": "400"
+            },
+            "3xl": {
+              "fontSize": "30px",
+              "lineHeight": "36px",
+              "fontWeight": "400"
+            },
+            "4xl": {
+              "fontSize": "36px",
+              "lineHeight": "40px",
+              "fontWeight": "400"
+            }
+          },
+          "spacing": {
+            "p-0.5": "2px",
+            "p-1": "4px",
+            "p-2.5": "10px",
+            "p-4": "16px",
+            "p-96": "384px"
+          },
+          "radii": {
+            "--radius": "0.45rem",
+            "rounded-sm": "3.2px",
+            "rounded-md": "5.2px",
+            "rounded-lg": "7.2px",
+            "rounded-xl": "11.2px"
+          }
+        },
+        "20px": {
+          "text": {
+            "xs": {
+              "fontSize": "15px",
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            },
+            "sm": {
+              "fontSize": "17.5px",
+              "lineHeight": "25px",
+              "fontWeight": "400"
+            },
+            "base": {
+              "fontSize": "20px",
+              "lineHeight": "30px",
+              "fontWeight": "400"
+            },
+            "lg": {
+              "fontSize": "22.5px",
+              "lineHeight": "35px",
+              "fontWeight": "400"
+            },
+            "xl": {
+              "fontSize": "25px",
+              "lineHeight": "35px",
+              "fontWeight": "400"
+            },
+            "2xl": {
+              "fontSize": "30px",
+              "lineHeight": "40px",
+              "fontWeight": "400"
+            },
+            "3xl": {
+              "fontSize": "37.5px",
+              "lineHeight": "45px",
+              "fontWeight": "400"
+            },
+            "4xl": {
+              "fontSize": "45px",
+              "lineHeight": "50px",
+              "fontWeight": "400"
+            }
+          },
+          "spacing": {
+            "p-0.5": "2.5px",
+            "p-1": "5px",
+            "p-2.5": "12.5px",
+            "p-4": "20px",
+            "p-96": "480px"
+          },
+          "radii": {
+            "--radius": "0.45rem",
+            "rounded-sm": "5px",
+            "rounded-md": "7px",
+            "rounded-lg": "9px",
+            "rounded-xl": "13px"
+          }
+        }
+      },
+      "focusRing": {
+        "matchesFocusVisible": true,
+        "outlineColor": "oklab(0.58 -0.00921862 0.0295976 / 0.5)",
+        "outlineWidth": "1px",
+        "outlineStyle": "auto",
+        "outlineOffset": "2px",
+        "rgbaOverWhite": [
+          189,
+          189,
+          179,
+          255
+        ],
+        "rgbaOverBlack": [
+          62,
+          62,
+          52,
+          255
+        ],
+        "ringDeclared": "oklch(0.58 0.031 107.3)"
+      },
+      "dots": {
+        "backgroundImage": "radial-gradient(oklch(1 0 0 / 0.05) 1px, rgba(0, 0, 0, 0) 1px)",
+        "backgroundSize": "16px 16px",
+        "dotPainted": "oklch(1 0 0 / 0.05)"
+      },
+      "audit": {
+        "fontFamily": "\"JetBrains Mono Variable\", ui-monospace, monospace",
+        "text": "7f3c9a1e-5b2d-4c8e-9a64-0d1f2e3b4c5d",
+        "usedFonts": [
+          {
+            "familyName": "JetBrains Mono",
+            "isCustomFont": true,
+            "glyphCount": 36
+          }
+        ],
+        "faceStatuses": [
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "unloaded",
+          "loaded"
+        ]
+      }
+    }
+  }
+}

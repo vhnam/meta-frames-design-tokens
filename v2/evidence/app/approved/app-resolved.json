@@ -1,0 +1,657 @@
+{
+  "schema": 2,
+  "fonts": {
+    "SpaceGrotesk": {
+      "registeredWidth": 340.85479736328125,
+      "fallbackWidth": 660.0
+    },
+    "GeistMono": {
+      "registeredWidth": 395.99395751953125,
+      "fallbackWidth": 660.0
+    },
+    "JetBrainsMono": {
+      "registeredWidth": 396.0,
+      "fallbackWidth": 660.0
+    }
+  },
+  "light": {
+    "brightness": "light",
+    "colorScheme": {
+      "primary": 4281549141,
+      "onPrimary": 4294967295,
+      "primaryContainer": 4294047225,
+      "onPrimaryContainer": 4279179050,
+      "secondary": 4294047225,
+      "onSecondary": 4279179050,
+      "secondaryContainer": 4294047225,
+      "onSecondaryContainer": 4279179050,
+      "tertiary": 4278483031,
+      "onTertiary": 4294967295,
+      "tertiaryContainer": 4293721589,
+      "onTertiaryContainer": 4278483031,
+      "error": 4292617766,
+      "onError": 4294967295,
+      "errorContainer": 4294898418,
+      "onErrorContainer": 4290321436,
+      "surface": 4294507260,
+      "onSurface": 4279179050,
+      "onSurfaceVariant": 4282865001,
+      "outline": 4284773515,
+      "outlineVariant": 4293060848,
+      "surfaceContainerLowest": 4294507260,
+      "surfaceContainerLow": 4294967295,
+      "surfaceContainer": 4294967295,
+      "surfaceContainerHigh": 4294047225,
+      "surfaceContainerHighest": 4294967295,
+      "inverseSurface": 4279179050,
+      "onInverseSurface": 4294967295,
+      "inversePrimary": 4293060848,
+      "shadow": 2567903018,
+      "scrim": 2567903018
+    },
+    "surfaces": {
+      "card": {
+        "argb": 4294967295,
+        "alphaExact": 1.0
+      },
+      "dialog": {
+        "argb": 4294967295,
+        "alphaExact": 1.0
+      }
+    },
+    "nav": {
+      "backgroundColor": {
+        "argb": 4294967295,
+        "alphaExact": 1.0
+      },
+      "indicatorColor": {
+        "argb": 4278483031,
+        "alphaExact": 1.0
+      },
+      "labelSelected": {
+        "argb": 4279179050,
+        "alphaExact": 1.0
+      },
+      "labelUnselected": {
+        "argb": 4282865001,
+        "alphaExact": 1.0
+      },
+      "iconSelected": {
+        "argb": 4294967295,
+        "alphaExact": 1.0
+      },
+      "iconUnselected": {
+        "argb": 4282865001,
+        "alphaExact": 1.0
+      }
+    },
+    "inputFocus": {
+      "color": {
+        "argb": 4278556265,
+        "alphaExact": 1.0
+      },
+      "width": 2.0
+    },
+    "disabled": {
+      "textButtonForeground": {
+        "argb": 1628378922,
+        "alphaExact": 0.38
+      },
+      "textButtonIcon": {
+        "argb": 1628378922,
+        "alphaExact": 0.38
+      }
+    },
+    "sizes": {
+      "appBarTitle": {
+        "family": "SpaceGrotesk",
+        "size": 20.0,
+        "height": null,
+        "weight": 600
+      },
+      "dialogTitle": {
+        "family": "SpaceGrotesk",
+        "size": 20.0,
+        "height": null,
+        "weight": 600
+      },
+      "buttonText": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": null,
+        "weight": 500
+      },
+      "inputLabel": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": null,
+        "weight": 500
+      },
+      "chipLabel": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 500
+      },
+      "tabLabel": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 700
+      },
+      "segmentLabel": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 500
+      },
+      "monoStyleDefault": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 500
+      },
+      "navLabel": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 500
+      }
+    },
+    "radii": {
+      "card": 8.0,
+      "dialog": 8.0,
+      "bottomSheetTop": 8.0,
+      "popupMenu": 8.0,
+      "filledButton": 6.0,
+      "outlinedButton": 6.0,
+      "textButton": 6.0,
+      "floatingActionButton": 6.0,
+      "inputBorder": 6.0,
+      "segmentedButton": 6.0,
+      "navIndicator": 6.0
+    },
+    "button": {
+      "filled": {
+        "paddingLeft": 16.0,
+        "paddingRight": 16.0,
+        "paddingTop": 0.0,
+        "paddingBottom": 0.0,
+        "minHeight": 48.0
+      },
+      "outlined": {
+        "paddingLeft": 16.0,
+        "paddingRight": 16.0,
+        "paddingTop": 0.0,
+        "paddingBottom": 0.0,
+        "minHeight": 48.0
+      }
+    },
+    "text": {
+      "displayLarge": {
+        "family": "SpaceGrotesk",
+        "size": 30.0,
+        "height": 1.25,
+        "weight": 700
+      },
+      "displayMedium": {
+        "family": "SpaceGrotesk",
+        "size": 30.0,
+        "height": 1.25,
+        "weight": 700
+      },
+      "displaySmall": {
+        "family": "SpaceGrotesk",
+        "size": 30.0,
+        "height": 1.25,
+        "weight": 700
+      },
+      "headlineLarge": {
+        "family": "SpaceGrotesk",
+        "size": 24.0,
+        "height": 1.25,
+        "weight": 600
+      },
+      "headlineMedium": {
+        "family": "SpaceGrotesk",
+        "size": 24.0,
+        "height": 1.25,
+        "weight": 600
+      },
+      "headlineSmall": {
+        "family": "SpaceGrotesk",
+        "size": 24.0,
+        "height": 1.25,
+        "weight": 600
+      },
+      "titleLarge": {
+        "family": "SpaceGrotesk",
+        "size": 20.0,
+        "height": 1.375,
+        "weight": 600
+      },
+      "titleMedium": {
+        "family": "SpaceGrotesk",
+        "size": 18.0,
+        "height": 1.375,
+        "weight": 600
+      },
+      "titleSmall": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": 1.25,
+        "weight": 500
+      },
+      "labelLarge": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": 1.25,
+        "weight": 500
+      },
+      "labelMedium": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": 1.25,
+        "weight": 500
+      },
+      "labelSmall": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": 1.375,
+        "weight": 400
+      },
+      "bodyLarge": {
+        "family": "GeistMono",
+        "size": 16.0,
+        "height": 1.5,
+        "weight": 400
+      },
+      "bodyMedium": {
+        "family": "GeistMono",
+        "size": 14.0,
+        "height": 1.5,
+        "weight": 400
+      },
+      "bodySmall": {
+        "family": "GeistMono",
+        "size": 12.0,
+        "height": 1.375,
+        "weight": 400
+      }
+    },
+    "samples": {
+      "1.0": {
+        "body": {
+          "family": "GeistMono",
+          "size": 14.0,
+          "height": 1.5,
+          "weight": 400,
+          "boxWidth": 138.39794921875,
+          "boxHeight": 21.0
+        },
+        "data": {
+          "family": "JetBrainsMono",
+          "size": 14.0,
+          "height": 1.25,
+          "weight": 500,
+          "boxWidth": 147.1999053955078,
+          "boxHeight": 18.0
+        },
+        "heading": {
+          "family": "SpaceGrotesk",
+          "size": 24.0,
+          "height": 1.25,
+          "weight": 600,
+          "boxWidth": 240.05458068847656,
+          "boxHeight": 30.0
+        }
+      },
+      "2.0": {
+        "body": {
+          "family": "GeistMono",
+          "size": 14.0,
+          "height": 1.5,
+          "weight": 400,
+          "boxWidth": 272.7958984375,
+          "boxHeight": 42.0
+        },
+        "data": {
+          "family": "JetBrainsMono",
+          "size": 14.0,
+          "height": 1.25,
+          "weight": 500,
+          "boxWidth": 281.60003662109375,
+          "boxHeight": 35.0
+        },
+        "heading": {
+          "family": "SpaceGrotesk",
+          "size": 24.0,
+          "height": 1.25,
+          "weight": 600,
+          "boxWidth": 485.80926513671875,
+          "boxHeight": 60.0
+        }
+      }
+    }
+  },
+  "dark": {
+    "brightness": "dark",
+    "colorScheme": {
+      "primary": 4293060848,
+      "onPrimary": 4279179050,
+      "primaryContainer": 4280166715,
+      "onPrimaryContainer": 4294507260,
+      "secondary": 4280166715,
+      "onSecondary": 4294507260,
+      "secondaryContainer": 4280166715,
+      "onSecondaryContainer": 4294507260,
+      "tertiary": 4281652121,
+      "onTertiary": 4278322711,
+      "tertiaryContainer": 4278332450,
+      "onTertiaryContainer": 4281652121,
+      "error": 4294472049,
+      "onError": 4278322711,
+      "errorContainer": 4282714634,
+      "onErrorContainer": 4294472049,
+      "surface": 4278322711,
+      "onSurface": 4294507260,
+      "onSurfaceVariant": 4291548641,
+      "outline": 4284773515,
+      "outlineVariant": 4280166715,
+      "surfaceContainerLowest": 4278322711,
+      "surfaceContainerLow": 4279179050,
+      "surfaceContainer": 4279179050,
+      "surfaceContainerHigh": 4280166715,
+      "surfaceContainerHighest": 4280166715,
+      "inverseSurface": 4294507260,
+      "onInverseSurface": 4278322711,
+      "inversePrimary": 4281549141,
+      "shadow": 2567903018,
+      "scrim": 2567903018
+    },
+    "surfaces": {
+      "card": {
+        "argb": 4279179050,
+        "alphaExact": 1.0
+      },
+      "dialog": {
+        "argb": 4280166715,
+        "alphaExact": 1.0
+      }
+    },
+    "nav": {
+      "backgroundColor": {
+        "argb": 4279179050,
+        "alphaExact": 1.0
+      },
+      "indicatorColor": {
+        "argb": 4281652121,
+        "alphaExact": 1.0
+      },
+      "labelSelected": {
+        "argb": 4294507260,
+        "alphaExact": 1.0
+      },
+      "labelUnselected": {
+        "argb": 4291548641,
+        "alphaExact": 1.0
+      },
+      "iconSelected": {
+        "argb": 4278322711,
+        "alphaExact": 1.0
+      },
+      "iconUnselected": {
+        "argb": 4291548641,
+        "alphaExact": 1.0
+      }
+    },
+    "inputFocus": {
+      "color": {
+        "argb": 4281652121,
+        "alphaExact": 1.0
+      },
+      "width": 2.0
+    },
+    "disabled": {
+      "textButtonForeground": {
+        "argb": 1643707132,
+        "alphaExact": 0.38
+      },
+      "textButtonIcon": {
+        "argb": 1643707132,
+        "alphaExact": 0.38
+      }
+    },
+    "sizes": {
+      "appBarTitle": {
+        "family": "SpaceGrotesk",
+        "size": 20.0,
+        "height": null,
+        "weight": 600
+      },
+      "dialogTitle": {
+        "family": "SpaceGrotesk",
+        "size": 20.0,
+        "height": null,
+        "weight": 600
+      },
+      "buttonText": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": null,
+        "weight": 500
+      },
+      "inputLabel": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": null,
+        "weight": 500
+      },
+      "chipLabel": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 500
+      },
+      "tabLabel": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 700
+      },
+      "segmentLabel": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 500
+      },
+      "monoStyleDefault": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 500
+      },
+      "navLabel": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": null,
+        "weight": 500
+      }
+    },
+    "radii": {
+      "card": 8.0,
+      "dialog": 8.0,
+      "bottomSheetTop": 8.0,
+      "popupMenu": 8.0,
+      "filledButton": 6.0,
+      "outlinedButton": 6.0,
+      "textButton": 6.0,
+      "floatingActionButton": 6.0,
+      "inputBorder": 6.0,
+      "segmentedButton": 6.0,
+      "navIndicator": 6.0
+    },
+    "button": {
+      "filled": {
+        "paddingLeft": 16.0,
+        "paddingRight": 16.0,
+        "paddingTop": 0.0,
+        "paddingBottom": 0.0,
+        "minHeight": 48.0
+      },
+      "outlined": {
+        "paddingLeft": 16.0,
+        "paddingRight": 16.0,
+        "paddingTop": 0.0,
+        "paddingBottom": 0.0,
+        "minHeight": 48.0
+      }
+    },
+    "text": {
+      "displayLarge": {
+        "family": "SpaceGrotesk",
+        "size": 30.0,
+        "height": 1.25,
+        "weight": 700
+      },
+      "displayMedium": {
+        "family": "SpaceGrotesk",
+        "size": 30.0,
+        "height": 1.25,
+        "weight": 700
+      },
+      "displaySmall": {
+        "family": "SpaceGrotesk",
+        "size": 30.0,
+        "height": 1.25,
+        "weight": 700
+      },
+      "headlineLarge": {
+        "family": "SpaceGrotesk",
+        "size": 24.0,
+        "height": 1.25,
+        "weight": 600
+      },
+      "headlineMedium": {
+        "family": "SpaceGrotesk",
+        "size": 24.0,
+        "height": 1.25,
+        "weight": 600
+      },
+      "headlineSmall": {
+        "family": "SpaceGrotesk",
+        "size": 24.0,
+        "height": 1.25,
+        "weight": 600
+      },
+      "titleLarge": {
+        "family": "SpaceGrotesk",
+        "size": 20.0,
+        "height": 1.375,
+        "weight": 600
+      },
+      "titleMedium": {
+        "family": "SpaceGrotesk",
+        "size": 18.0,
+        "height": 1.375,
+        "weight": 600
+      },
+      "titleSmall": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": 1.25,
+        "weight": 500
+      },
+      "labelLarge": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": 1.25,
+        "weight": 500
+      },
+      "labelMedium": {
+        "family": "JetBrainsMono",
+        "size": 14.0,
+        "height": 1.25,
+        "weight": 500
+      },
+      "labelSmall": {
+        "family": "JetBrainsMono",
+        "size": 12.0,
+        "height": 1.375,
+        "weight": 400
+      },
+      "bodyLarge": {
+        "family": "GeistMono",
+        "size": 16.0,
+        "height": 1.5,
+        "weight": 400
+      },
+      "bodyMedium": {
+        "family": "GeistMono",
+        "size": 14.0,
+        "height": 1.5,
+        "weight": 400
+      },
+      "bodySmall": {
+        "family": "GeistMono",
+        "size": 12.0,
+        "height": 1.375,
+        "weight": 400
+      }
+    },
+    "samples": {
+      "1.0": {
+        "body": {
+          "family": "GeistMono",
+          "size": 14.0,
+          "height": 1.5,
+          "weight": 400,
+          "boxWidth": 138.39794921875,
+          "boxHeight": 21.0
+        },
+        "data": {
+          "family": "JetBrainsMono",
+          "size": 14.0,
+          "height": 1.25,
+          "weight": 500,
+          "boxWidth": 147.1999053955078,
+          "boxHeight": 18.0
+        },
+        "heading": {
+          "family": "SpaceGrotesk",
+          "size": 24.0,
+          "height": 1.25,
+          "weight": 600,
+          "boxWidth": 240.05458068847656,
+          "boxHeight": 30.0
+        }
+      },
+      "2.0": {
+        "body": {
+          "family": "GeistMono",
+          "size": 14.0,
+          "height": 1.5,
+          "weight": 400,
+          "boxWidth": 272.7958984375,
+          "boxHeight": 42.0
+        },
+        "data": {
+          "family": "JetBrainsMono",
+          "size": 14.0,
+          "height": 1.25,
+          "weight": 500,
+          "boxWidth": 281.60003662109375,
+          "boxHeight": 35.0
+        },
+        "heading": {
+          "family": "SpaceGrotesk",
+          "size": 24.0,
+          "height": 1.25,
+          "weight": 600,
+          "boxWidth": 485.80926513671875,
+          "boxHeight": 60.0
+        }
+      }
+    }
+  }
+}

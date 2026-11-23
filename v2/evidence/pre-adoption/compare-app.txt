@@ -1,0 +1,363 @@
+app light colorScheme.primary: expected #334155ff, actual #ca3500ff
+app light colorScheme.primary over white: expected [51,65,85], actual [202,53,0]
+app light colorScheme.primary over black: expected [51,65,85], actual [202,53,0]
+app light colorScheme.onPrimary: expected #ffffffff, actual #fff7edff
+app light colorScheme.onPrimary over white: expected [255,255,255], actual [255,247,237]
+app light colorScheme.onPrimary over black: expected [255,255,255], actual [255,247,237]
+app light colorScheme.primaryContainer: expected #f1f5f9ff, actual #ffedd5ff
+app light colorScheme.primaryContainer over white: expected [241,245,249], actual [255,237,213]
+app light colorScheme.primaryContainer over black: expected [241,245,249], actual [255,237,213]
+app light colorScheme.onPrimaryContainer: expected #0f172aff, actual #aa2c00ff
+app light colorScheme.onPrimaryContainer over white: expected [15,23,42], actual [170,44,0]
+app light colorScheme.onPrimaryContainer over black: expected [15,23,42], actual [170,44,0]
+app light colorScheme.secondary: expected #f1f5f9ff, actual #f4f4f5ff
+app light colorScheme.secondary over white: expected [241,245,249], actual [244,244,245]
+app light colorScheme.secondary over black: expected [241,245,249], actual [244,244,245]
+app light colorScheme.onSecondary: expected #0f172aff, actual #18181bff
+app light colorScheme.onSecondary over white: expected [15,23,42], actual [24,24,27]
+app light colorScheme.onSecondary over black: expected [15,23,42], actual [24,24,27]
+app light colorScheme.secondaryContainer: expected #f1f5f9ff, actual #f4f4f5ff
+app light colorScheme.secondaryContainer over white: expected [241,245,249], actual [244,244,245]
+app light colorScheme.secondaryContainer over black: expected [241,245,249], actual [244,244,245]
+app light colorScheme.onSecondaryContainer: expected #0f172aff, actual #18181bff
+app light colorScheme.onSecondaryContainer over white: expected [15,23,42], actual [24,24,27]
+app light colorScheme.onSecondaryContainer over black: expected [15,23,42], actual [24,24,27]
+app light colorScheme.tertiary: expected #047857ff, actual #52525cff
+app light colorScheme.tertiary over white: expected [4,120,87], actual [82,82,92]
+app light colorScheme.tertiary over black: expected [4,120,87], actual [82,82,92]
+app light colorScheme.onTertiary: expected #ffffffff, actual #fafafaff
+app light colorScheme.onTertiary over white: expected [255,255,255], actual [250,250,250]
+app light colorScheme.onTertiary over black: expected [255,255,255], actual [250,250,250]
+app light colorScheme.tertiaryContainer: expected #ecfdf5ff, actual #e4e4e7ff
+app light colorScheme.tertiaryContainer over white: expected [236,253,245], actual [228,228,231]
+app light colorScheme.tertiaryContainer over black: expected [236,253,245], actual [228,228,231]
+app light colorScheme.onTertiaryContainer: expected #047857ff, actual #27272aff
+app light colorScheme.onTertiaryContainer over white: expected [4,120,87], actual [39,39,42]
+app light colorScheme.onTertiaryContainer over black: expected [4,120,87], actual [39,39,42]
+app light colorScheme.error: expected #dc2626ff, actual #e7000bff
+app light colorScheme.error over white: expected [220,38,38], actual [231,0,11]
+app light colorScheme.error over black: expected [220,38,38], actual [231,0,11]
+app light colorScheme.errorContainer: expected #fef2f2ff, actual #fee2e2ff
+app light colorScheme.errorContainer over white: expected [254,242,242], actual [254,226,226]
+app light colorScheme.errorContainer over black: expected [254,242,242], actual [254,226,226]
+app light colorScheme.onErrorContainer: expected #b91c1cff, actual #9f0712ff
+app light colorScheme.onErrorContainer over white: expected [185,28,28], actual [159,7,18]
+app light colorScheme.onErrorContainer over black: expected [185,28,28], actual [159,7,18]
+app light colorScheme.surface: expected #f8fafcff, actual #ffffffff
+app light colorScheme.surface over white: expected [248,250,252], actual [255,255,255]
+app light colorScheme.surface over black: expected [248,250,252], actual [255,255,255]
+app light colorScheme.onSurface: expected #0f172aff, actual #09090bff
+app light colorScheme.onSurface over white: expected [15,23,42], actual [9,9,11]
+app light colorScheme.onSurface over black: expected [15,23,42], actual [9,9,11]
+app light colorScheme.onSurfaceVariant: expected #475569ff, actual #71717bff
+app light colorScheme.onSurfaceVariant over white: expected [71,85,105], actual [113,113,123]
+app light colorScheme.onSurfaceVariant over black: expected [71,85,105], actual [113,113,123]
+app light colorScheme.surfaceContainerLowest: expected #f8fafcff, actual #ffffffff
+app light colorScheme.surfaceContainerLowest over white: expected [248,250,252], actual [255,255,255]
+app light colorScheme.surfaceContainerLowest over black: expected [248,250,252], actual [255,255,255]
+app light colorScheme.surfaceContainer: expected #ffffffff, actual #f4f4f5ff
+app light colorScheme.surfaceContainer over white: expected [255,255,255], actual [244,244,245]
+app light colorScheme.surfaceContainer over black: expected [255,255,255], actual [244,244,245]
+app light colorScheme.surfaceContainerHigh: expected #f1f5f9ff, actual #f4f4f5ff
+app light colorScheme.surfaceContainerHigh over white: expected [241,245,249], actual [244,244,245]
+app light colorScheme.surfaceContainerHigh over black: expected [241,245,249], actual [244,244,245]
+app light colorScheme.surfaceContainerHighest: expected #ffffffff, actual #e4e4e7ff
+app light colorScheme.surfaceContainerHighest over white: expected [255,255,255], actual [228,228,231]
+app light colorScheme.surfaceContainerHighest over black: expected [255,255,255], actual [228,228,231]
+app light colorScheme.outline: expected #64748bff, actual #9f9fa9ff
+app light colorScheme.outline over white: expected [100,116,139], actual [159,159,169]
+app light colorScheme.outline over black: expected [100,116,139], actual [159,159,169]
+app light colorScheme.outlineVariant: expected #e2e8f0ff, actual #c4c4caff
+app light colorScheme.outlineVariant over white: expected [226,232,240], actual [196,196,202]
+app light colorScheme.outlineVariant over black: expected [226,232,240], actual [196,196,202]
+app light colorScheme.inverseSurface: expected #0f172aff, actual #18181bff
+app light colorScheme.inverseSurface over white: expected [15,23,42], actual [24,24,27]
+app light colorScheme.inverseSurface over black: expected [15,23,42], actual [24,24,27]
+app light colorScheme.onInverseSurface: expected #ffffffff, actual #fafafaff
+app light colorScheme.onInverseSurface over white: expected [255,255,255], actual [250,250,250]
+app light colorScheme.onInverseSurface over black: expected [255,255,255], actual [250,250,250]
+app light colorScheme.shadow: expected #0f172a99, actual #000000ff
+app light colorScheme.shadow over white: expected [111,116,127], actual [0,0,0]
+app light colorScheme.shadow over black: expected [9,14,25], actual [0,0,0]
+app light colorScheme.scrim: expected #0f172a99, actual #000000ff
+app light colorScheme.scrim over white: expected [111,116,127], actual [0,0,0]
+app light colorScheme.scrim over black: expected [9,14,25], actual [0,0,0]
+app light colorScheme.inversePrimary: expected #e2e8f0ff, actual #ff6900ff
+app light colorScheme.inversePrimary over white: expected [226,232,240], actual [255,105,0]
+app light colorScheme.inversePrimary over black: expected [226,232,240], actual [255,105,0]
+app light nav bar: expected #ffffffff, actual #18181bff
+app light nav bar over white: expected [255,255,255], actual [24,24,27]
+app light nav bar over black: expected [255,255,255], actual [24,24,27]
+app light nav indicatorFill: expected #047857ff, actual #ca3500ff
+app light nav indicatorFill over white: expected [4,120,87], actual [202,53,0]
+app light nav indicatorFill over black: expected [4,120,87], actual [202,53,0]
+app light nav selectedIcon: expected #ffffffff, actual #fff7edff
+app light nav selectedIcon over white: expected [255,255,255], actual [255,247,237]
+app light nav selectedIcon over black: expected [255,255,255], actual [255,247,237]
+app light nav selectedLabel: expected #0f172aff, actual #fafafaff
+app light nav selectedLabel over white: expected [15,23,42], actual [250,250,250]
+app light nav selectedLabel over black: expected [15,23,42], actual [250,250,250]
+app light nav idleIcon: expected #475569ff, actual #a1a1aaff
+app light nav idleIcon over white: expected [71,85,105], actual [161,161,170]
+app light nav idleIcon over black: expected [71,85,105], actual [161,161,170]
+app light nav idleLabel: expected #475569ff, actual #a1a1aaff
+app light nav idleLabel over white: expected [71,85,105], actual [161,161,170]
+app light nav idleLabel over black: expected [71,85,105], actual [161,161,170]
+app light input focus border: expected #059669ff, actual #ca3500ff
+app light input focus border over white: expected [5,150,105], actual [202,53,0]
+app light input focus border over black: expected [5,150,105], actual [202,53,0]
+app light input focus width: expected 2, actual 1.5
+app light disabled textButtonForeground colour: expected #0f172a, actual #09090b
+app light disabled textButtonForeground over white: expected [164,167,174], actual [162,162,162]
+app light disabled textButtonForeground over black: expected [6,9,16], actual [3,3,4]
+app light disabled textButtonIcon colour: expected #0f172a, actual #09090b
+app light disabled textButtonIcon over white: expected [164,167,174], actual [162,162,162]
+app light disabled textButtonIcon over black: expected [6,9,16], actual [3,3,4]
+app light text.displayLarge.size: expected 30, actual 57
+app light text.displayLarge.height: expected 1.25, actual 1.12
+app light text.displayLarge.weight: expected 700, actual 600
+app light text.displayMedium.size: expected 30, actual 45
+app light text.displayMedium.height: expected 1.25, actual 1.16
+app light text.displayMedium.weight: expected 700, actual 600
+app light text.displaySmall.size: expected 30, actual 36
+app light text.displaySmall.height: expected 1.25, actual 1.22
+app light text.displaySmall.weight: expected 700, actual 600
+app light text.headlineLarge.size: expected 24, actual 32
+app light text.headlineMedium.size: expected 24, actual 28
+app light text.headlineMedium.height: expected 1.25, actual 1.29
+app light text.headlineSmall.height: expected 1.25, actual 1.33
+app light text.titleLarge.size: expected 20, actual 22
+app light text.titleLarge.height: expected 1.375, actual 1.27
+app light text.titleMedium.size: expected 18, actual 16
+app light text.titleMedium.height: expected 1.375, actual 1.5
+app light text.titleSmall.height: expected 1.25, actual 1.43
+app light text.labelLarge.height: expected 1.25, actual 1.43
+app light text.labelMedium.size: expected 14, actual 12
+app light text.labelMedium.height: expected 1.25, actual 1.33
+app light text.labelSmall.size: expected 12, actual 11
+app light text.labelSmall.height: expected 1.375, actual 1.45
+app light text.labelSmall.weight: expected 400, actual 500
+app light text.bodyMedium.height: expected 1.5, actual 1.43
+app light text.bodySmall.height: expected 1.375, actual 1.33
+app light sizes.appBarTitle.size: expected 20, actual 19
+app light sizes.dialogTitle.size: expected 20, actual 19
+app light sizes.buttonText.size: expected 14, actual 12.5
+app light sizes.buttonText.weight: expected 500, actual 600
+app light sizes.inputLabel.size: expected 14, actual 13
+app light sizes.chipLabel.size: expected 12, actual 11.5
+app light sizes.tabLabel.size: expected 12, actual 11.5
+app light sizes.monoStyleDefault.size: expected 12, actual 11
+app light sizes.navLabel.size: expected 12, actual 10.5
+app light radii.card: expected 8, actual 4
+app light radii.dialog: expected 8, actual 4
+app light radii.bottomSheetTop: expected 8, actual 4
+app light radii.popupMenu: expected 8, actual 4
+app light radii.filledButton: expected 6, actual 4
+app light radii.outlinedButton: expected 6, actual 4
+app light radii.textButton: expected 6, actual 4
+app light radii.floatingActionButton: expected 6, actual 4
+app light radii.inputBorder: expected 6, actual 4
+app light radii.segmentedButton: expected 6, actual 4
+app light radii.navIndicator: expected 6, actual 4
+app light button.filled.paddingLeft: expected 16, actual 20
+app light button.filled.paddingRight: expected 16, actual 20
+app light button.filled.paddingTop: expected 0, actual 14
+app light button.filled.paddingBottom: expected 0, actual 14
+app light button.filled.minHeight: expected 48, actual null
+app light button.outlined.paddingLeft: expected 16, actual 20
+app light button.outlined.paddingRight: expected 16, actual 20
+app light button.outlined.paddingTop: expected 0, actual 14
+app light button.outlined.paddingBottom: expected 0, actual 14
+app light button.outlined.minHeight: expected 48, actual null
+app light sample data.size @1.0x: expected 14, actual 12
+app light sample heading.size @1.0x: expected 24, actual 28
+app light sample data.size @2.0x: expected 14, actual 12
+app light sample heading.size @2.0x: expected 24, actual 28
+app dark colorScheme.primary: expected #e2e8f0ff, actual #ffaa73ff
+app dark colorScheme.primary over white: expected [226,232,240], actual [255,170,115]
+app dark colorScheme.primary over black: expected [226,232,240], actual [255,170,115]
+app dark colorScheme.onPrimary: expected #0f172aff, actual #25160fff
+app dark colorScheme.onPrimary over white: expected [15,23,42], actual [37,22,15]
+app dark colorScheme.onPrimary over black: expected [15,23,42], actual [37,22,15]
+app dark colorScheme.primaryContainer: expected #1e293bff, actual #3a1405ff
+app dark colorScheme.primaryContainer over white: expected [30,41,59], actual [58,20,5]
+app dark colorScheme.primaryContainer over black: expected [30,41,59], actual [58,20,5]
+app dark colorScheme.onPrimaryContainer: expected #f8fafcff, actual #ffaa73ff
+app dark colorScheme.onPrimaryContainer over white: expected [248,250,252], actual [255,170,115]
+app dark colorScheme.onPrimaryContainer over black: expected [248,250,252], actual [255,170,115]
+app dark colorScheme.secondary: expected #1e293bff, actual #30323aff
+app dark colorScheme.secondary over white: expected [30,41,59], actual [48,50,58]
+app dark colorScheme.secondary over black: expected [30,41,59], actual [48,50,58]
+app dark colorScheme.onSecondary: expected #f8fafcff, actual #f1f1f3ff
+app dark colorScheme.onSecondary over white: expected [248,250,252], actual [241,241,243]
+app dark colorScheme.onSecondary over black: expected [248,250,252], actual [241,241,243]
+app dark colorScheme.secondaryContainer: expected #1e293bff, actual #30323aff
+app dark colorScheme.secondaryContainer over white: expected [30,41,59], actual [48,50,58]
+app dark colorScheme.secondaryContainer over black: expected [30,41,59], actual [48,50,58]
+app dark colorScheme.onSecondaryContainer: expected #f8fafcff, actual #f1f1f3ff
+app dark colorScheme.onSecondaryContainer over white: expected [248,250,252], actual [241,241,243]
+app dark colorScheme.onSecondaryContainer over black: expected [248,250,252], actual [241,241,243]
+app dark colorScheme.tertiary: expected #34d399ff, actual #d4d4d8ff
+app dark colorScheme.tertiary over white: expected [52,211,153], actual [212,212,216]
+app dark colorScheme.tertiary over black: expected [52,211,153], actual [212,212,216]
+app dark colorScheme.onTertiary: expected #020617ff, actual #17181cff
+app dark colorScheme.onTertiary over white: expected [2,6,23], actual [23,24,28]
+app dark colorScheme.onTertiary over black: expected [2,6,23], actual [23,24,28]
+app dark colorScheme.tertiaryContainer: expected #022c22ff, actual #3f3f46ff
+app dark colorScheme.tertiaryContainer over white: expected [2,44,34], actual [63,63,70]
+app dark colorScheme.tertiaryContainer over black: expected [2,44,34], actual [63,63,70]
+app dark colorScheme.onTertiaryContainer: expected #34d399ff, actual #e4e4e7ff
+app dark colorScheme.onTertiaryContainer over white: expected [52,211,153], actual [228,228,231]
+app dark colorScheme.onTertiaryContainer over black: expected [52,211,153], actual [228,228,231]
+app dark colorScheme.error: expected #f87171ff, actual #ff6467ff
+app dark colorScheme.error over white: expected [248,113,113], actual [255,100,103]
+app dark colorScheme.error over black: expected [248,113,113], actual [255,100,103]
+app dark colorScheme.onError: expected #020617ff, actual #17181cff
+app dark colorScheme.onError over white: expected [2,6,23], actual [23,24,28]
+app dark colorScheme.onError over black: expected [2,6,23], actual [23,24,28]
+app dark colorScheme.errorContainer: expected #450a0aff, actual #4a1416ff
+app dark colorScheme.errorContainer over white: expected [69,10,10], actual [74,20,22]
+app dark colorScheme.errorContainer over black: expected [69,10,10], actual [74,20,22]
+app dark colorScheme.onErrorContainer: expected #f87171ff, actual #ffb3b5ff
+app dark colorScheme.onErrorContainer over white: expected [248,113,113], actual [255,179,181]
+app dark colorScheme.onErrorContainer over black: expected [248,113,113], actual [255,179,181]
+app dark colorScheme.surface: expected #020617ff, actual #17181cff
+app dark colorScheme.surface over white: expected [2,6,23], actual [23,24,28]
+app dark colorScheme.surface over black: expected [2,6,23], actual [23,24,28]
+app dark colorScheme.onSurface: expected #f8fafcff, actual #f1f1f3ff
+app dark colorScheme.onSurface over white: expected [248,250,252], actual [241,241,243]
+app dark colorScheme.onSurface over black: expected [248,250,252], actual [241,241,243]
+app dark colorScheme.onSurfaceVariant: expected #cbd5e1ff, actual #c4c5cfff
+app dark colorScheme.onSurfaceVariant over white: expected [203,213,225], actual [196,197,207]
+app dark colorScheme.onSurfaceVariant over black: expected [203,213,225], actual [196,197,207]
+app dark colorScheme.surfaceContainerLowest: expected #020617ff, actual #17181cff
+app dark colorScheme.surfaceContainerLowest over white: expected [2,6,23], actual [23,24,28]
+app dark colorScheme.surfaceContainerLowest over black: expected [2,6,23], actual [23,24,28]
+app dark colorScheme.surfaceContainerLow: expected #0f172aff, actual #24262dff
+app dark colorScheme.surfaceContainerLow over white: expected [15,23,42], actual [36,38,45]
+app dark colorScheme.surfaceContainerLow over black: expected [15,23,42], actual [36,38,45]
+app dark colorScheme.surfaceContainer: expected #0f172aff, actual #2a2c33ff
+app dark colorScheme.surfaceContainer over white: expected [15,23,42], actual [42,44,51]
+app dark colorScheme.surfaceContainer over black: expected [15,23,42], actual [42,44,51]
+app dark colorScheme.surfaceContainerHigh: expected #1e293bff, actual #30323aff
+app dark colorScheme.surfaceContainerHigh over white: expected [30,41,59], actual [48,50,58]
+app dark colorScheme.surfaceContainerHigh over black: expected [30,41,59], actual [48,50,58]
+app dark colorScheme.surfaceContainerHighest: expected #1e293bff, actual #30323aff
+app dark colorScheme.surfaceContainerHighest over white: expected [30,41,59], actual [48,50,58]
+app dark colorScheme.surfaceContainerHighest over black: expected [30,41,59], actual [48,50,58]
+app dark colorScheme.outline: expected #64748bff, actual #71717bff
+app dark colorScheme.outline over white: expected [100,116,139], actual [113,113,123]
+app dark colorScheme.outline over black: expected [100,116,139], actual [113,113,123]
+app dark colorScheme.outlineVariant: expected #1e293bff, actual #3a3c45ff
+app dark colorScheme.outlineVariant over white: expected [30,41,59], actual [58,60,69]
+app dark colorScheme.outlineVariant over black: expected [30,41,59], actual [58,60,69]
+app dark colorScheme.inverseSurface: expected #f8fafcff, actual #f1f1f3ff
+app dark colorScheme.inverseSurface over white: expected [248,250,252], actual [241,241,243]
+app dark colorScheme.inverseSurface over black: expected [248,250,252], actual [241,241,243]
+app dark colorScheme.onInverseSurface: expected #020617ff, actual #24262dff
+app dark colorScheme.onInverseSurface over white: expected [2,6,23], actual [36,38,45]
+app dark colorScheme.onInverseSurface over black: expected [2,6,23], actual [36,38,45]
+app dark colorScheme.shadow: expected #0f172a99, actual #000000ff
+app dark colorScheme.shadow over white: expected [111,116,127], actual [0,0,0]
+app dark colorScheme.shadow over black: expected [9,14,25], actual [0,0,0]
+app dark colorScheme.scrim: expected #0f172a99, actual #000000ff
+app dark colorScheme.scrim over white: expected [111,116,127], actual [0,0,0]
+app dark colorScheme.scrim over black: expected [9,14,25], actual [0,0,0]
+app dark colorScheme.inversePrimary: expected #334155ff, actual #ca3500ff
+app dark colorScheme.inversePrimary over white: expected [51,65,85], actual [202,53,0]
+app dark colorScheme.inversePrimary over black: expected [51,65,85], actual [202,53,0]
+app dark card background: expected #0f172aff, actual #24262dff
+app dark card background over white: expected [15,23,42], actual [36,38,45]
+app dark card background over black: expected [15,23,42], actual [36,38,45]
+app dark dialog background: expected #1e293bff, actual #24262dff
+app dark dialog background over white: expected [30,41,59], actual [36,38,45]
+app dark dialog background over black: expected [30,41,59], actual [36,38,45]
+app dark nav bar: expected #0f172aff, actual #24262dff
+app dark nav bar over white: expected [15,23,42], actual [36,38,45]
+app dark nav bar over black: expected [15,23,42], actual [36,38,45]
+app dark nav indicatorFill: expected #34d399ff, actual #ffaa73ff
+app dark nav indicatorFill over white: expected [52,211,153], actual [255,170,115]
+app dark nav indicatorFill over black: expected [52,211,153], actual [255,170,115]
+app dark nav selectedIcon: expected #020617ff, actual #25160fff
+app dark nav selectedIcon over white: expected [2,6,23], actual [37,22,15]
+app dark nav selectedIcon over black: expected [2,6,23], actual [37,22,15]
+app dark nav selectedLabel: expected #f8fafcff, actual #fafafaff
+app dark nav selectedLabel over white: expected [248,250,252], actual [250,250,250]
+app dark nav selectedLabel over black: expected [248,250,252], actual [250,250,250]
+app dark nav idleIcon: expected #cbd5e1ff, actual #a1a1aaff
+app dark nav idleIcon over white: expected [203,213,225], actual [161,161,170]
+app dark nav idleIcon over black: expected [203,213,225], actual [161,161,170]
+app dark nav idleLabel: expected #cbd5e1ff, actual #a1a1aaff
+app dark nav idleLabel over white: expected [203,213,225], actual [161,161,170]
+app dark nav idleLabel over black: expected [203,213,225], actual [161,161,170]
+app dark input focus border: expected #34d399ff, actual #ffaa73ff
+app dark input focus border over white: expected [52,211,153], actual [255,170,115]
+app dark input focus border over black: expected [52,211,153], actual [255,170,115]
+app dark input focus width: expected 2, actual 1.5
+app dark disabled textButtonForeground colour: expected #f8fafc, actual #f1f1f3
+app dark disabled textButtonForeground over white: expected [252,253,254], actual [250,250,250]
+app dark disabled textButtonForeground over black: expected [94,95,96], actual [92,92,92]
+app dark disabled textButtonIcon colour: expected #f8fafc, actual #f1f1f3
+app dark disabled textButtonIcon over white: expected [252,253,254], actual [250,250,250]
+app dark disabled textButtonIcon over black: expected [94,95,96], actual [92,92,92]
+app dark text.displayLarge.size: expected 30, actual 57
+app dark text.displayLarge.height: expected 1.25, actual 1.12
+app dark text.displayLarge.weight: expected 700, actual 600
+app dark text.displayMedium.size: expected 30, actual 45
+app dark text.displayMedium.height: expected 1.25, actual 1.16
+app dark text.displayMedium.weight: expected 700, actual 600
+app dark text.displaySmall.size: expected 30, actual 36
+app dark text.displaySmall.height: expected 1.25, actual 1.22
+app dark text.displaySmall.weight: expected 700, actual 600
+app dark text.headlineLarge.size: expected 24, actual 32
+app dark text.headlineMedium.size: expected 24, actual 28
+app dark text.headlineMedium.height: expected 1.25, actual 1.29
+app dark text.headlineSmall.height: expected 1.25, actual 1.33
+app dark text.titleLarge.size: expected 20, actual 22
+app dark text.titleLarge.height: expected 1.375, actual 1.27
+app dark text.titleMedium.size: expected 18, actual 16
+app dark text.titleMedium.height: expected 1.375, actual 1.5
+app dark text.titleSmall.height: expected 1.25, actual 1.43
+app dark text.labelLarge.height: expected 1.25, actual 1.43
+app dark text.labelMedium.size: expected 14, actual 12
+app dark text.labelMedium.height: expected 1.25, actual 1.33
+app dark text.labelSmall.size: expected 12, actual 11
+app dark text.labelSmall.height: expected 1.375, actual 1.45
+app dark text.labelSmall.weight: expected 400, actual 500
+app dark text.bodyMedium.height: expected 1.5, actual 1.43
+app dark text.bodySmall.height: expected 1.375, actual 1.33
+app dark sizes.appBarTitle.size: expected 20, actual 19
+app dark sizes.dialogTitle.size: expected 20, actual 19
+app dark sizes.buttonText.size: expected 14, actual 12.5
+app dark sizes.buttonText.weight: expected 500, actual 600
+app dark sizes.inputLabel.size: expected 14, actual 13
+app dark sizes.chipLabel.size: expected 12, actual 11.5
+app dark sizes.tabLabel.size: expected 12, actual 11.5
+app dark sizes.monoStyleDefault.size: expected 12, actual 11
+app dark sizes.navLabel.size: expected 12, actual 10.5
+app dark radii.card: expected 8, actual 4
+app dark radii.dialog: expected 8, actual 4
+app dark radii.bottomSheetTop: expected 8, actual 4
+app dark radii.popupMenu: expected 8, actual 4
+app dark radii.filledButton: expected 6, actual 4
+app dark radii.outlinedButton: expected 6, actual 4
+app dark radii.textButton: expected 6, actual 4
+app dark radii.floatingActionButton: expected 6, actual 4
+app dark radii.inputBorder: expected 6, actual 4
+app dark radii.segmentedButton: expected 6, actual 4
+app dark radii.navIndicator: expected 6, actual 4
+app dark button.filled.paddingLeft: expected 16, actual 20
+app dark button.filled.paddingRight: expected 16, actual 20
+app dark button.filled.paddingTop: expected 0, actual 14
+app dark button.filled.paddingBottom: expected 0, actual 14
+app dark button.filled.minHeight: expected 48, actual null
+app dark button.outlined.paddingLeft: expected 16, actual 20
+app dark button.outlined.paddingRight: expected 16, actual 20
+app dark button.outlined.paddingTop: expected 0, actual 14
+app dark button.outlined.paddingBottom: expected 0, actual 14
+app dark button.outlined.minHeight: expected 48, actual null
+app dark sample data.size @1.0x: expected 14, actual 12
+app dark sample heading.size @1.0x: expected 24, actual 28
+app dark sample data.size @2.0x: expected 14, actual 12
+app dark sample heading.size @2.0x: expected 24, actual 28
+design-tokens/v2/evidence/pre-adoption/app/app-resolved.json: 503 checks, 362 mismatches

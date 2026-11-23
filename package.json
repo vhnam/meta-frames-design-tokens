@@ -1,0 +1,8 @@
+{
+  "name": "meta-frames-design-tokens",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "style-dictionary": "5.6.0"
+  }
+}

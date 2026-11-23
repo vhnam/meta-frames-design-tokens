@@ -1,0 +1,310 @@
+{
+  "outputs": {
+    "dashboard": "../meta-frames-dashboard/src/styles/design-tokens.generated.css",
+    "app": "../meta-frames-app/lib/ui/core/design_tokens.g.dart"
+  },
+  "dashboard": {
+    "colors": [
+      {
+        "properties": [
+          "--background"
+        ],
+        "source": "semantic.color.bg.canvas"
+      },
+      {
+        "properties": [
+          "--foreground",
+          "--card-foreground",
+          "--popover-foreground",
+          "--secondary-foreground",
+          "--accent-foreground"
+        ],
+        "source": "semantic.color.fg.default"
+      },
+      {
+        "properties": [
+          "--card"
+        ],
+        "source": "semantic.color.bg.surface"
+      },
+      {
+        "properties": [
+          "--popover"
+        ],
+        "source": "semantic.color.bg.surface-raised"
+      },
+      {
+        "properties": [
+          "--primary"
+        ],
+        "source": "semantic.color.action.primary"
+      },
+      {
+        "properties": [
+          "--primary-foreground"
+        ],
+        "source": "semantic.color.fg.on-primary"
+      },
+      {
+        "properties": [
+          "--secondary"
+        ],
+        "source": "semantic.color.action.secondary"
+      },
+      {
+        "properties": [
+          "--muted",
+          "--accent"
+        ],
+        "source": "semantic.color.bg.subtle"
+      },
+      {
+        "properties": [
+          "--muted-foreground"
+        ],
+        "source": "semantic.color.fg.muted"
+      },
+      {
+        "properties": [
+          "--destructive"
+        ],
+        "source": "semantic.color.action.danger"
+      },
+      {
+        "properties": [
+          "--border",
+          "--dot"
+        ],
+        "source": "semantic.color.border.default"
+      },
+      {
+        "properties": [
+          "--input"
+        ],
+        "source": "semantic.color.border.control"
+      },
+      {
+        "properties": [
+          "--ring"
+        ],
+        "source": "semantic.color.border.focus"
+      },
+      {
+        "properties": [
+          "--chart-1"
+        ],
+        "source": "semantic.color.chart.1"
+      },
+      {
+        "properties": [
+          "--chart-2"
+        ],
+        "source": "semantic.color.chart.2"
+      },
+      {
+        "properties": [
+          "--chart-3"
+        ],
+        "source": "semantic.color.chart.3"
+      },
+      {
+        "properties": [
+          "--chart-4"
+        ],
+        "source": "semantic.color.chart.4"
+      },
+      {
+        "properties": [
+          "--chart-5"
+        ],
+        "source": "semantic.color.chart.5"
+      },
+      {
+        "properties": [
+          "--sidebar"
+        ],
+        "source": "semantic.color.bg.surface"
+      },
+      {
+        "properties": [
+          "--sidebar-foreground"
+        ],
+        "source": "semantic.color.fg.muted"
+      },
+      {
+        "properties": [
+          "--sidebar-primary"
+        ],
+        "source": "semantic.color.action.accent"
+      },
+      {
+        "properties": [
+          "--sidebar-primary-foreground"
+        ],
+        "source": "semantic.color.fg.on-accent"
+      },
+      {
+        "properties": [
+          "--sidebar-accent"
+        ],
+        "source": "semantic.color.bg.subtle"
+      },
+      {
+        "properties": [
+          "--sidebar-accent-foreground"
+        ],
+        "source": "semantic.color.fg.default"
+      },
+      {
+        "properties": [
+          "--sidebar-border"
+        ],
+        "source": "semantic.color.border.default"
+      },
+      {
+        "properties": [
+          "--sidebar-ring"
+        ],
+        "source": "semantic.color.border.focus"
+      }
+    ],
+    "scalars": {
+      "--radius": "semantic.radius.control",
+      "--spacing": "semantic.space.gap.xs"
+    },
+    "text": {
+      "--text-xs": "semantic.text.caption",
+      "--text-sm": "semantic.text.body-sm",
+      "--text-base": "semantic.text.body",
+      "--text-lg": "semantic.text.heading-3",
+      "--text-xl": "semantic.text.heading-2",
+      "--text-2xl": "semantic.text.heading-1",
+      "--text-3xl": "semantic.text.display"
+    }
+  },
+  "app": {
+    "colorScheme": {
+      "primary": "semantic.color.action.primary",
+      "onPrimary": "semantic.color.fg.on-primary",
+      "primaryContainer": "semantic.color.bg.subtle",
+      "onPrimaryContainer": "semantic.color.fg.default",
+      "secondary": "semantic.color.action.secondary",
+      "onSecondary": "semantic.color.fg.default",
+      "secondaryContainer": "semantic.color.bg.subtle",
+      "onSecondaryContainer": "semantic.color.fg.default",
+      "tertiary": "semantic.color.action.accent",
+      "onTertiary": "semantic.color.fg.on-accent",
+      "tertiaryContainer": "semantic.color.status.success.bg",
+      "onTertiaryContainer": "semantic.color.status.success.fg",
+      "error": "semantic.color.action.danger",
+      "onError": "semantic.color.fg.on-danger",
+      "errorContainer": "semantic.color.status.danger.bg",
+      "onErrorContainer": "semantic.color.status.danger.fg",
+      "surface": "semantic.color.bg.canvas",
+      "onSurface": "semantic.color.fg.default",
+      "onSurfaceVariant": "semantic.color.fg.muted",
+      "surfaceContainerLowest": "semantic.color.bg.canvas",
+      "surfaceContainerLow": "semantic.color.bg.surface",
+      "surfaceContainer": "semantic.color.bg.surface",
+      "surfaceContainerHigh": "semantic.color.bg.subtle",
+      "surfaceContainerHighest": "semantic.color.bg.surface-raised",
+      "outline": "semantic.color.border.control",
+      "outlineVariant": "semantic.color.border.default",
+      "inverseSurface": "semantic.color.bg.inverse",
+      "onInverseSurface": "semantic.color.fg.inverse",
+      "shadow": "semantic.color.bg.scrim",
+      "scrim": "semantic.color.bg.scrim"
+    },
+    "inversePrimary": {
+      "field": "inversePrimary",
+      "source": "semantic.color.action.primary"
+    },
+    "text": {
+      "textTheme.displayLarge": "semantic.text.display",
+      "textTheme.displayMedium": "semantic.text.display",
+      "textTheme.displaySmall": "semantic.text.display",
+      "textTheme.headlineLarge": "semantic.text.heading-1",
+      "textTheme.headlineMedium": "semantic.text.heading-1",
+      "textTheme.headlineSmall": "semantic.text.heading-1",
+      "textTheme.titleLarge": "semantic.text.heading-2",
+      "textTheme.titleMedium": "semantic.text.heading-3",
+      "textTheme.titleSmall": "semantic.text.label",
+      "textTheme.labelLarge": "semantic.text.label",
+      "textTheme.labelMedium": "semantic.text.label",
+      "textTheme.labelSmall": "semantic.text.caption",
+      "textTheme.bodyLarge": "semantic.text.body",
+      "textTheme.bodyMedium": "semantic.text.body-sm",
+      "textTheme.bodySmall": "semantic.text.caption",
+      "appBar.title": "semantic.text.heading-2",
+      "dialog.title": "semantic.text.heading-2",
+      "input.label": "semantic.text.label",
+      "chip.label": "semantic.text.caption",
+      "tab.label": "semantic.text.caption",
+      "segment.label": "semantic.text.caption",
+      "monoStyle": "semantic.text.caption",
+      "nav.label": "semantic.text.caption"
+    },
+    "theme": {
+      "kRadius": "semantic.radius.surface",
+      "shape": "semantic.radius.control",
+      "button.text.size": "component.button.font-size",
+      "button.text.weight": "component.button.font-weight",
+      "button.padding-x": "component.button.padding-x",
+      "button.min-height": "component.button.height.lg",
+      "input.border-focus": "component.input.border-focus",
+      "input.border-focus-width": "component.focus-ring.width",
+      "disabled.opacity": "semantic.opacity.disabled",
+      "card.bg": "component.card.bg",
+      "dialog.bg": "component.dialog.bg"
+    }
+  },
+  "nav": {
+    "bar": "component.nav.bg",
+    "divider": "component.nav.border",
+    "indicator-fill": "component.nav.indicator",
+    "selected-icon": "semantic.color.fg.on-accent",
+    "selected-label": "component.nav.item-fg-active",
+    "idle-icon": "component.nav.item-fg",
+    "idle-label": "component.nav.item-fg",
+    "active-row-bg": "component.nav.item-bg-active"
+  },
+  "fonts": {
+    "roles": {
+      "heading": {
+        "dashboard": {
+          "property": "--font-heading",
+          "stack": "\"Space Grotesk Variable\", ui-sans-serif, sans-serif"
+        },
+        "app": "SpaceGrotesk"
+      },
+      "body": {
+        "dashboard": {
+          "property": "--font-sans",
+          "stack": "\"Geist Mono Variable\", ui-monospace, monospace"
+        },
+        "app": "GeistMono"
+      },
+      "mono": {
+        "dashboard": {
+          "property": "--font-mono",
+          "stack": "\"JetBrains Mono Variable\", ui-monospace, monospace"
+        },
+        "app": "JetBrainsMono"
+      }
+    },
+    "paths": {
+      "semantic.text.display.font-family": "heading",
+      "semantic.text.heading-1.font-family": "heading",
+      "semantic.text.heading-2.font-family": "heading",
+      "semantic.text.heading-3.font-family": "heading",
+      "semantic.text.body.font-family": "body",
+      "semantic.text.body-sm.font-family": "body",
+      "semantic.text.caption.font-family": "body",
+      "semantic.text.data.font-family": "mono",
+      "semantic.text.label.font-family": {
+        "dashboard": "body",
+        "app": "mono"
+      }
+    }
+  }
+}
