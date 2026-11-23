@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "import", "node"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "node": true,
+    "es2024": true
+  },
+  "ignorePatterns": ["node_modules"],
+  "rules": {
+    "id-length": [
+      "error",
+      {
+        "min": 2,
+        "exceptions": ["_"],
+        "properties": "never"
+      }
+    ]
+  }
+}

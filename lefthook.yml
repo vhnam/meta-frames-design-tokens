@@ -1,0 +1,24 @@
+# Git hooks (https://lefthook.dev/configuration/). `pnpm install` installs them.
+pre-commit:
+  piped: true
+  jobs:
+    - name: format
+      glob: "*.{ts,json,md,yml,yaml}"
+      run: pnpm exec oxfmt --no-error-on-unmatched-pattern {staged_files}
+      stage_fixed: true
+    - name: lint
+      glob: "*.ts"
+      run: pnpm exec oxlint --deny-warnings {staged_files}
+    - name: typecheck
+      glob: "*.ts"
+      run: pnpm typecheck
+    - name: generated files match the source
+      glob: "{tokens.json,bindings.json,build.ts,hooks.ts,package.json,pnpm-lock.yaml}"
+      run: pnpm check
+
+pre-push:
+  jobs:
+    - name: format
+      run: pnpm format:check
+    - name: test
+      run: pnpm test
