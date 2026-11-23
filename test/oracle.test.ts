@@ -17,7 +17,7 @@ import {
   semanticAndComponentPaths,
   cssNameOf,
   dartNameOf,
-} from './oracle.ts';
+} from '../src/oracle.ts';
 
 // A parsed or captured JSON document that a test reads at arbitrary keys.
 type Tree = any;
@@ -29,9 +29,9 @@ const expectedDart = oracleExpectedDart as (leaves: Tree) => Tree;
 type Present<Value> = { get(key: string): Value } & Map<string, Value>;
 
 const here = import.meta.dirname;
-const sourceText = readFileSync(join(here, 'tokens.json'), 'utf8');
-const cssPath = join(here, '../meta-frames-dashboard/src/styles/design-tokens.generated.css');
-const dartPath = join(here, '../meta-frames-app/lib/ui/core/design_tokens.g.dart');
+const sourceText = readFileSync(join(here, '../tokens/tokens.json'), 'utf8');
+const cssPath = join(here, '../../meta-frames-dashboard/src/styles/design-tokens.generated.css');
+const dartPath = join(here, '../../meta-frames-app/lib/ui/core/design_tokens.g.dart');
 
 // ---- parsers for the generated files ----
 
@@ -353,7 +353,7 @@ test('the oracle detects wrong bindings even when the light colours match', () =
 });
 
 test('the nav bindings match the independent nav table', () => {
-  const bindings = JSON.parse(readFileSync(join(here, 'bindings.json'), 'utf8'));
+  const bindings = JSON.parse(readFileSync(join(here, '../tokens/bindings.json'), 'utf8'));
   assert.deepEqual(bindings.nav, {
     bar: NAV.bar,
     divider: NAV.divider,

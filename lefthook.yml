@@ -13,7 +13,7 @@ pre-commit:
       glob: "*.ts"
       run: pnpm typecheck
     - name: generated files match the source
-      glob: "{tokens.json,bindings.json,build.ts,hooks.ts,package.json,pnpm-lock.yaml}"
+      glob: "{tokens/*.json,src/*.ts,package.json,pnpm-lock.yaml}"
       run: pnpm check
 
 pre-push:

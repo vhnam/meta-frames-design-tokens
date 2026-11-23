@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Folder layout: sources in `src/`, tests in `test/`, token data in `tokens/`. Run the generator with `node src/build.ts`.
+
 ## [0.1.0] - 2026-11-23
 
 ### Added

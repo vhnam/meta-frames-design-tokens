@@ -4,13 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node build.ts",
-    "check": "node build.ts --check",
+    "build": "node src/build.ts",
+    "check": "node src/build.ts --check",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint --deny-warnings",
     "typecheck": "tsc -p .",
-    "test": "node --test build.test.ts oracle.test.ts"
+    "test": "node --test test/*.test.ts"
   },
   "dependencies": {
     "style-dictionary": "5.6.0"

@@ -14,16 +14,24 @@ const errnoCode = (error: unknown): string | undefined => (error as NodeJS.Errno
 const messageOf = (error: unknown): string => (error as Error).message;
 
 const scriptDir = import.meta.dirname;
+// The repository root: src/ sits directly below it.
+const repoDir = path.resolve(scriptDir, '..');
 // This script lives in the untracked workspace directory meta-frames-design-tokens/. The repositories are its
 // siblings: ../meta-frames-dashboard and ../meta-frames-app.
-const workspaceRoot = path.resolve(scriptDir, '..');
-const sourceFile = path.join(scriptDir, 'tokens.json');
-const bindingsFile = path.join(scriptDir, 'bindings.json');
-const manifestFile = path.join(scriptDir, 'package.json');
-const installedDir = path.join(scriptDir, 'node_modules', 'style-dictionary');
-const lockPath = path.join(scriptDir, '.build.lock');
+const workspaceRoot = path.resolve(repoDir, '..');
+const sourceFile = path.join(repoDir, 'tokens', 'tokens.json');
+const bindingsFile = path.join(repoDir, 'tokens', 'bindings.json');
+const manifestFile = path.join(repoDir, 'package.json');
+const installedDir = path.join(repoDir, 'node_modules', 'style-dictionary');
+const lockPath = path.join(repoDir, '.build.lock');
 // Files that decide the output besides the source. Sorted by relative path in the digest.
-const GENERATOR_FILES = ['bindings.json', 'build.ts', 'hooks.ts', 'package.json', 'pnpm-lock.yaml'];
+const GENERATOR_FILES = [
+  'package.json',
+  'pnpm-lock.yaml',
+  'src/build.ts',
+  'src/hooks.ts',
+  'tokens/bindings.json',
+];
 // One read of the five generator inputs at startup. Every later use (checks, parse, digest) takes
 // these bytes. Limit: build.ts and hooks.ts are also loaded by Node itself and can change between
 // this read and that load.
@@ -37,10 +45,7 @@ const readOrNull = (file: string): Buffer | Error | null => {
   }
 };
 const inputs = new Map(
-  GENERATOR_FILES.map((name) => [
-    path.join(scriptDir, name),
-    readOrNull(path.join(scriptDir, name)),
-  ]),
+  GENERATOR_FILES.map((name) => [path.join(repoDir, name), readOrNull(path.join(repoDir, name))]),
 );
 /** Bytes of a file (from the startup snapshot for a generator input), null when missing, or the read Error. */
 const loadBytes = (file: string): Buffer | Error | null =>
@@ -124,17 +129,17 @@ function preflight(): string[] {
       `${relative(installedDir)}: installed style-dictionary is ${installed.version}, ${relative(manifestFile)} wants ${wanted}. Run pnpm install --frozen-lockfile in meta-frames-design-tokens/`,
     );
   }
-  for (const name of ['build.ts', 'hooks.ts']) {
-    const bytes = inputs.get(path.join(scriptDir, name));
+  for (const name of ['src/build.ts', 'src/hooks.ts']) {
+    const bytes = inputs.get(path.join(repoDir, name));
     if (!bytes || bytes instanceof Error) {
       errors.push(
         bytes instanceof Error
-          ? unreadable(path.join(scriptDir, name), bytes)
+          ? unreadable(path.join(repoDir, name), bytes)
           : `${name}: file missing`,
       );
     }
   }
-  const lockFile = path.join(scriptDir, 'pnpm-lock.yaml');
+  const lockFile = path.join(repoDir, 'pnpm-lock.yaml');
   const lockBytes = inputs.get(lockFile);
   if (!lockBytes || lockBytes instanceof Error) {
     errors.push(
@@ -263,7 +268,7 @@ function parseFlags(): string | undefined {
   const unknown = flags.filter((flag) => !known.includes(flag));
   if (unknown.length || flags.length > 1) {
     console.error(
-      `usage: node build.ts [--inspect | --check]  (unknown: ${unknown.join(' ') || 'extra flags'})`,
+      `usage: node src/build.ts [--inspect | --check]  (unknown: ${unknown.join(' ') || 'extra flags'})`,
     );
     process.exit(2);
   }
@@ -366,7 +371,7 @@ function generatorDigest(): string {
   };
   for (const name of [...GENERATOR_FILES].sort()) {
     frame(Buffer.from(name, 'utf8'));
-    frame(inputs.get(path.join(scriptDir, name)) as Buffer);
+    frame(inputs.get(path.join(repoDir, name)) as Buffer);
   }
   return hash.digest('hex');
 }
@@ -389,7 +394,7 @@ function checkDestinations(bindings: JsonObject, errors: string[]): void {
   const resolved: Record<string, string | null> = {};
   for (const [name, expected] of Object.entries(EXPECTED_OUTPUTS)) {
     const value = (bindings.outputs as JsonObject | undefined)?.[name];
-    resolved[name] = typeof value === 'string' ? path.resolve(scriptDir, value) : null;
+    resolved[name] = typeof value === 'string' ? path.resolve(repoDir, value) : null;
     if (resolved[name] !== expected) {
       errors.push(
         `bindings.json: outputs.${name}: ${resolved[name] ?? JSON.stringify(value)} must be exactly ${expected}`,
@@ -470,8 +475,8 @@ async function buildOutputs(
   const errors: string[] = [];
   const outputs = bindings.outputs as Record<string, string>;
   const files: Outputs = [
-    { file: path.resolve(scriptDir, outputs.dashboard!), text: texts.css },
-    { file: path.resolve(scriptDir, outputs.app!), text: texts.dart },
+    { file: path.resolve(repoDir, outputs.dashboard!), text: texts.css },
+    { file: path.resolve(repoDir, outputs.app!), text: texts.dart },
   ];
   for (const { file, text } of files) {
     if (
@@ -606,7 +611,7 @@ function writeOutputs(files: Outputs): void {
     } else {
       console.error('Pending temporary files removed.');
     }
-    console.error('Rerun node meta-frames-design-tokens/build.ts, then --check.');
+    console.error('Rerun node meta-frames-design-tokens/src/build.ts, then --check.');
     process.exit(1);
   }
 }
@@ -715,7 +720,7 @@ async function main(): Promise<void> {
     for (const { file, state } of bad) console.error(`error: ${relative(file)}: ${state}`);
     for (const { message } of links) console.error(`error: ${message}`);
     if (bad.length || links.length) {
-      console.error('Run node meta-frames-design-tokens/build.ts, then --check again.');
+      console.error('Run node meta-frames-design-tokens/src/build.ts, then --check again.');
       process.exit(1);
     }
     console.log(`ok: ${states.length} generated files match`);

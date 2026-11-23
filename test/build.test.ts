@@ -22,17 +22,17 @@ type Tree = any;
 type Changes = Record<string, string | null>;
 
 const here = import.meta.dirname;
-const read = (name: string) => readFileSync(join(here, name), 'utf8');
-const source = read('tokens.json');
+const read = (name: string) => readFileSync(join(here, '..', name), 'utf8');
+const source = read('tokens/tokens.json');
 const files: Record<string, string> = {
-  'build.ts': read('build.ts'),
-  'hooks.ts': read('hooks.ts'),
-  'bindings.json': read('bindings.json'),
+  'src/build.ts': read('src/build.ts'),
+  'src/hooks.ts': read('src/hooks.ts'),
+  'tokens/bindings.json': read('tokens/bindings.json'),
   'package.json': read('package.json'),
   'pnpm-lock.yaml': read('pnpm-lock.yaml'),
-  'tokens.json': source,
+  'tokens/tokens.json': source,
 };
-const bindingsSource = files['bindings.json'];
+const bindingsSource = files['tokens/bindings.json'];
 const tokenAt = (tokens: Tree, path: string): Tree =>
   path.split('.').reduce((group: Tree, key: string) => group[key], tokens);
 
@@ -76,7 +76,7 @@ function fixture(
   for (const name of siblings) mkdirSync(join(directory, name));
   // node_modules entries are links to the real install, so a test can drop or replace one entry.
   const modules = join(tools, 'node_modules');
-  const realModules = join(here, 'node_modules');
+  const realModules = join(here, '..', 'node_modules');
   mkdirSync(modules);
   for (const entry of readdirSync(realModules)) {
     if (installedVersion && entry === 'style-dictionary') continue;
@@ -89,7 +89,7 @@ function fixture(
       JSON.stringify({ version: installedVersion }),
     );
   }
-  return { directory, script: join(tools, 'build.ts') };
+  return { directory, script: join(tools, 'src', 'build.ts') };
 }
 
 const run = (script: string, directory: string, flags = ['--inspect']) =>
@@ -128,9 +128,11 @@ const mutate = (json: string, change: (value: Tree) => void) => {
   change(value);
   return JSON.stringify(value, null, 2);
 };
-const changeSource = (change: (value: Tree) => void) => ({ 'tokens.json': mutate(source, change) });
+const changeSource = (change: (value: Tree) => void) => ({
+  'tokens/tokens.json': mutate(source, change),
+});
 const changeBindings = (change: (value: Tree) => void) => ({
-  'bindings.json': mutate(bindingsSource, change),
+  'tokens/bindings.json': mutate(bindingsSource, change),
 });
 const firstLeaf = (tokens: Tree, group: string) => {
   const walk = (node: Tree, trail: string[]): string | undefined => {
@@ -239,11 +241,14 @@ test('inspect shows the authored font chain and the bound output per platform', 
 });
 
 test('without a flag the runner exits nonzero and writes nothing', (context: TestContext) => {
-  const { directory, generate } = generateFixture(context, { 'bindings.json': null });
+  const { directory, generate } = generateFixture(context, { 'tokens/bindings.json': null });
   const before = snapshot(directory);
   const result = generate();
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /meta-frames-design-tokens\/bindings\.json: bindings missing/);
+  assert.match(
+    result.stderr,
+    /meta-frames-design-tokens\/tokens\/bindings\.json: bindings missing/,
+  );
   assert.deepEqual(snapshot(directory), before);
 });
 
@@ -264,7 +269,7 @@ test('accepts a forward reference (component group before primitives)', (context
     semantic: tokens.semantic,
     primitive: tokens.primitive,
   };
-  const { summary } = acceptsInput(context, { 'tokens.json': JSON.stringify(reordered) });
+  const { summary } = acceptsInput(context, { 'tokens/tokens.json': JSON.stringify(reordered) });
   assert.deepEqual(summary, { light: 184, dark: 184 });
 });
 
@@ -304,7 +309,7 @@ test('accepts an explicit identical light and dark pair', (context: TestContext)
 });
 
 test('one source gives light, dark, light again without a change (rule 4)', async () => {
-  const hooks = await import('./hooks.ts');
+  const hooks = await import('../src/hooks.ts');
   const tree = JSON.parse(source);
   const original = structuredClone(tree);
   const indicator = async (mode: 'light' | 'dark') =>
@@ -331,19 +336,28 @@ const spaceLeaf = firstLeaf(tokens, 'primitive.space');
 for (const [name, changes, expected] of [
   [
     'missing source',
-    { 'tokens.json': null },
-    'meta-frames-design-tokens/tokens.json: source missing',
+    { 'tokens/tokens.json': null },
+    'meta-frames-design-tokens/tokens/tokens.json: source missing',
   ],
-  ['invalid JSON', { 'tokens.json': '{' }, 'meta-frames-design-tokens/tokens.json: invalid JSON'],
+  [
+    'invalid JSON',
+    { 'tokens/tokens.json': '{' },
+    'meta-frames-design-tokens/tokens/tokens.json: invalid JSON',
+  ],
   [
     'falsy source root',
-    { 'tokens.json': 'false' },
-    'meta-frames-design-tokens/tokens.json: root must be an object',
+    { 'tokens/tokens.json': 'false' },
+    'meta-frames-design-tokens/tokens/tokens.json: root must be an object',
   ],
   [
     'duplicate key',
-    { 'tokens.json': source.replace('"white": {', '"white": {"$value": "#FFFFFF"}, "white": {') },
-    'primitive.color.white: duplicate path in meta-frames-design-tokens/tokens.json',
+    {
+      'tokens/tokens.json': source.replace(
+        '"white": {',
+        '"white": {"$value": "#FFFFFF"}, "white": {',
+      ),
+    },
+    'primitive.color.white: duplicate path in meta-frames-design-tokens/tokens/tokens.json',
   ],
   [
     'missing type',
@@ -569,8 +583,8 @@ for (const [name, changes, expected] of [
   ],
   [
     'missing bindings file',
-    { 'bindings.json': null },
-    'meta-frames-design-tokens/bindings.json: bindings missing',
+    { 'tokens/bindings.json': null },
+    'meta-frames-design-tokens/tokens/bindings.json: bindings missing',
   ],
   [
     'binding target missing',
@@ -595,8 +609,10 @@ for (const [name, changes, expected] of [
   ],
   [
     'duplicate key in bindings',
-    { 'bindings.json': bindingsSource.replace('"outputs": {', '"outputs": {}, "outputs": {') },
-    'outputs: duplicate path in meta-frames-design-tokens/bindings.json',
+    {
+      'tokens/bindings.json': bindingsSource.replace('"outputs": {', '"outputs": {}, "outputs": {'),
+    },
+    'outputs: duplicate path in meta-frames-design-tokens/tokens/bindings.json',
   ],
   [
     'missing dashboard section',
@@ -945,7 +961,7 @@ test('rejects a mode declaration on a number inside semantic.color', (context: T
 });
 
 test('rejects distinct token paths that produce the same public names', async () => {
-  const { analyze } = await import('./hooks.ts');
+  const { analyze } = await import('../src/hooks.ts');
   const tree = JSON.parse(source);
   tree.component['button-font'] = { size: { ...tree.component.button['font-size'] } };
   const { errors } = analyze(tree, JSON.parse(bindingsSource));
@@ -1117,7 +1133,7 @@ test('keeps zero and fractional dimensions through per-leaf unit changes', (cont
 });
 
 test('reports the dimension path when the CSS transform receives an unexpected unit', async () => {
-  const { cssDimension } = await import('./hooks.ts');
+  const { cssDimension } = await import('../src/hooks.ts');
   assert.throws(
     () => cssDimension(['component', 'button', 'gap'], '4em'),
     /component\.button\.gap:.*4em/,
@@ -1125,7 +1141,7 @@ test('reports the dimension path when the CSS transform receives an unexpected u
 });
 
 test('applies suffixed opacity and line-height bounds to primitives', async () => {
-  const { validateProfile } = await import('./hooks.ts');
+  const { validateProfile } = await import('../src/hooks.ts');
   const { errors } = validateProfile({
     primitive: {
       $type: 'number',
@@ -1160,7 +1176,7 @@ test('rejects a bound text role that lacks a required line height', (context: Te
 });
 
 test('checks the presence and type of each text role member for both platforms', async () => {
-  const { analyze } = await import('./hooks.ts');
+  const { analyze } = await import('../src/hooks.ts');
   const tree = JSON.parse(source);
   const bindings = JSON.parse(bindingsSource);
   const members = {
@@ -1242,13 +1258,13 @@ test('headers carry the source digest and one generator digest, with no timestam
   for (const text of [css, dart]) {
     assert.ok(
       text.includes(
-        `Source: meta-frames-design-tokens/tokens.json (not in Git), sha256 ${sourceDigest}`,
+        `Source: meta-frames-design-tokens/tokens/tokens.json (not in Git), sha256 ${sourceDigest}`,
       ),
     );
     assert.doesNotMatch(text, /\d{4}-\d{2}-\d{2}|\/Users\/|\/tmp\//);
     assert.ok(
       text.includes(
-        'Regenerate: node meta-frames-design-tokens/build.ts. Verify: node meta-frames-design-tokens/build.ts --check',
+        'Regenerate: node meta-frames-design-tokens/src/build.ts. Verify: node meta-frames-design-tokens/src/build.ts --check',
       ),
     );
   }
@@ -1324,7 +1340,7 @@ test('an invalid graph leaves both outputs byte-identical', (context: TestContex
   assert.equal(made.generate().status, 0);
   const bytes = outputBytes(made);
   writeFileSync(
-    join(made.directory, 'meta-frames-design-tokens/tokens.json'),
+    join(made.directory, 'meta-frames-design-tokens/tokens/tokens.json'),
     mutate(source, (tree: Tree) => {
       tokenAt(tree, canvas).$value = `{${surface}}`;
     }),
@@ -1394,7 +1410,7 @@ test('a failed second rename reports the error first, removes the temporary file
     `error: ${DART_OUTPUT}: write failed (simulated Dart rename failure)`,
   );
   assert.match(result.stderr, /Pending temporary files removed/);
-  assert.match(result.stderr, /Rerun node meta-frames-design-tokens\/build\.ts, then --check/);
+  assert.match(result.stderr, /Rerun node meta-frames-design-tokens\/src\/build\.ts, then --check/);
   assert.equal(readdirSync(dirname(made.outputs.dart)).length, 0);
   assert.equal(readdirSync(dirname(made.outputs.css)).length, 1);
   assert.equal(
@@ -1481,7 +1497,7 @@ test('the source digest comes from the same read as the parse', (context: TestCo
   const changed = mutate(source, (tree: Tree) => {
     tree.$description = 'changed';
   });
-  writeFileSync(join(made.directory, 'meta-frames-design-tokens/tokens.json'), changed);
+  writeFileSync(join(made.directory, 'meta-frames-design-tokens/tokens/tokens.json'), changed);
   assert.equal(made.generate().status, 0);
   assert.ok(String(readFileSync(made.outputs.dart)).includes(`sha256 ${sha(changed)}`));
 });
@@ -1687,9 +1703,13 @@ test('bindings that change after the startup read do not reach the digest or the
   assert.equal(result.status, 0, result.stderr);
   const css = String(readFileSync(made.outputs.css));
   assert.match(css, /--background: var\(--mf-semantic-color-bg-canvas\);/);
-  const original = ['bindings.json', 'build.ts', 'hooks.ts', 'package.json', 'pnpm-lock.yaml'].map(
-    (name): [string, Buffer] => [name, Buffer.from(files[name]!)],
-  );
+  const original = [
+    'package.json',
+    'pnpm-lock.yaml',
+    'src/build.ts',
+    'src/hooks.ts',
+    'tokens/bindings.json',
+  ].map((name): [string, Buffer] => [name, Buffer.from(files[name]!)]);
   assert.equal(/Generator: sha256 ([0-9a-f]{64})/.exec(css)![1], framedDigest(original));
 });
 
@@ -1727,8 +1747,8 @@ test('each generator input is read once during a generate run', (context: TestCo
 
 test('an unsupported extension in a later hook import keeps the runner diagnostic', (context: TestContext) => {
   const { directory, script } = fixture(context, {
-    'hooks.ts': 'await import("./unsupported.txt");\n' + files['hooks.ts'],
-    'unsupported.txt': '',
+    'src/hooks.ts': 'await import("./unsupported.txt");\n' + files['src/hooks.ts'],
+    'src/unsupported.txt': '',
   });
   const before = snapshot(directory);
   const result = run(script, directory, []);

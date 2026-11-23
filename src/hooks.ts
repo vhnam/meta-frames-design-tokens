@@ -1,4 +1,4 @@
-// Style Dictionary hooks and validators for meta-frames-design-tokens/tokens.json.
+// Style Dictionary hooks and validators for meta-frames-design-tokens/tokens/tokens.json.
 // Source profile, reference graph, mode projection, bindings checks, native value transforms and
 // the CSS and Dart formats (one fragment per mode). No file writes: build.ts owns the filesystem.
 import StyleDictionary from 'style-dictionary';
@@ -785,7 +785,7 @@ export function headerLines({
     'GENERATED FILE. DO NOT EDIT.',
     `Source: ${sourcePath} (not in Git), sha256 ${sourceDigest}`,
     `Generator: sha256 ${generatorDigest} of ${generatorFiles.join(', ')} (meta-frames-design-tokens/, sorted by path)`,
-    'Regenerate: node meta-frames-design-tokens/build.ts. Verify: node meta-frames-design-tokens/build.ts --check',
+    'Regenerate: node meta-frames-design-tokens/src/build.ts. Verify: node meta-frames-design-tokens/src/build.ts --check',
   ];
 }
 

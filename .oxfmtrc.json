@@ -11,5 +11,5 @@
       }
     }
   ],
-  "ignorePatterns": ["tokens.json", "bindings.json", "pnpm-lock.yaml"]
+  "ignorePatterns": ["tokens/**", "pnpm-lock.yaml"]
 }

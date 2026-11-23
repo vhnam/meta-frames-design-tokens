@@ -10,5 +10,5 @@
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["hooks.ts", "build.ts", "oracle.ts", "build.test.ts", "oracle.test.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts"]
 }
