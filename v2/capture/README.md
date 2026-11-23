@@ -20,6 +20,7 @@ node meta-frames-design-tokens/v2/capture/dashboard-capture.ts <outDir>
 node meta-frames-design-tokens/v2/capture/compare.ts <outDir>/dashboard-resolved.json <outDir>/app-resolved.json
 ```
 
+- Write capture output outside `v2/evidence` (for example a scratch directory). `v2/evidence/*/approved/` holds the reviewed references.
 - `--packages` must be an absolute path. A relative path fails with "must be an absolute path".
 - The Dart test runs from its own folder. No file is copied into the app tree.
 - Env `DASHBOARD_DIR` points the dashboard capture at another checkout. Env `APP_DIR` points the app capture at another folder that holds `assets/fonts/` (used for the font probes).
