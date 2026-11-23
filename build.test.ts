@@ -25,13 +25,11 @@ const here = import.meta.dirname;
 const read = (name: string) => readFileSync(join(here, name), "utf8");
 const source = read("tokens.json");
 const files: Record<string, string> = {
-  "build.mjs": read("build.mjs"),
   "build.ts": read("build.ts"),
   "hooks.ts": read("hooks.ts"),
   "bindings.json": read("bindings.json"),
   "package.json": read("package.json"),
-  "package-lock.json": read("package-lock.json"),
-  ".node-version": read(".node-version"),
+  "pnpm-lock.yaml": read("pnpm-lock.yaml"),
   "tokens.json": source,
 };
 const bindingsSource = files["bindings.json"];
@@ -53,9 +51,9 @@ function snapshot(root: string): Record<string, string> {
   return state;
 }
 
-type FixtureOptions = { siblings?: string[]; installedLock?: boolean; installedVersion?: string };
+type FixtureOptions = { siblings?: string[]; installedVersion?: string };
 
-function fixture(context: TestContext, changes: Changes = {}, { siblings = ["meta-frames-dashboard", "meta-frames-app"], installedLock = true, installedVersion }: FixtureOptions = {}) {
+function fixture(context: TestContext, changes: Changes = {}, { siblings = ["meta-frames-dashboard", "meta-frames-app"], installedVersion }: FixtureOptions = {}) {
   const directory = mkdtempSync(join(tmpdir(), "mf-token-test-"));
   context.after(() => rmSync(directory, { recursive: true, force: true }));
   const tools = join(directory, "meta-frames-design-tokens");
@@ -70,15 +68,14 @@ function fixture(context: TestContext, changes: Changes = {}, { siblings = ["met
   const realModules = join(here, "node_modules");
   mkdirSync(modules);
   for (const entry of readdirSync(realModules)) {
-    if (entry === ".package-lock.json" || (installedVersion && entry === "style-dictionary")) continue;
+    if (installedVersion && entry === "style-dictionary") continue;
     symlinkSync(join(realModules, entry), join(modules, entry));
   }
-  if (installedLock) copyFileSync(join(realModules, ".package-lock.json"), join(modules, ".package-lock.json"));
   if (installedVersion) {
     mkdirSync(join(modules, "style-dictionary"));
     writeFileSync(join(modules, "style-dictionary", "package.json"), JSON.stringify({ version: installedVersion }));
   }
-  return { directory, script: join(tools, "build.mjs") };
+  return { directory, script: join(tools, "build.ts") };
 }
 
 const run = (script: string, directory: string, flags = ["--inspect"]) =>
@@ -344,9 +341,9 @@ for (const [name, changes, expected] of ([
   ["font path without a role", changeBindings((value: Tree) => { delete value.fonts.paths["semantic.text.data.font-family"]; }), "semantic.text.data.font-family: font-family path has no role"],
   ["unknown font role", changeBindings((value: Tree) => { value.fonts.paths["semantic.text.data.font-family"] = "serif"; }), 'bindings.json: fonts.paths semantic.text.data.font-family: unknown role "serif"'],
   ["font path that is not a font", changeBindings((value: Tree) => { value.fonts.paths[canvas] = "body"; }), `bindings.json: fonts.paths ${canvas}: not a fontFamily leaf`],
-  ["missing Node pin", { ".node-version": null }, "meta-frames-design-tokens/.node-version: Node pin file missing"],
-  ["Node pin mismatch", { ".node-version": "0.0.0\n" }, "meta-frames-design-tokens/.node-version: needs Node 0.0.0"],
-  ["lockfile version mismatch", { "package-lock.json": mutate(files["package-lock.json"], (lock: Tree) => { lock.packages["node_modules/style-dictionary"].version = "0.0.1"; }) }, "meta-frames-design-tokens/package-lock.json: node_modules/style-dictionary is 0.0.1"],
+  ["missing engines.node", { "package.json": mutate(files["package.json"], (manifest: Tree) => { delete manifest.engines; }) }, "meta-frames-design-tokens/package.json: engines.node must be an exact version, found undefined"],
+  ["engines.node that is not exact", { "package.json": mutate(files["package.json"], (manifest: Tree) => { manifest.engines.node = ">=26"; }) }, 'meta-frames-design-tokens/package.json: engines.node must be an exact version, found ">=26"'],
+  ["engines.node mismatch", { "package.json": mutate(files["package.json"], (manifest: Tree) => { manifest.engines.node = "0.0.0"; }) }, "meta-frames-design-tokens/package.json: engines.node needs Node 0.0.0, running"],
   ["range in the manifest", { "package.json": mutate(files["package.json"], (manifest: Tree) => { manifest.dependencies["style-dictionary"] = "^5.6.0"; }) }, "meta-frames-design-tokens/package.json: style-dictionary must be pinned to an exact version"],
 ] as [string, Changes, string][])) {
   test(`rejects ${name}`, (context: TestContext) => rejectsInput(context, changes, expected));
@@ -354,10 +351,6 @@ for (const [name, changes, expected] of ([
 
 test("rejects a wrong installed version", (context: TestContext) => {
   rejectsInput(context, {}, "meta-frames-design-tokens/node_modules/style-dictionary: installed style-dictionary is 0.0.0", { installedVersion: "0.0.0" });
-});
-
-test("rejects an install that did not come from npm ci", (context: TestContext) => {
-  rejectsInput(context, {}, "meta-frames-design-tokens/node_modules/.package-lock.json: file missing", { installedLock: false });
 });
 
 for (const missing of ["meta-frames-dashboard", "meta-frames-app"]) {
@@ -657,7 +650,7 @@ test("headers carry the source digest and one generator digest, with no timestam
   for (const text of [css, dart]) {
     assert.ok(text.includes(`Source: meta-frames-design-tokens/tokens.json (not in Git), sha256 ${sourceDigest}`));
     assert.doesNotMatch(text, /\d{4}-\d{2}-\d{2}|\/Users\/|\/tmp\//);
-    assert.ok(text.includes("Regenerate: node meta-frames-design-tokens/build.mjs. Verify: node meta-frames-design-tokens/build.mjs --check"));
+    assert.ok(text.includes("Regenerate: node meta-frames-design-tokens/build.ts. Verify: node meta-frames-design-tokens/build.ts --check"));
   }
   assert.equal(generator(css), generator(dart));
   assert.ok(!css.includes("\r") && css.endsWith("\n") && dart.endsWith("\n"));
@@ -770,7 +763,7 @@ test("a failed second rename reports the error first, removes the temporary file
   assert.equal(result.status, 1);
   assert.equal(result.stderr.split("\n")[0], `error: ${DART_OUTPUT}: write failed (simulated Dart rename failure)`);
   assert.match(result.stderr, /Pending temporary files removed/);
-  assert.match(result.stderr, /Rerun node meta-frames-design-tokens\/build\.mjs, then --check/);
+  assert.match(result.stderr, /Rerun node meta-frames-design-tokens\/build\.ts, then --check/);
   assert.equal(readdirSync(dirname(made.outputs.dart)).length, 0);
   assert.equal(readdirSync(dirname(made.outputs.css)).length, 1);
   assert.equal(readdirSync(join(made.directory, "meta-frames-design-tokens")).includes(".build.lock"), false);
@@ -965,14 +958,14 @@ test("bindings that change after the startup read do not reach the digest or the
   assert.equal(result.status, 0, result.stderr);
   const css = String(readFileSync(made.outputs.css));
   assert.match(css, /--background: var\(--mf-semantic-color-bg-canvas\);/);
-  const original = ["bindings.json", "build.mjs", "build.ts", "hooks.ts", "package-lock.json", "package.json", ".node-version"].map((name): [string, Buffer] => [name, Buffer.from(files[name]!)]);
+  const original = ["bindings.json", "build.ts", "hooks.ts", "package.json", "pnpm-lock.yaml"].map((name): [string, Buffer] => [name, Buffer.from(files[name]!)]);
   assert.equal(/Generator: sha256 ([0-9a-f]{64})/.exec(css)![1], framedDigest(original));
 });
 
 test("each generator input is read once during a generate run", (context: TestContext) => {
   const made = faultFixture(context, `
     const read = fs.readFileSync;
-    const names = [".node-version", "bindings.json", "build.mjs", "build.ts", "hooks.ts", "package-lock.json", "package.json"];
+    const names = ["bindings.json", "build.ts", "hooks.ts", "package.json", "pnpm-lock.yaml"];
     const seen = [];
     fs.readFileSync = (target, ...rest) => {
       const name = String(target).split("/").pop();
@@ -986,23 +979,10 @@ test("each generator input is read once during a generate run", (context: TestCo
   assert.equal(result.status, 0, result.stderr);
   const reads = readFileSync(log, "utf8").split("\n");
   const count = (name: string) => reads.filter((read) => read === name).length;
-  // The four data files are read once, by the startup snapshot. build.mjs, build.ts and hooks.ts are read
+  // The three data files are read once, by the startup snapshot. build.ts and hooks.ts are read
   // once by the snapshot and once by Node's module loader (the documented limit).
-  for (const name of [".node-version", "bindings.json", "package-lock.json", "package.json"]) assert.equal(count(name), 1, name);
-  for (const name of ["build.mjs", "build.ts", "hooks.ts"]) assert.ok(count(name) >= 1 && count(name) <= 2, name);
-});
-
-test("a Node without type stripping reports the entry error and writes nothing", (context: TestContext) => {
-  const made = generateFixture(context);
-  const before = snapshot(made.directory);
-  const result = spawnSync(process.execPath, ["--no-strip-types", made.script], { cwd: made.directory, encoding: "utf8" });
-  assert.equal(result.status, 1, result.stderr);
-  assert.ok(result.stderr.startsWith("error: meta-frames-design-tokens/.node-version: this Node cannot run TypeScript"), result.stderr);
-  assert.doesNotMatch(result.stderr, /ERR_UNKNOWN_FILE_EXTENSION|\n\s+at /);
-  assert.equal(result.stdout, "");
-  assert.deepEqual(snapshot(made.directory), before);
-  assert.throws(() => readFileSync(made.outputs.css));
-  assert.throws(() => readFileSync(made.outputs.dart));
+  for (const name of ["bindings.json", "package.json", "pnpm-lock.yaml"]) assert.equal(count(name), 1, name);
+  for (const name of ["build.ts", "hooks.ts"]) assert.ok(count(name) >= 1 && count(name) <= 2, name);
 });
 
 test("an unsupported extension in a later hook import keeps the runner diagnostic", (context: TestContext) => {
@@ -1146,7 +1126,7 @@ test("rejects a font role property and a scalar that are not valid custom proper
   assert.ok(scalarMade.generate().stderr.includes('bindings.json: dashboard public name "--Radius"'));
 });
 
-for (const [file, label] of [[".node-version", "Node pin"], ["package-lock.json", "lockfile"], ["package.json", "manifest"]]) {
+for (const [file, label] of [["pnpm-lock.yaml", "lockfile"], ["package.json", "manifest"]]) {
   test(`reports the cause when the ${label} cannot be read (not "missing")`, (context: TestContext) => {
     const made = faultFixture(context, `
       const read = fs.readFileSync;
@@ -1167,7 +1147,7 @@ for (const [file, label] of [[".node-version", "Node pin"], ["package-lock.json"
 }
 
 test("a missing file is still reported as missing, with no read error", (context: TestContext) => {
-  rejectsInput(context, { "package-lock.json": null }, "meta-frames-design-tokens/package-lock.json: file missing");
+  rejectsInput(context, { "pnpm-lock.yaml": null }, "meta-frames-design-tokens/pnpm-lock.yaml: file missing");
 });
 
 test("generates and checks through a linked checkout root", (context: TestContext) => {

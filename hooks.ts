@@ -1,6 +1,6 @@
 // Style Dictionary hooks and validators for meta-frames-design-tokens/tokens.json.
 // Source profile, reference graph, mode projection, bindings checks, native value transforms and
-// the CSS and Dart formats (one fragment per mode). No file writes: build.mjs owns the filesystem.
+// the CSS and Dart formats (one fragment per mode). No file writes: build.ts owns the filesystem.
 import StyleDictionary from "style-dictionary";
 import type { DesignTokens, Dictionary, PreprocessedTokens, TransformedToken } from "style-dictionary/types";
 
@@ -615,7 +615,7 @@ export function dartValue(type: string, value: unknown): string {
   }
 }
 
-// ---- formats: one fragment per mode, joined by build.mjs ----
+// ---- formats: one fragment per mode, joined by build.ts ----
 
 const emitted = (dictionary: Dictionary): TransformedToken[] => dictionary.allTokens.filter((token) => token.path[0] !== "primitive");
 const byPath = (dictionary: Dictionary): Map<string, TransformedToken> => new Map(dictionary.allTokens.map((token) => [token.path.join("."), token]));
@@ -625,7 +625,7 @@ export function headerLines({ sourcePath, sourceDigest, generatorDigest, generat
     "GENERATED FILE. DO NOT EDIT.",
     `Source: ${sourcePath} (not in Git), sha256 ${sourceDigest}`,
     `Generator: sha256 ${generatorDigest} of ${generatorFiles.join(", ")} (meta-frames-design-tokens/, sorted by path)`,
-    "Regenerate: node meta-frames-design-tokens/build.mjs. Verify: node meta-frames-design-tokens/build.mjs --check",
+    "Regenerate: node meta-frames-design-tokens/build.ts. Verify: node meta-frames-design-tokens/build.ts --check",
   ];
 }
 

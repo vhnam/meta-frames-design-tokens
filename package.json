@@ -2,7 +2,13 @@
   "name": "meta-frames-design-tokens",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@12.21.0",
+  "engines": {
+    "node": "26.13.1"
+  },
   "scripts": {
+    "build": "node build.ts",
+    "check": "node build.ts --check",
     "typecheck": "tsc -p .",
     "test": "node --test build.test.ts oracle.test.ts"
   },

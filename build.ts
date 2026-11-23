@@ -19,16 +19,13 @@ const scriptDir = import.meta.dirname;
 const workspaceRoot = path.resolve(scriptDir, "..");
 const sourceFile = path.join(scriptDir, "tokens.json");
 const bindingsFile = path.join(scriptDir, "bindings.json");
-const nodeVersionFile = path.join(scriptDir, ".node-version");
 const manifestFile = path.join(scriptDir, "package.json");
-const lockFile = path.join(scriptDir, "package-lock.json");
 const installedDir = path.join(scriptDir, "node_modules", "style-dictionary");
-const installedLockFile = path.join(scriptDir, "node_modules", ".package-lock.json");
 const lockPath = path.join(scriptDir, ".build.lock");
 // Files that decide the output besides the source. Sorted by relative path in the digest.
-const GENERATOR_FILES = [".node-version", "bindings.json", "build.mjs", "build.ts", "hooks.ts", "package-lock.json", "package.json"];
-// One read of the seven generator inputs at startup. Every later use (checks, parse, digest) takes
-// these bytes. Limit: build.mjs, build.ts and hooks.ts are also loaded by Node itself and can change between
+const GENERATOR_FILES = ["bindings.json", "build.ts", "hooks.ts", "package.json", "pnpm-lock.yaml"];
+// One read of the five generator inputs at startup. Every later use (checks, parse, digest) takes
+// these bytes. Limit: build.ts and hooks.ts are also loaded by Node itself and can change between
 // this read and that load.
 // Only ENOENT means missing (null). Any other read error is kept as the Error and reported where
 // the file is used.
@@ -51,20 +48,28 @@ const isObject = (value: unknown): value is JsonObject => typeof value === "obje
 // ---- startup ----
 
 function assertNodeVersion(): void {
-  const pinBytes = loadBytes(nodeVersionFile);
-  if (pinBytes instanceof Error) {
-    console.error(`error: ${unreadable(nodeVersionFile, pinBytes)}`);
+  const manifestBytes = loadBytes(manifestFile);
+  if (manifestBytes instanceof Error) {
+    console.error(`error: ${unreadable(manifestFile, manifestBytes)}`);
     process.exit(1);
   }
-  if (!pinBytes) {
-    console.error(`error: ${relative(nodeVersionFile)}: Node pin file missing`);
+  if (!manifestBytes) {
+    console.error(`error: ${relative(manifestFile)}: file missing`);
     process.exit(1);
   }
-  const pin = pinBytes.toString("utf8").trim();
+  let pin: unknown;
+  try {
+    pin = ((JSON.parse(manifestBytes.toString("utf8")) as JsonObject).engines as JsonObject | undefined)?.node;
+  } catch (error) {
+    console.error(`error: ${relative(manifestFile)}: invalid JSON (${messageOf(error)})`);
+    process.exit(1);
+  }
+  if (typeof pin !== "string" || !/^\d+\.\d+\.\d+$/.test(pin)) {
+    console.error(`error: ${relative(manifestFile)}: engines.node must be an exact version, found ${pin === undefined ? "undefined" : JSON.stringify(pin)}`);
+    process.exit(1);
+  }
   if (process.version !== `v${pin}`) {
-    console.error(
-      `error: ${relative(nodeVersionFile)}: needs Node ${pin}, running ${process.version}`,
-    );
+    console.error(`error: ${relative(manifestFile)}: engines.node needs Node ${pin}, running ${process.version}`);
     process.exit(1);
   }
 }
@@ -91,27 +96,24 @@ function readPackageJson(file: string, errors: string[]): JsonObject | null {
 function preflight(): string[] {
   const errors: string[] = [];
   const manifest = readPackageJson(manifestFile, errors);
-  const lock = readPackageJson(lockFile, errors);
   const installed = readPackageJson(path.join(installedDir, "package.json"), errors);
   const wanted = (manifest?.dependencies as JsonObject | undefined)?.["style-dictionary"] as string | undefined;
   if (manifest && !/^\d+\.\d+\.\d+$/.test(wanted ?? "")) {
     errors.push(`${relative(manifestFile)}: style-dictionary must be pinned to an exact version, found ${JSON.stringify(wanted)}`);
   }
-  const locked = ((lock?.packages as JsonObject | undefined)?.["node_modules/style-dictionary"] as JsonObject | undefined)?.version;
-  if (lock && locked !== wanted) {
-    errors.push(`${relative(lockFile)}: node_modules/style-dictionary is ${locked}, ${relative(manifestFile)} wants ${wanted}`);
-  }
   if (installed && installed.version !== wanted) {
-    errors.push(`${relative(installedDir)}: installed style-dictionary is ${installed.version}, ${relative(manifestFile)} wants ${wanted}. Run npm ci in meta-frames-design-tokens/`);
+    errors.push(`${relative(installedDir)}: installed style-dictionary is ${installed.version}, ${relative(manifestFile)} wants ${wanted}. Run pnpm install --frozen-lockfile in meta-frames-design-tokens/`);
   }
-  if (!fs.existsSync(installedLockFile)) {
-    errors.push(`${relative(installedLockFile)}: file missing (the install did not come from npm ci)`);
-  }
-  for (const name of ["build.mjs", "build.ts", "hooks.ts"]) {
+  for (const name of ["build.ts", "hooks.ts"]) {
     const bytes = inputs.get(path.join(scriptDir, name));
     if (!bytes || bytes instanceof Error) {
       errors.push(bytes instanceof Error ? unreadable(path.join(scriptDir, name), bytes) : `${name}: file missing`);
     }
+  }
+  const lockFile = path.join(scriptDir, "pnpm-lock.yaml");
+  const lockBytes = inputs.get(lockFile);
+  if (!lockBytes || lockBytes instanceof Error) {
+    errors.push(lockBytes instanceof Error ? unreadable(lockFile, lockBytes) : `${relative(lockFile)}: file missing`);
   }
   for (const name of SIBLINGS) {
     const directory = path.join(workspaceRoot, name);
@@ -228,7 +230,7 @@ function parseFlags(): string | undefined {
   const unknown = flags.filter((flag) => !known.includes(flag));
   if (unknown.length || flags.length > 1) {
     console.error(
-      `usage: node build.mjs [--inspect | --check]  (unknown: ${unknown.join(" ") || "extra flags"})`,
+      `usage: node build.ts [--inspect | --check]  (unknown: ${unknown.join(" ") || "extra flags"})`,
     );
     process.exit(2);
   }
@@ -489,7 +491,7 @@ function writeOutputs(files: Outputs): void {
     } else {
       console.error("Pending temporary files removed.");
     }
-    console.error("Rerun node meta-frames-design-tokens/build.mjs, then --check.");
+    console.error("Rerun node meta-frames-design-tokens/build.ts, then --check.");
     process.exit(1);
   }
 }
@@ -596,7 +598,7 @@ async function main(): Promise<void> {
     for (const { file, state } of bad) console.error(`error: ${relative(file)}: ${state}`);
     for (const { message } of links) console.error(`error: ${message}`);
     if (bad.length || links.length) {
-      console.error("Run node meta-frames-design-tokens/build.mjs, then --check again.");
+      console.error("Run node meta-frames-design-tokens/build.ts, then --check again.");
       process.exit(1);
     }
     console.log(`ok: ${states.length} generated files match`);
