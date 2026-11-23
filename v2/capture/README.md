@@ -1,12 +1,12 @@
 # Design tokens v2 capture harness (Slice 4)
 
-Not in Git. Read-only on both clients. Disposable scripts, same idea as `baseline/capture/` (frozen).
+Tracked in the `meta-frames-design-tokens` Git repository. Read-only on both clients. Disposable scripts, same idea as `baseline/capture/` (frozen).
 
 ## Files
 
-- `dashboard-capture.mjs`: copy of `baseline/capture/dashboard-capture.mjs` (sha256 `a45ae031992d…`), extended.
+- `dashboard-capture.ts`: copy of `baseline/capture/dashboard-capture.mjs` (sha256 `a45ae031992d…`), extended.
 - `app_capture_test.dart`: copy of `baseline/capture/app_baseline_test.dart` (sha256 `4b06cda12526…`), extended.
-- `compare.mjs`: compares a capture JSON with the expectations in `../../oracle.ts`.
+- `compare.ts`: compares a capture JSON with the expectations in `../../oracle.ts`.
 - Property names, spec stacks and the expected values come from `oracle.ts`. It imports nothing from the generator.
 
 ## Run
@@ -14,16 +14,16 @@ Not in Git. Read-only on both clients. Disposable scripts, same idea as `baselin
 From the workspace root.
 
 ```
-node meta-frames-design-tokens/v2/capture/dashboard-capture.mjs <outDir>
+node meta-frames-design-tokens/v2/capture/dashboard-capture.ts <outDir>
 (cd meta-frames-app && FLUTTER_ROOT=<flutter sdk> CAPTURE_OUT=<absolute outDir> flutter test \
   --packages=$PWD/.dart_tool/package_config.json ../meta-frames-design-tokens/v2/capture/app_capture_test.dart)
-node meta-frames-design-tokens/v2/capture/compare.mjs <outDir>/dashboard-resolved.json <outDir>/app-resolved.json
+node meta-frames-design-tokens/v2/capture/compare.ts <outDir>/dashboard-resolved.json <outDir>/app-resolved.json
 ```
 
 - `--packages` must be an absolute path. A relative path fails with "must be an absolute path".
 - The Dart test runs from its own folder. No file is copied into the app tree.
 - Env `DASHBOARD_DIR` points the dashboard capture at another checkout. Env `APP_DIR` points the app capture at another folder that holds `assets/fonts/` (used for the font probes).
-- `compare.mjs` exits 0 for no mismatch, 1 for mismatches (one line each: scope, mode, property, expected, actual), 2 for unreadable input.
+- `compare.ts` exits 0 for no mismatch, 1 for mismatches (one line each: scope, mode, property, expected, actual), 2 for unreadable input.
 
 ## Dashboard capture (`dashboard-resolved.json`, schema 2)
 
@@ -65,7 +65,7 @@ node meta-frames-design-tokens/v2/capture/compare.mjs <outDir>/dashboard-resolve
 - Goldens: scaffold, card, dialog, nav selected, nav idle, disabled controls, body text, data text, for both modes at text scale 1.0 and 2.0 (32 files, 400x640, device pixel ratio 1.0). The test writes them, it does not compare.
 - Fails when a font asset is missing, or when a family renders with the same width as an unregistered one (the asset did not load).
 
-## What `compare.mjs` checks
+## What `compare.ts` checks
 
 - Dashboard: every `--mf-` property and public property in both modes, each public colour swatch, sidebar states, the focus ring (`--ring` at 50%, applied once), `bg-dots` size and colour, font stacks and loaded faces, `text-xs` to `text-3xl` size, line height and weight at 16 px and 20 px, and `p-*` padding from `--spacing`.
   Not compared (no expectation in the oracle): `rounded-*` utilities and `text-4xl`.
@@ -74,7 +74,7 @@ node meta-frames-design-tokens/v2/capture/compare.mjs <outDir>/dashboard-resolve
 
 ## Probes
 
-`meta-frames-design-tokens/v2/evidence/pre-adoption/probes/run-probes.mjs [listener|fonts]` runs the listener and font probes. A fake `vp` (`fake-vp.mjs`) opens real sockets. Result lines are in `pre-adoption/probes.txt`.
+`node meta-frames-design-tokens/v2/capture/probes/run-probes.ts [listener|fonts]` runs the listener and font probes. A fake `vp` (`probes/fake-vp.ts`) opens real sockets. Result lines are in `pre-adoption/probes.txt`.
 Node has no `reusePort` on macOS (`ENOTSUP`), so the two same-group listeners use one IPv4 and one IPv6 socket in two processes of the spawned group.
 
 ## Open dependencies

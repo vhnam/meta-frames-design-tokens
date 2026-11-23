@@ -1,26 +1,29 @@
 // Stand-in for `vp dev` in the listener probes. Opens real sockets on port 5199 as FAKE_VP_MODE says.
 import { spawn } from 'node:child_process';
+import type { ChildProcess } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import http from 'node:http';
+import type { Server } from 'node:http';
+import type { ListenOptions } from 'node:net';
 import path from 'node:path';
 
 const mode = process.env.FAKE_VP_MODE;
 const PORT = 5199;
-const listen = (host, options = {}, onRequest = () => {}) => new Promise((resolve) => {
-  const server = http.createServer((request, response) => {
+const listen = (host: string, options: Partial<ListenOptions> & { ipv6Only?: boolean } = {}, onRequest: (server: Server) => void = () => {}): Promise<Server> => new Promise((resolve) => {
+  const server: Server = http.createServer((request, response) => {
     response.writeHead(200, { 'content-type': 'text/html' });
     response.end('<html><body>probe</body></html>');
     onRequest(server);
   });
   server.listen({ port: PORT, host, ...options }, () => resolve(server));
 });
-const swap = (server, next) => setTimeout(async () => {
+const swap = (server: Server, next?: () => Promise<unknown>) => setTimeout(async () => {
   server.closeAllConnections();
   await new Promise((resolve) => server.close(resolve));
   if (next) await next();
 }, 100);
 const announce = () => console.log('  Local:   http://127.0.0.1:5199/');
-const spawnChild = (childMode, detached) => new Promise((resolve) => {
+const spawnChild = (childMode: string, detached: boolean): Promise<ChildProcess> => new Promise((resolve) => {
   const child = spawn(process.execPath, [new URL(import.meta.url).pathname], {
     env: { ...process.env, FAKE_VP_MODE: childMode }, stdio: ['ignore', 'pipe', 'inherit'], detached,
   });
@@ -47,7 +50,7 @@ if (mode === 'owned' || mode === 'lsof-fail' || mode === 'ps-fail') {
   console.log('second listener ready');
 } else if (mode === 'foreign-group') {
   const child = await spawnChild('foreign', true); // own session, so its own process group
-  writeFileSync(path.join(process.env.FAKE_VP_DIR, 'foreign.pid'), String(child.pid));
+  writeFileSync(path.join(process.env.FAKE_VP_DIR!, 'foreign.pid'), String(child.pid));
   announce();
 } else if (mode === 'foreign') {
   await listen('127.0.0.1');

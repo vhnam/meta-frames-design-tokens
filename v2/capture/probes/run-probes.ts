@@ -1,5 +1,5 @@
-// Slice 4 probes. Run from the workspace root: node design-tokens/v2/evidence/pre-adoption/probes/run-probes.mjs [listener|fonts]
-// Listener probes open real sockets through a fake `vp` (fake-vp.mjs) and run the real dashboard-capture.mjs.
+// Slice 4 probes. Run from the workspace root: node meta-frames-design-tokens/v2/capture/probes/run-probes.ts [listener|fonts]
+// Listener probes open real sockets through a fake `vp` (fake-vp.ts) and run the real dashboard-capture.ts.
 // Font probes run the real captures against a temporary dashboard copy or a temporary app asset folder.
 // Each failing probe must exit nonzero and write nothing. Prints one line per probe, exits 1 if any probe misbehaves.
 import { spawn, spawnSync } from 'node:child_process';
@@ -8,28 +8,30 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 const here = import.meta.dirname;
-const root = path.resolve(here, '../../../../..');
-const capture = path.join(root, 'design-tokens/v2/capture/dashboard-capture.mjs');
-const appTest = path.join(root, 'design-tokens/v2/capture/app_capture_test.dart');
+const root = path.resolve(here, '../../../..'); // the workspace root: v2/capture/probes is four levels below it
+const capture = path.join(here, '..', 'dashboard-capture.ts');
+const appTest = path.join(here, '..', 'app_capture_test.dart');
 const workDir = mkdtempSync(path.join(tmpdir(), 'mf-probes-'));
 let failures = 0;
-const report = (name, passed, detail) => {
+const report = (name: string, passed: boolean, detail: string): void => {
   if (!passed) failures += 1;
   console.log(`${passed ? 'PASS' : 'FAIL'} ${name}: ${detail}`);
 };
 
-const shim = (name, body) => {
+const shim = (name: string, body: string): void => {
   mkdirSync(path.join(workDir, 'bin'), { recursive: true });
   const file = path.join(workDir, 'bin', name);
   writeFileSync(file, `#!/bin/sh\n${body}\n`);
   chmodSync(file, 0o755);
 };
-shim('vp', `exec "${process.execPath}" "${path.join(here, 'fake-vp.mjs')}"`);
+shim('vp', `exec "${process.execPath}" "${path.join(here, 'fake-vp.ts')}"`);
 
 const portListeners = () => spawnSync('lsof', ['-nP', '-iTCP:5199', '-sTCP:LISTEN', '-t'], { encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
 
 // Runs the capture. stopOn: a pattern in the output after which the run is stopped (the passing probe).
-function runCapture({ mode, extraBin, env = {}, stopOn, outName, dashboardDir }) {
+type CaptureRun = { code: number | null; output: string; outDir: string; stopped: boolean };
+type CaptureOptions = { mode: string; extraBin?: string; env?: Record<string, string>; stopOn?: RegExp; outName: string; dashboardDir?: string };
+function runCapture({ mode, extraBin, env = {}, stopOn, outName, dashboardDir }: CaptureOptions): Promise<CaptureRun> {
   return new Promise((resolve) => {
     const outDir = path.join(workDir, outName);
     const pathDirs = [path.join(workDir, 'bin'), ...(extraBin ? [path.join(workDir, extraBin)] : [])];
@@ -39,7 +41,7 @@ function runCapture({ mode, extraBin, env = {}, stopOn, outName, dashboardDir })
     });
     let output = '';
     let stopped = false;
-    const onData = (chunk) => {
+    const onData = (chunk: Buffer) => {
       output += chunk;
       if (stopOn && !stopped && stopOn.test(output)) { stopped = true; child.kill('SIGTERM'); }
     };
@@ -61,14 +63,15 @@ async function listenerProbes() {
     writeFileSync(file, `#!/bin/sh\n${body}\n`);
     chmodSync(file, 0o755);
   }
-  const cases = [
-    { name: 'one owned IPv4 listener passes', mode: 'owned', stopOn: /port guard ok before the capture started/, pass: (run) => run.stopped && /port guard ok before the capture started: pid \d+ group \d+ 127\.0\.0\.1:5199/.test(run.output) },
+  type Probe = { name: string; mode: string; extraBin?: string; stopOn?: RegExp; pass?: (run: CaptureRun) => unknown; fail?: RegExp | ((run: CaptureRun) => unknown) };
+  const cases: Probe[] = [
+    { name: 'one owned IPv4 listener passes', mode: 'owned', stopOn: /port guard ok before the capture started/, pass: (run: CaptureRun) => run.stopped && /port guard ok before the capture started: pid \d+ group \d+ 127\.0\.0\.1:5199/.test(run.output) },
     { name: 'IPv6-only listener fails', mode: 'ipv6-only', fail: /not owned by the spawned dev server before the capture started.*found 1 \(pid \d+ group \d+ \[::1\]:5199\)/s },
-    { name: 'two listeners in the same group fail', mode: 'two-same-group', fail: (run) => {
+    { name: 'two listeners in the same group fail', mode: 'two-same-group', fail: (run: CaptureRun) => {
       const found = /found 2 \(pid \d+ group (\d+) (\S+), pid \d+ group (\d+) (\S+)\)/.exec(run.output);
       return found && found[1] === found[3] && /in group (\d+)/.exec(run.output)?.[1] === found[1] && [found[2], found[4]].sort().join() === '127.0.0.1:5199,[::1]:5199';
     } },
-    { name: 'listener in a different group fails', mode: 'foreign-group', fail: (run) => {
+    { name: 'listener in a different group fails', mode: 'foreign-group', fail: (run: CaptureRun) => {
       const match = /in group (\d+); found 1 \(pid \d+ group (\d+) 127\.0\.0\.1:5199\)/.exec(run.output);
       return match && match[1] !== match[2];
     } },
@@ -82,9 +85,9 @@ async function listenerProbes() {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const wrote = existsSync(run.outDir);
     const clean = portListeners().length === 0;
-    const matched = entry.pass ? entry.pass(run) : (entry.fail instanceof RegExp ? entry.fail.test(run.output) : entry.fail(run));
+    const matched = entry.pass ? entry.pass(run) : (entry.fail instanceof RegExp ? entry.fail.test(run.output) : entry.fail!(run));
     const exitOk = entry.pass ? true : run.code !== 0;
-    const message = run.output.split('\n').find((line) => /^(Error|.*Error): |^port guard ok/.test(line)) ?? run.output.trim().split('\n').at(-1);
+    const message = run.output.split('\n').find((line) => /^(Error|.*Error): |^port guard ok/.test(line)) ?? run.output.trim().split('\n').at(-1)!;
     report(entry.name, Boolean(matched) && exitOk && !wrote && clean, `exit ${run.code}, output dir ${wrote ? 'WRITTEN' : 'not created'}, port ${clean ? 'free' : 'STILL HELD'}; ${message.trim().slice(0, 240)}`);
   }
 }
@@ -104,7 +107,7 @@ async function fontProbes() {
   const result = spawnSync(process.execPath, [capture, outDir], { env: { ...process.env, DASHBOARD_DIR: copy }, encoding: 'utf8', timeout: 240000 });
   const output = `${result.stdout}${result.stderr}`;
   report('dashboard capture without the JetBrains Mono import fails', result.status !== 0 && /no @font-face for JetBrains Mono Variable/.test(output) && !existsSync(outDir),
-    `exit ${result.status}, output dir ${existsSync(outDir) ? 'WRITTEN' : 'not created'}; ${(output.split('\n').find((line) => /no @font-face/.test(line)) ?? output.trim().split('\n').at(-1)).trim().slice(0, 200)}`);
+    `exit ${result.status}, output dir ${existsSync(outDir) ? 'WRITTEN' : 'not created'}; ${(output.split('\n').find((line) => /no @font-face/.test(line)) ?? output.trim().split('\n').at(-1)!).trim().slice(0, 200)}`);
 
   // Dashboard: dark-mode font-sans falls back to ui-monospace. A copy with copied dependencies, as a linked
   // node_modules makes Chromium fall back to a system font in every mode.
@@ -117,10 +120,10 @@ async function fontProbes() {
   const darkResult = spawnSync(process.execPath, [capture, darkOut], { env: { ...process.env, DASHBOARD_DIR: darkCopy }, encoding: 'utf8', timeout: 240000 });
   const darkOutput = `${darkResult.stdout}${darkResult.stderr}`;
   report('dashboard capture with a dark-mode font-sans fallback fails', darkResult.status !== 0 && /dark mode, \d+px root: --font-sans sample does not render with the loaded Geist Mono Variable face/.test(darkOutput) && !existsSync(darkOut),
-    `exit ${darkResult.status}, output dir ${existsSync(darkOut) ? 'WRITTEN' : 'not created'}; ${(darkOutput.split('\n').find((line) => /dark mode/.test(line)) ?? darkOutput.trim().split('\n').at(-1)).trim().slice(0, 220)}`);
+    `exit ${darkResult.status}, output dir ${existsSync(darkOut) ? 'WRITTEN' : 'not created'}; ${(darkOutput.split('\n').find((line) => /dark mode/.test(line)) ?? darkOutput.trim().split('\n').at(-1)!).trim().slice(0, 220)}`);
 
   // App: an asset folder with one font missing, then one font that is not a font file.
-  const fontDir = (name, build) => {
+  const fontDir = (name: string, build: (dir: string) => void): string => {
     const dir = path.join(workDir, name);
     mkdirSync(path.join(dir, 'assets/fonts'), { recursive: true });
     for (const file of readdirSync(path.join(root, 'meta-frames-app/assets/fonts'))) cpSync(path.join(root, 'meta-frames-app/assets/fonts', file), path.join(dir, 'assets/fonts', file));
@@ -128,10 +131,10 @@ async function fontProbes() {
     return dir;
   };
   const sdk = process.env.FLUTTER_ROOT ?? path.resolve(spawnSync('which', ['flutter'], { encoding: 'utf8' }).stdout.trim(), '../..');
-  for (const [name, build, pattern] of [
-    ['app capture with one font asset missing fails', (dir) => rmSync(path.join(dir, 'JetBrainsMono.ttf')), /PathNotFoundException|No such file|Cannot open file/],
-    ['app capture with one font asset not a font fails', (dir) => writeFileSync(path.join(dir, 'JetBrainsMono.ttf'), 'not a font'), /renders like an unregistered family|JetBrainsMono|font/i],
-  ]) {
+  for (const [name, build, pattern] of ([
+    ['app capture with one font asset missing fails', (dir: string) => rmSync(path.join(dir, 'JetBrainsMono.ttf')), /PathNotFoundException|No such file|Cannot open file/],
+    ['app capture with one font asset not a font fails', (dir: string) => writeFileSync(path.join(dir, 'JetBrainsMono.ttf'), 'not a font'), /renders like an unregistered family|JetBrainsMono|font/i],
+  ] as [string, (dir: string) => void, RegExp][])) {
     const appDir = fontDir(`app-${name.split(' ').slice(-3).join('-')}`, build);
     const outAppDir = path.join(workDir, `out-app-${name.length}`);
     const appRoot = path.join(root, 'meta-frames-app');
@@ -140,7 +143,7 @@ async function fontProbes() {
     });
     const output = `${result.stdout}${result.stderr}`;
     const wrote = existsSync(outAppDir);
-    report(name, result.status !== 0 && pattern.test(output) && !wrote, `exit ${result.status}, output dir ${wrote ? 'WRITTEN' : 'not created'}; ${(output.split('\n').find((line) => pattern.test(line)) ?? output.trim().split('\n').at(-1)).trim().slice(0, 200)}`);
+    report(name, result.status !== 0 && pattern.test(output) && !wrote, `exit ${result.status}, output dir ${wrote ? 'WRITTEN' : 'not created'}; ${(output.split('\n').find((line) => pattern.test(line)) ?? output.trim().split('\n').at(-1)!).trim().slice(0, 200)}`);
   }
 }
 

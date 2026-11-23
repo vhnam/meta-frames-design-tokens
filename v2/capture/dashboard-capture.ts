@@ -1,4 +1,4 @@
-// Disposable. Run: node dashboard-capture.mjs <outDir>. Reads dashboard, writes only to outDir.
+// Disposable. Run: node dashboard-capture.ts <outDir>. Reads dashboard, writes only to outDir.
 // v2 copy of baseline/capture/dashboard-capture.mjs (sha256 a45ae031992d…). Changes: the listener guard
 // (Slice 3d WARN 3), all --mf- and public properties, painted samples, text steps and spacing at two
 // root sizes, and the three font faces. Property names and spec values come from oracle.ts, which
@@ -10,6 +10,10 @@ import path from 'node:path';
 import { DASHBOARD_PUBLIC, expectedCss, FONT_ROLES, readSource, TEXT_STEPS } from '../../oracle.ts';
 
 // DASHBOARD_DIR overrides the checkout (used for the forced run on a temporary copy).
+// Playwright objects and capture results are untyped at the boundary; every check below is a run-time check.
+type Tree = any;
+type Face = { role: string; property: string; className: string; stack: string; face: string; prefix: string };
+
 const dashboardDir = path.resolve(process.env.DASHBOARD_DIR ?? path.join(import.meta.dirname, '../../../meta-frames-dashboard'));
 const outDir = path.resolve(process.argv[2]);
 const { chromium } = createRequire(dashboardDir + '/')('@playwright/test');
@@ -30,10 +34,10 @@ const UTILITY_COLORS = PUBLIC_NAMES.map((name) => name.slice(2)); // bg-<name> e
 const TEXT = [...TEXT_STEPS.map(([step]) => step), '4xl']; // 4xl keeps the Tailwind default: recorded, not compared
 const SPACING = ['0.5', '1', '2.5', '4', '96'];
 // [role, utility class, face family from the spec stack, platform family prefix, property]
-const FACES = Object.entries(FONT_ROLES).map(([role, { stack, property }]) => ({
+const FACES: Face[] = Object.entries(FONT_ROLES).map(([role, { stack, property }]) => ({
   role, property, className: `font-${property.slice('--font-'.length)}`,
-  stack: stack.join(', '), face: stack[0].replaceAll('"', ''),
-  prefix: stack[0].replaceAll('"', '').replace(/ Variable$/, ''),
+  stack: stack.join(', '), face: stack[0]!.replaceAll('"', ''),
+  prefix: stack[0]!.replaceAll('"', '').replace(/ Variable$/, ''),
 }));
 if (FACES.length !== 3) throw new Error(`expected 3 font roles, got ${FACES.length}`);
 
@@ -58,7 +62,7 @@ try {
   await fetch(APP);
   throw new Error(`port 5199 is already serving: stop that server first`);
 } catch (error) {
-  if (error.message.startsWith('port 5199')) throw error;
+  if ((error as Error).message.startsWith('port 5199')) throw error;
 }
 // Own process group: vp starts a child node process, and killing only vp leaves that child running.
 // --strictPort makes the spawned Vite exit when another process holds the port, so readiness
@@ -70,15 +74,15 @@ const server = spawn('vp', ['dev', '--host', '127.0.0.1', '--port', '5199', '--s
   stdio: ['ignore', 'pipe', 'pipe'],
   detached: true,
 });
-const stop = () => { try { process.kill(-server.pid, 'SIGTERM'); } catch {} };
+const stop = () => { try { process.kill(-server.pid!, 'SIGTERM'); } catch {} };
 process.on('exit', stop);
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => process.exit(1)); // runs the exit handler
 let serverOutput = '';
-let serverExit = null;
+let serverExit: { code: number | null; signal: NodeJS.Signals | null } | null = null;
 for (const stream of [server.stdout, server.stderr]) stream.on('data', (chunk) => { serverOutput += chunk; });
 server.on('exit', (code, signal) => { serverExit = { code, signal }; }); // registered before readiness
-const stripAnsi = (text) => text.replace(/\u001b\[[0-9;]*[A-Za-z]/g, '');
-const assertServerRunning = (when) => {
+const stripAnsi = (text: string): string => text.replace(/\u001b\[[0-9;]*[A-Za-z]/g, '');
+const assertServerRunning = (when: string): void => {
   if (!serverExit) return;
   const tail = stripAnsi(serverOutput).trim().split('\n').slice(-10).join('\n');
   throw new Error(`dev server exited ${when} (code ${serverExit.code}, signal ${serverExit.signal}). Last output:\n${tail}`);
@@ -90,8 +94,8 @@ const assertServerRunning = (when) => {
 // group (detached: true makes the group id equal the child pid). It fails on no listener, a second
 // listener in either family (also in the same group), an IPv6 or wildcard listener, a listener in
 // another group, and any lsof or ps error.
-const assertPortOwnedByChild = (when) => {
-  const run = (command, args) => {
+const assertPortOwnedByChild = (when: string): void => {
+  const run = (command: string, args: string[]) => {
     const result = spawnSync(command, args, { encoding: 'utf8' });
     if (result.error) throw new Error(`${command} failed ${when}: ${result.error.message}`);
     return result;
@@ -99,16 +103,16 @@ const assertPortOwnedByChild = (when) => {
   const listing = run('lsof', ['-nP', '-iTCP:5199', '-sTCP:LISTEN', '-Fpn']);
   const noListener = listing.status === 1 && !listing.stdout.trim() && !listing.stderr.trim(); // lsof exit 1, no output: nothing found
   if (listing.status !== 0 && !noListener) throw new Error(`lsof exited ${listing.status} ${when}: ${listing.stderr.trim()}`);
-  let pid = null;
-  const listeners = [];
+  let pid: string | null = null;
+  const listeners: { pid: string | null; name: string; group?: string }[] = [];
   for (const line of listing.stdout.split('\n')) {
     if (line.startsWith('p')) pid = line.slice(1);
     else if (line.startsWith('n')) listeners.push({ pid, name: line.slice(1) });
   }
-  const described = (items) => items.map(({ pid: id, name, group }) => `pid ${id} group ${group ?? '?'} ${name}`).join(', ') || 'none';
+  const described = (items: typeof listeners): string => items.map(({ pid: id, name, group }) => `pid ${id} group ${group ?? '?'} ${name}`).join(', ') || 'none';
   for (const listener of listeners) {
     if (!/^\d+$/.test(listener.pid ?? '')) throw new Error(`lsof output has no pid for listener ${listener.name} ${when}`);
-    const result = run('ps', ['-o', 'pgid=', '-p', listener.pid]);
+    const result = run('ps', ['-o', 'pgid=', '-p', listener.pid!]);
     listener.group = result.stdout.trim();
     if (result.status !== 0 || !listener.group) throw new Error(`ps failed for listener ${listener.pid} ${when}: ${result.stderr.trim() || 'no output'}`);
   }
@@ -129,7 +133,7 @@ const stocks = [
   boxIso: '400', process: 'c41', packaging: '135',
 }));
 
-async function waitFor(url) {
+async function waitFor(url: string): Promise<void> {
   for (let attempt = 0; attempt < 120; attempt++) {
     assertServerRunning('before it was ready');
     if (/http:\/\/127\.0\.0\.1:5199\b/.test(stripAnsi(serverOutput))) {
@@ -153,7 +157,7 @@ try {
     viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, reducedMotion: 'reduce',
     colorScheme: 'light', locale: 'en-US', timezoneId: 'UTC',
   });
-  await context.route(`${API}/**`, (route) => {
+  await context.route(`${API}/**`, (route: Tree) => {
     const request = route.request();
     const cors = {
       'access-control-allow-origin': APP, 'access-control-allow-credentials': 'true',
@@ -177,23 +181,23 @@ try {
   const cdp = await context.newCDPSession(page);
   await cdp.send('DOM.enable');
   await cdp.send('CSS.enable');
-  const usedFonts = async (selector) => {
+  const usedFonts = async (selector: string) => {
     const { root } = await cdp.send('DOM.getDocument', { depth: 0 });
     const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector });
-    return (await cdp.send('CSS.getPlatformFontsForNode', { nodeId })).fonts.map((font) => ({
+    return (await cdp.send('CSS.getPlatformFontsForNode', { nodeId })).fonts.map((font: Tree) => ({
       familyName: font.familyName, isCustomFont: font.isCustomFont, glyphCount: font.glyphCount,
     }));
   };
   // The sample must render with the loaded custom face, not a fallback.
-  const faceUsage = async (selector, face) => {
+  const faceUsage = async (selector: string, face: Face) => {
     const used = await usedFonts(selector);
-    if (!used.length || used.some((font) => !font.isCustomFont || !font.familyName.startsWith(face.prefix))) {
+    if (!used.length || used.some((font: Tree) => !font.isCustomFont || !font.familyName.startsWith(face.prefix))) {
       throw new Error(`${face.property} sample does not render with the loaded ${face.face} face: ${JSON.stringify(used)}`);
     }
     return used;
   };
-  const faceStates = (face) => page.evaluate((name) => [...document.fonts].filter((entry) => entry.family.replaceAll('"', '') === name).map((entry) => entry.status), face);
-  const before = await page.evaluate(({ faces, text }) => Object.fromEntries(faces.map((face) => {
+  const faceStates = (face: string) => page.evaluate((name: string) => [...document.fonts].filter((entry) => entry.family.replaceAll('"', '') === name).map((entry) => entry.status), face);
+  const before = await page.evaluate(({ faces, text }: { faces: Face[]; text: string }) => Object.fromEntries(faces.map((face: Face) => {
     const sample = document.createElement('div');
     sample.id = `mf-face-${face.role}`; sample.className = `${face.className} text-xs`; sample.textContent = text;
     document.body.append(sample);
@@ -209,31 +213,31 @@ try {
   }
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   await page.evaluate(() => document.fonts.ready);
-  const faceProbes = {};
+  const faceProbes: Tree = {};
   for (const face of FACES) {
     faceProbes[face.role] = { ...before[face.role], expectedStack: face.stack, usedFonts: await faceUsage(`#mf-face-${face.role}`, face) };
   }
   await page.evaluate(() => { for (const probe of document.querySelectorAll('[id^="mf-face-"]')) probe.remove(); });
 
-  const resolveAll = (args) => page.evaluate(({ rootNames, colorNames, utilityColors, textNames, spacingSteps, rootSizes, faces, dark, compiledCss }) => {
+  const resolveAll = (args: Tree) => page.evaluate(({ rootNames, colorNames, utilityColors, textNames, spacingSteps, rootSizes, faces, dark, compiledCss }: Tree) => {
     const root = document.documentElement;
     root.classList.toggle('dark', dark);
     const rootStyle = getComputedStyle(root);
     const probe = document.createElement('div');
     document.body.append(probe);
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 1;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    const bytesOver = (color, backdrop) => {
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+    const bytesOver = (color: string, backdrop: string) => {
       ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = backdrop; ctx.fillRect(0, 0, 1, 1);
       ctx.fillStyle = color; ctx.fillRect(0, 0, 1, 1);
       return [...ctx.getImageData(0, 0, 1, 1).data];
     };
-    const alphaBytes = (color) => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = color; ctx.fillRect(0, 0, 1, 1); return [...ctx.getImageData(0, 0, 1, 1).data]; };
-    const measure = (painted) => ({ painted, rgbaAlone: alphaBytes(painted), rgbaOverWhite: bytesOver(painted, '#ffffff'), rgbaOverBlack: bytesOver(painted, '#000000') });
+    const alphaBytes = (color: string) => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = color; ctx.fillRect(0, 0, 1, 1); return [...ctx.getImageData(0, 0, 1, 1).data]; };
+    const measure = (painted: string) => ({ painted, rgbaAlone: alphaBytes(painted), rgbaOverWhite: bytesOver(painted, '#ffffff'), rgbaOverBlack: bytesOver(painted, '#000000') });
     const style = document.createElement('style'); style.textContent = compiledCss; document.head.append(style);
-    const append = (className) => { const el = document.createElement('div'); el.className = className; document.body.append(el); return el; };
+    const append = (className: string) => { const el = document.createElement('div'); el.className = className; document.body.append(el); return el; };
 
-    const properties = {};
+    const properties: Tree = {};
     for (const name of rootNames) {
       properties[name] = { declared: rootStyle.getPropertyValue(name).trim() };
       if (colorNames.includes(name)) {
@@ -241,13 +245,13 @@ try {
         Object.assign(properties[name], measure(getComputedStyle(probe).backgroundColor));
       }
     }
-    const swatches = {};
+    const swatches: Tree = {};
     for (const name of utilityColors) {
       const el = append(`bg-${name}`);
       swatches[`--${name}`] = measure(getComputedStyle(el).backgroundColor);
       el.remove();
     }
-    const state = (inlineStyle) => {
+    const state = (inlineStyle: string) => {
       const el = append('');
       el.setAttribute('style', inlineStyle);
       const computed = getComputedStyle(el);
@@ -261,29 +265,29 @@ try {
       idle: state('color:var(--sidebar-foreground)'),
       primary: state('background:var(--sidebar-primary);color:var(--sidebar-primary-foreground)'),
     };
-    const fonts = {};
+    const fonts: Tree = {};
     for (const face of faces) {
       const el = append(face.className);
       fonts[face.property] = { declared: rootStyle.getPropertyValue(face.property).trim(), computedFontFamily: getComputedStyle(el).fontFamily };
       el.remove();
     }
-    const sizes = {};
+    const sizes: Tree = {};
     for (const px of rootSizes) {
       root.style.fontSize = `${px}px`;
-      const text = {};
+      const text: Tree = {};
       for (const name of textNames) {
         const el = append(`text-${name}`);
         const cs = getComputedStyle(el);
         text[name] = { fontSize: cs.fontSize, lineHeight: cs.lineHeight, fontWeight: cs.fontWeight };
         el.remove();
       }
-      const spacing = {};
+      const spacing: Tree = {};
       for (const step of spacingSteps) {
         const el = append(`p-${step}`);
         spacing[`p-${step}`] = getComputedStyle(el).paddingTop;
         el.remove();
       }
-      const radii = { '--radius': getComputedStyle(root).getPropertyValue('--radius').trim() };
+      const radii: Tree = { '--radius': getComputedStyle(root).getPropertyValue('--radius').trim() };
       for (const name of ['sm', 'md', 'lg', 'xl']) {
         const el = append(`rounded-${name}`);
         radii[`rounded-${name}`] = getComputedStyle(el).borderTopLeftRadius;
@@ -300,12 +304,12 @@ try {
     rootNames: ROOT_NAMES, colorNames: COLOR_NAMES, utilityColors: UTILITY_COLORS, textNames: TEXT, spacingSteps: SPACING,
     rootSizes: ROOT_SIZES, faces: FACES, compiledCss,
   };
-  const data = { schema: 2, rootSizes: ROOT_SIZES.map((px) => `${px}px`), faces: { probes: faceProbes }, modes: {} };
-  const outputs = new Map();
+  const data: Tree = { schema: 2, rootSizes: ROOT_SIZES.map((px) => `${px}px`), faces: { probes: faceProbes }, modes: {} };
+  const outputs = new Map<string, string | Buffer>();
 
   for (const mode of ['light', 'dark']) {
     data.modes[mode] = await resolveAll({ ...resolveArgs, dark: mode === 'dark' });
-    await page.evaluate(({ dark, monoText }) => {
+    await page.evaluate(({ dark, monoText }: { dark: boolean; monoText: string }) => {
       document.documentElement.classList.toggle('dark', dark);
       document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
       document.getElementById('mf-fixture')?.remove();
@@ -333,35 +337,35 @@ try {
     await page.waitForTimeout(300);
     const fixtureData = await page.evaluate(() => {
       const canvas = document.createElement('canvas'); canvas.width = canvas.height = 1;
-      const ctx = canvas.getContext('2d', { willReadFrequently: true });
-      const bytesOver = (color, backdrop) => {
+      const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+      const bytesOver = (color: string, backdrop: string) => {
         ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = backdrop; ctx.fillRect(0, 0, 1, 1);
         ctx.fillStyle = color; ctx.fillRect(0, 0, 1, 1);
         return [...ctx.getImageData(0, 0, 1, 1).data];
       };
-      const input = getComputedStyle(document.getElementById('mf-ring'));
-      const dots = getComputedStyle(document.getElementById('mf-dots'));
+      const input = getComputedStyle(document.getElementById('mf-ring')!);
+      const dots = getComputedStyle(document.getElementById('mf-dots')!);
       const probe = document.createElement('div'); probe.style.backgroundColor = 'var(--dot)'; document.body.append(probe);
       const dotPainted = getComputedStyle(probe).backgroundColor; probe.remove();
       const ringDeclared = getComputedStyle(document.documentElement).getPropertyValue('--ring').trim();
       return {
         focusRing: {
-          matchesFocusVisible: document.getElementById('mf-ring').matches(':focus-visible'),
+          matchesFocusVisible: document.getElementById('mf-ring')!.matches(':focus-visible'),
           outlineColor: input.outlineColor, outlineWidth: input.outlineWidth, outlineStyle: input.outlineStyle, outlineOffset: input.outlineOffset,
           rgbaOverWhite: bytesOver(input.outlineColor, '#ffffff'), rgbaOverBlack: bytesOver(input.outlineColor, '#000000'), ringDeclared,
         },
         dots: { backgroundImage: dots.backgroundImage, backgroundSize: dots.backgroundSize, dotPainted },
-        audit: { fontFamily: getComputedStyle(document.getElementById('mf-mono')).fontFamily },
+        audit: { fontFamily: getComputedStyle(document.getElementById('mf-mono')!).fontFamily },
       };
     });
-    const mono = FACES.find((face) => face.role === 'mono');
+    const mono = FACES.find((face) => face.role === 'mono')!;
     if (fixtureData.audit.fontFamily !== mono.stack) throw new Error(`${mode}: audit ID sample font-family is ${fixtureData.audit.fontFamily}, expected ${mono.stack}`);
     fixtureData.audit.text = MONO_TEXT;
     fixtureData.audit.usedFonts = await faceUsage('#mf-mono', mono);
     fixtureData.audit.faceStatuses = await faceStates(mono.face);
     // Every required sample must use its loaded custom face in this mode at each root size. A fallback stops the run.
     for (const px of ROOT_SIZES) {
-      await page.evaluate(({ faces, size, text }) => {
+      await page.evaluate(({ faces, size, text }: { faces: Face[]; size: number; text: string }) => {
         document.documentElement.style.fontSize = `${size}px`;
         for (const face of faces) {
           const sample = document.createElement('div');
@@ -374,7 +378,7 @@ try {
       try {
         for (const face of FACES) await faceUsage(`#mf-check-${face.role}`, face);
       } catch (error) {
-        throw new Error(`${mode} mode, ${px}px root: ${error.message}`);
+        throw new Error(`${mode} mode, ${px}px root: ${(error as Error).message}`);
       }
       await page.evaluate(() => {
         for (const sample of document.querySelectorAll('[id^="mf-check-"]')) sample.remove();
@@ -390,7 +394,7 @@ try {
   }
   data.faces.loaded = await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter((face) => face.status === 'loaded').map((face) => `${face.family.replaceAll('"', '')} ${face.weight}`); });
   for (const face of FACES) {
-    if (!data.faces.loaded.some((entry) => entry.startsWith(`${face.face} `))) throw new Error(`${face.face} is not among the loaded faces: ${data.faces.loaded}`);
+    if (!data.faces.loaded.some((entry: string) => entry.startsWith(`${face.face} `))) throw new Error(`${face.face} is not among the loaded faces: ${data.faces.loaded}`);
   }
   console.log('browser', browser.version());
   outputs.set('dashboard-resolved.json', JSON.stringify(data, null, 2) + '\n');

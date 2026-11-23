@@ -10,5 +10,5 @@
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["hooks.ts", "build.ts", "oracle.ts", "build.test.ts", "oracle.test.ts"]
+  "include": ["hooks.ts", "build.ts", "oracle.ts", "build.test.ts", "oracle.test.ts", "v2/capture/dashboard-capture.ts", "v2/capture/compare.ts", "v2/capture/probes/run-probes.ts", "v2/capture/probes/fake-vp.ts"]
 }

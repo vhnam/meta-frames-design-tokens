@@ -20,8 +20,7 @@ import {
   APP_TEXT_SLOTS,
   expectedApp as oracleExpectedApp,
 } from "./oracle.ts";
-// @ts-expect-error compare.mjs has no declarations until it becomes compare.ts (Slice 5).
-import { compareApp, compareDashboard } from "./v2/capture/compare.mjs";
+import { compareApp, compareDashboard } from "./v2/capture/compare.ts";
 
 // A parsed or captured JSON document that a test reads at arbitrary keys.
 type Tree = any;
