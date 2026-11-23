@@ -9,7 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   APP_FAMILY, canonical as oracleCanonical, COLOR_SCHEME, cssNameOf, DASHBOARD_PUBLIC, expectedApp as oracleExpectedApp,
-  expectedCss as oracleExpectedCss, FONT_ROLES, INVERSE_PRIMARY, RADIUS_PATH, readSource, semanticAndComponentPaths, TEXT_STEPS,
+  DASHBOARD_RADII, expectedCss as oracleExpectedCss, FONT_ROLES, INVERSE_PRIMARY, RADIUS_PATH, readSource, semanticAndComponentPaths, TEXT_STEPS,
 } from '../../oracle.ts';
 
 // Parsed capture JSON (the file boundary). Every read below goes through ?. and a run-time check, so a
@@ -178,6 +178,12 @@ export function compareDashboard(data: Tree, leaves: Tree): Report {
       for (const [utility, actual] of Object.entries(sized?.spacing ?? {})) {
         const wanted = Number(utility.slice(2)) * spacing;
         report.expect(mode, `${utility} @${size}`, close(measure(actual)?.number, wanted, 0.01), `${wanted}px`, actual);
+      }
+      for (const [utility, tokenName] of Object.entries(DASHBOARD_RADII)) {
+        const wanted = canonical(leaves, tokenName, mode).px;
+        const actual = sized?.radii?.[utility];
+        const measured = measure(actual);
+        report.expect(mode, `${utility} @${size}`, measured?.unit === 'px' && close(measured.number, wanted, 0.01), `${wanted}px`, actual);
       }
     }
   }

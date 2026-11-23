@@ -7,6 +7,7 @@ import {
   canonical as oracleCanonical,
   COLOR_SCHEME,
   DASHBOARD_PUBLIC,
+  DASHBOARD_RADII,
   expectedCss as oracleExpectedCss,
   expectedDart as oracleExpectedDart,
   FONT_ROLES,
@@ -433,7 +434,7 @@ function perfectDashboard(leaves: Tree): Tree {
           fontWeight: String(expected.theme.get(`--text-${step}--font-weight`).canon),
         };
       }
-      sizes[size] = { text, spacing: { "p-1": "4px", "p-4": "16px" }, radii: {} };
+      sizes[size] = { text, spacing: { "p-1": "4px", "p-4": "16px" }, radii: Object.fromEntries(Object.entries(DASHBOARD_RADII).map(([name, path]) => [name, `${canonical(leaves, path, mode).px}px`])) };
     }
     return {
       properties,
@@ -471,6 +472,35 @@ test("compareDashboard accepts a capture that matches the oracle", () => {
   assert.deepEqual(report.mismatches, []);
   assert.ok(report.checks > 600);
 });
+
+test("compareDashboard reports a missing rounded-lg value as a mismatch", () => {
+  const { leaves } = readSource(sourceText);
+  const capture = perfectDashboard(leaves);
+  const roundedChecks = compareDashboard(capture, leaves).checks;
+  delete capture.modes.light.sizes["16px"].radii["rounded-lg"];
+  assert.equal(compareDashboard(capture, leaves).checks, roundedChecks, "a missing value is a mismatch, not a skipped check");
+  assert.deepEqual(flagged(compareDashboard(capture, leaves), "light", "rounded-lg @16px"), { scope: "dashboard", mode: "light", property: "rounded-lg @16px", expected: "8px", actual: undefined });
+});
+
+test("compareDashboard names a wrong rounded-md corner with property, mode, expected and actual", () => {
+  const { leaves } = readSource(sourceText);
+  const capture = perfectDashboard(leaves);
+  capture.modes.dark.sizes["20px"].radii["rounded-md"] = "7px";
+  const report = compareDashboard(capture, leaves);
+  assert.equal(report.mismatches.length, 1);
+  assert.deepEqual(flagged(report, "dark", "rounded-md @20px"), { scope: "dashboard", mode: "dark", property: "rounded-md @20px", expected: "6px", actual: "7px" });
+});
+
+for (const captured of ["6rem", "6"]) {
+  test(`compareDashboard flags a rounded-md corner captured as ${JSON.stringify(captured)} when 6px is expected`, () => {
+    const { leaves } = readSource(sourceText);
+    const capture = perfectDashboard(leaves);
+    capture.modes.light.sizes["16px"].radii["rounded-md"] = captured;
+    const report = compareDashboard(capture, leaves);
+    assert.equal(report.mismatches.length, 1);
+    assert.deepEqual(flagged(report, "light", "rounded-md @16px"), { scope: "dashboard", mode: "light", property: "rounded-md @16px", expected: "6px", actual: captured });
+  });
+}
 
 test("compareDashboard reports each regression with property, mode, expected and actual", () => {
   const { leaves } = readSource(sourceText);

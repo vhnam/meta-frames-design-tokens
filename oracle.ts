@@ -146,6 +146,12 @@ export const TEXT_STEPS: [string, string][] = [
   ["3xl", "display"],
 ];
 export const RADIUS_PATH = "semantic.radius.control";
+// Dashboard rounded-* utilities (hand-copied from meta-frames-dashboard/src/styles/index.css lines 46-48). rounded-sm is Dashboard composition and is not listed.
+export const DASHBOARD_RADII: Record<string, string> = {
+  "rounded-md": "semantic.radius.control",
+  "rounded-lg": "semantic.radius.surface",
+  "rounded-xl": "semantic.radius.surface",
+};
 export const SPACING_PATH = "semantic.space.gap.xs";
 
 // ---- independent source walk ----

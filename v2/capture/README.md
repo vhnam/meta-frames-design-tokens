@@ -68,7 +68,8 @@ node meta-frames-design-tokens/v2/capture/compare.ts <outDir>/dashboard-resolved
 ## What `compare.ts` checks
 
 - Dashboard: every `--mf-` property and public property in both modes, each public colour swatch, sidebar states, the focus ring (`--ring` at 50%, applied once), `bg-dots` size and colour, font stacks and loaded faces, `text-xs` to `text-3xl` size, line height and weight at 16 px and 20 px, and `p-*` padding from `--spacing`.
-  Not compared (no expectation in the oracle): `rounded-*` utilities and `text-4xl`.
+  `rounded-md`, `rounded-lg` and `rounded-xl` at both root sizes (the oracle's `DASHBOARD_RADII`, hand-copied from the dashboard's `index.css`).
+  Not compared (no expectation in the oracle): `rounded-sm` and `text-4xl`.
 - App: all 31 scheme fields (`inversePrimary` from the opposite mode), card and dialog background, nav colours, input focus colour and width, disabled alpha applied once, the 15 text slots, the size bindings, radii, button padding and minimum height, rendered samples at both scales, font assets.
 - Alpha colours are compared over white and over black. Opaque colours must match exactly. Alpha-colour channels and the dashboard canvas values may differ by 1 (focus ring: 2).
 
