@@ -3,6 +3,7 @@
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+
 import type * as HooksModule from './hooks.ts';
 import type { Analysis, Bindings, BindingEntry, Leaf, Leaves, Mode, NativeValue } from './hooks.ts';
 

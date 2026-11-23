@@ -7,7 +7,17 @@
     {
       "files": ["**/*.ts"],
       "options": {
-        "singleQuote": true
+        "singleQuote": true,
+        "sortImports": {
+          "newlinesBetween": true,
+          "groups": [
+            "builtin",
+            "external",
+            "internal",
+            ["parent", "sibling", "index", "side_effect_style"],
+            "unknown"
+          ]
+        }
       }
     }
   ],

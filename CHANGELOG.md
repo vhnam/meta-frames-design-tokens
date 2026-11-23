@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Folder layout: sources in `src/`, tests in `test/`, token data in `tokens/`. Run the generator with `node src/build.ts`.
+- oxfmt sorts imports (`sortImports` in `.oxfmtrc.json`) and puts a blank line between import groups.
+
+### Added
+
+- `.vscode/settings.json` and `.vscode/extensions.json`: oxc is the default formatter in the editor.
 
 ## [0.1.0] - 2026-11-23
 

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { isDeepStrictEqual } from 'node:util';
+
 import {
   canonical as oracleCanonical,
   COLOR_SCHEME,
