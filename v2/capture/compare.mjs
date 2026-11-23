@@ -1,4 +1,4 @@
-// Compares capture JSON with the independent expectations in oracle.mjs. Reads files, writes nothing.
+// Compares capture JSON with the independent expectations in oracle.ts. Reads files, writes nothing.
 // Run: node compare.mjs <dashboard-resolved.json | app-resolved.json> [...]
 // Exit 0: no mismatch. Exit 1: at least one mismatch (printed with property, mode, expected, actual).
 // Exit 2: unreadable input or a bad command line.
@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import {
   APP_FAMILY, canonical, COLOR_SCHEME, cssNameOf, DASHBOARD_PUBLIC, expectedApp, expectedCss, FONT_ROLES,
   INVERSE_PRIMARY, RADIUS_PATH, readSource, semanticAndComponentPaths, TEXT_STEPS,
-} from '../../oracle.mjs';
+} from '../../oracle.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const MODES = ['light', 'dark'];

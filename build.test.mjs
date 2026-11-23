@@ -21,7 +21,8 @@ const read = (name) => readFileSync(join(here, name), "utf8");
 const source = read("v2/tokens.json");
 const files = {
   "build.mjs": read("build.mjs"),
-  "hooks.mjs": read("hooks.mjs"),
+  "build.ts": read("build.ts"),
+  "hooks.ts": read("hooks.ts"),
   "bindings.json": read("bindings.json"),
   "package.json": read("package.json"),
   "package-lock.json": read("package-lock.json"),
@@ -241,7 +242,7 @@ test("accepts an explicit identical light and dark pair", (context) => {
 });
 
 test("one source gives light, dark, light again without a change (rule 4)", async () => {
-  const hooks = await import("./hooks.mjs");
+  const hooks = await import("./hooks.ts");
   const tree = JSON.parse(source);
   const original = structuredClone(tree);
   const indicator = async (mode) => (await hooks.nativeValues(await hooks.createDictionary(tree, mode))).get("component.nav.indicator").css;
@@ -306,6 +307,30 @@ for (const [name, changes, expected] of [
   ["app binding target missing", changeBindings((value) => { value.app.colorScheme.primary = "semantic.color.action.nope"; }), "bindings.json: app binding ColorScheme.primary: target path semantic.color.action.nope does not exist"],
   ["public name claimed twice", changeBindings((value) => { value.dashboard.colors.push({ properties: ["--background"], source: canvas }); }), "bindings.json: dashboard public name --background is claimed by two bindings"],
   ["duplicate key in bindings", { "bindings.json": bindingsSource.replace('"outputs": {', '"outputs": {}, "outputs": {') }, "outputs: duplicate path in meta-frames-design-tokens/bindings.json"],
+  ["missing dashboard section", changeBindings((value) => { delete value.dashboard; }), "bindings.json: dashboard must be an object"],
+  ["missing dashboard.scalars", changeBindings((value) => { delete value.dashboard.scalars; }), "bindings.json: dashboard.scalars must be an object"],
+  ["missing dashboard.text", changeBindings((value) => { delete value.dashboard.text; }), "bindings.json: dashboard.text must be an object"],
+  ["dashboard colors missing", changeBindings((value) => { delete value.dashboard.colors; }), "bindings.json: dashboard.colors must be an array"],
+  ["dashboard colors null", changeBindings((value) => { value.dashboard.colors = null; }), "bindings.json: dashboard.colors must be an array"],
+  ["dashboard colors object", changeBindings((value) => { value.dashboard.colors = { background: "semantic.color.bg.canvas" }; }), "bindings.json: dashboard.colors must be an array"],
+  ["dashboard colors string", changeBindings((value) => { value.dashboard.colors = "semantic.color.bg.canvas"; }), "bindings.json: dashboard.colors must be an array"],
+  ["dashboard color entry without properties", changeBindings((value) => { delete value.dashboard.colors[0].properties; }), "bindings.json: dashboard.colors[0].properties must be an array"],
+  ["dashboard color entry without source, empty properties", changeBindings((value) => { value.dashboard.colors.push({ properties: [] }); }), "bindings.json: dashboard.colors[26].source must be a nonempty string, found undefined"],
+  ["dashboard color entry without source, with properties", changeBindings((value) => { delete value.dashboard.colors[0].source; }), "bindings.json: dashboard.colors[0].source must be a nonempty string, found undefined"],
+  ["dashboard color entry with an empty source", changeBindings((value) => { value.dashboard.colors[0].source = ""; }), 'bindings.json: dashboard.colors[0].source must be a nonempty string, found ""'],
+  ["dashboard color property that is not a string", changeBindings((value) => { value.dashboard.colors[0].properties.push(7); }), "bindings.json: dashboard.colors[0].properties[1] must be a string, found 7"],
+  ["missing app section", changeBindings((value) => { delete value.app; }), "bindings.json: app must be an object"],
+  ["missing app.colorScheme", changeBindings((value) => { delete value.app.colorScheme; }), "bindings.json: app.colorScheme must be an object"],
+  ["missing app.inversePrimary", changeBindings((value) => { delete value.app.inversePrimary; }), "bindings.json: app.inversePrimary must be an object"],
+  ["missing app.inversePrimary.field", changeBindings((value) => { delete value.app.inversePrimary.field; }), "bindings.json: app.inversePrimary.field must be a nonempty string"],
+  ["missing app.inversePrimary.source", changeBindings((value) => { delete value.app.inversePrimary.source; }), "bindings.json: app binding ColorScheme.inversePrimary: target must be a token path string, found undefined"],
+  ["missing fonts section", changeBindings((value) => { delete value.fonts; }), "bindings.json: fonts must be an object"],
+  ["missing fonts section (existing check)", changeBindings((value) => { delete value.fonts; }), "semantic.text.display.font-family: font-family path has no role in bindings.json fonts.paths"],
+  ["missing fonts.roles", changeBindings((value) => { delete value.fonts.roles; }), "bindings.json: fonts.roles must be an object"],
+  ["missing fonts.roles (existing check)", changeBindings((value) => { delete value.fonts.roles; }), 'bindings.json: fonts.paths semantic.text.display.font-family: unknown role "heading"'],
+  ["font role without dashboard.property", changeBindings((value) => { delete value.fonts.roles.heading.dashboard.property; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
+  ["font role without dashboard.stack", changeBindings((value) => { delete value.fonts.roles.heading.dashboard.stack; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
+  ["font role without app", changeBindings((value) => { delete value.fonts.roles.heading.app; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
   ["font path without a role", changeBindings((value) => { delete value.fonts.paths["semantic.text.data.font-family"]; }), "semantic.text.data.font-family: font-family path has no role"],
   ["unknown font role", changeBindings((value) => { value.fonts.paths["semantic.text.data.font-family"] = "serif"; }), 'bindings.json: fonts.paths semantic.text.data.font-family: unknown role "serif"'],
   ["font path that is not a font", changeBindings((value) => { value.fonts.paths[canvas] = "body"; }), `bindings.json: fonts.paths ${canvas}: not a fontFamily leaf`],
@@ -405,7 +430,7 @@ test("rejects a mode declaration on a number inside semantic.color", (context) =
 });
 
 test("rejects distinct token paths that produce the same public names", async () => {
-  const { analyze } = await import("./hooks.mjs");
+  const { analyze } = await import("./hooks.ts");
   const tree = JSON.parse(source);
   tree.component["button-font"] = { size: { ...tree.component.button["font-size"] } };
   const { errors } = analyze(tree, JSON.parse(bindingsSource));
@@ -525,7 +550,7 @@ test("keeps zero and fractional dimensions through per-leaf unit changes", (cont
 });
 
 test("reports the dimension path when the CSS transform receives an unexpected unit", async () => {
-  const { cssDimension } = await import("./hooks.mjs");
+  const { cssDimension } = await import("./hooks.ts");
   assert.throws(
     () => cssDimension(["component", "button", "gap"], "4em"),
     /component\.button\.gap:.*4em/,
@@ -533,7 +558,7 @@ test("reports the dimension path when the CSS transform receives an unexpected u
 });
 
 test("applies suffixed opacity and line-height bounds to primitives", async () => {
-  const { validateProfile } = await import("./hooks.mjs");
+  const { validateProfile } = await import("./hooks.ts");
   const { errors } = validateProfile({
     primitive: {
       $type: "number",
@@ -558,7 +583,7 @@ test("rejects a bound text role that lacks a required line height", (context) =>
 });
 
 test("checks the presence and type of each text role member for both platforms", async () => {
-  const { analyze } = await import("./hooks.mjs");
+  const { analyze } = await import("./hooks.ts");
   const tree = JSON.parse(source);
   const bindings = JSON.parse(bindingsSource);
   const members = {
@@ -930,14 +955,14 @@ test("bindings that change after the startup read do not reach the digest or the
   assert.equal(result.status, 0, result.stderr);
   const css = String(readFileSync(made.outputs.css));
   assert.match(css, /--background: var\(--mf-semantic-color-bg-canvas\);/);
-  const original = ["bindings.json", "build.mjs", "hooks.mjs", "package-lock.json", "package.json", ".node-version"].map((name) => [name, Buffer.from(files[name])]);
+  const original = ["bindings.json", "build.mjs", "build.ts", "hooks.ts", "package-lock.json", "package.json", ".node-version"].map((name) => [name, Buffer.from(files[name])]);
   assert.equal(/Generator: sha256 ([0-9a-f]{64})/.exec(css)[1], framedDigest(original));
 });
 
 test("each generator input is read once during a generate run", (context) => {
   const made = faultFixture(context, `
     const read = fs.readFileSync;
-    const names = [".node-version", "bindings.json", "build.mjs", "hooks.mjs", "package-lock.json", "package.json"];
+    const names = [".node-version", "bindings.json", "build.mjs", "build.ts", "hooks.ts", "package-lock.json", "package.json"];
     const seen = [];
     fs.readFileSync = (target, ...rest) => {
       const name = String(target).split("/").pop();
@@ -951,10 +976,38 @@ test("each generator input is read once during a generate run", (context) => {
   assert.equal(result.status, 0, result.stderr);
   const reads = readFileSync(log, "utf8").split("\n");
   const count = (name) => reads.filter((read) => read === name).length;
-  // The four data files are read once, by the startup snapshot. build.mjs and hooks.mjs are read
+  // The four data files are read once, by the startup snapshot. build.mjs, build.ts and hooks.ts are read
   // once by the snapshot and once by Node's module loader (the documented limit).
   for (const name of [".node-version", "bindings.json", "package-lock.json", "package.json"]) assert.equal(count(name), 1, name);
-  for (const name of ["build.mjs", "hooks.mjs"]) assert.ok(count(name) >= 1 && count(name) <= 2, name);
+  for (const name of ["build.mjs", "build.ts", "hooks.ts"]) assert.ok(count(name) >= 1 && count(name) <= 2, name);
+});
+
+test("a Node without type stripping reports the entry error and writes nothing", (context) => {
+  const made = generateFixture(context);
+  const before = snapshot(made.directory);
+  const result = spawnSync(process.execPath, ["--no-strip-types", made.script], { cwd: made.directory, encoding: "utf8" });
+  assert.equal(result.status, 1, result.stderr);
+  assert.ok(result.stderr.startsWith("error: meta-frames-design-tokens/.node-version: this Node cannot run TypeScript"), result.stderr);
+  assert.doesNotMatch(result.stderr, /ERR_UNKNOWN_FILE_EXTENSION|\n\s+at /);
+  assert.equal(result.stdout, "");
+  assert.deepEqual(snapshot(made.directory), before);
+  assert.throws(() => readFileSync(made.outputs.css));
+  assert.throws(() => readFileSync(made.outputs.dart));
+});
+
+test("an unsupported extension in a later hook import keeps the runner diagnostic", (context) => {
+  const { directory, script } = fixture(context, {
+    "hooks.ts": 'await import("./unsupported.txt");\n' + files["hooks.ts"],
+    "unsupported.txt": "",
+  });
+  const before = snapshot(directory);
+  const result = run(script, directory, []);
+  assert.ifError(result.error);
+  assert.equal(result.status, 1, result.stderr);
+  assert.match(result.stderr, /^error: TypeError \[ERR_UNKNOWN_FILE_EXTENSION\]:.*unsupported\.txt/m);
+  assert.doesNotMatch(result.stderr, /this Node cannot run TypeScript/);
+  assert.equal(result.stdout, "");
+  assert.deepEqual(snapshot(directory), before);
 });
 
 test("rejects non-string and traversing destination values in every mode", (context) => {

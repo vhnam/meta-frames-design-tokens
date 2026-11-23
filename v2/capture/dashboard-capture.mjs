@@ -1,13 +1,13 @@
 // Disposable. Run: node dashboard-capture.mjs <outDir>. Reads dashboard, writes only to outDir.
 // v2 copy of baseline/capture/dashboard-capture.mjs (sha256 a45ae031992d…). Changes: the listener guard
 // (Slice 3d WARN 3), all --mf- and public properties, painted samples, text steps and spacing at two
-// root sizes, and the three font faces. Property names and spec values come from oracle.mjs, which
+// root sizes, and the three font faces. Property names and spec values come from oracle.ts, which
 // imports nothing from the generator. Every check runs before anything is written.
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import { DASHBOARD_PUBLIC, expectedCss, FONT_ROLES, readSource, TEXT_STEPS } from '../../oracle.mjs';
+import { DASHBOARD_PUBLIC, expectedCss, FONT_ROLES, readSource, TEXT_STEPS } from '../../oracle.ts';
 
 // DASHBOARD_DIR overrides the checkout (used for the forced run on a temporary copy).
 const dashboardDir = path.resolve(process.env.DASHBOARD_DIR ?? path.join(import.meta.dirname, '../../../meta-frames-dashboard'));

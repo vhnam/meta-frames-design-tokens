@@ -2,27 +2,102 @@
 // Source profile, reference graph, mode projection, bindings checks, native value transforms and
 // the CSS and Dart formats (one fragment per mode). No file writes: build.mjs owns the filesystem.
 import StyleDictionary from "style-dictionary";
+import type { DesignTokens, Dictionary, PreprocessedTokens, TransformedToken } from "style-dictionary/types";
 
-export const MODES = ["light", "dark"];
-export const LAYERS = ["primitive", "semantic", "component"];
+export const MODES = ["light", "dark"] as const;
+export const LAYERS = ["primitive", "semantic", "component"] as const;
+export type Mode = (typeof MODES)[number];
+export type Layer = (typeof LAYERS)[number];
 const MODE_KEY = "com.metaframes.modes";
-const TYPES = ["color", "dimension", "fontFamily", "fontWeight", "number", "duration", "cubicBezier"];
+const TYPES = ["color", "dimension", "fontFamily", "fontWeight", "number", "duration", "cubicBezier"] as const;
+export type TokenType = (typeof TYPES)[number];
+type Platform = "dashboard" | "app";
+type JsonObject = Record<string, unknown>;
+// Parsed token source: a nested JSON object, unvalidated until validateProfile has run.
+type TokenNode = JsonObject;
+
+export interface Leaf {
+  path: string;
+  layer: Layer;
+  type: TokenType;
+  value: unknown;
+  extensions: unknown;
+}
+export type Leaves = Map<string, Leaf>;
+
+export interface FontRole {
+  dashboard?: { property?: unknown; stack?: unknown };
+  app?: unknown;
+}
+// Parsed bindings.json: unvalidated until validateBindings has run, so every member is optional.
+export interface Bindings {
+  dashboard?: {
+    colors?: { source: string; properties?: string[] }[];
+    scalars?: Record<string, string>;
+    text?: Record<string, string>;
+  };
+  app?: {
+    colorScheme?: Record<string, string>;
+    inversePrimary?: { field: string; source: string };
+    text?: Record<string, string>;
+    theme?: Record<string, string>;
+  };
+  nav?: Record<string, string>;
+  fonts?: { roles?: Record<string, FontRole>; paths?: Record<string, string | { dashboard?: string; app?: string }> };
+}
+// Bindings after validateBindings: the formats read these members without a fallback.
+type ValidBindings = {
+  dashboard: { colors: { source: string; properties: string[] }[]; scalars: Record<string, string>; text: Record<string, string> };
+  app: { colorScheme: Record<string, string>; inversePrimary: { field: string; source: string } };
+  fonts: { roles: Record<string, { dashboard: { property: string; stack: string }; app: string }> };
+};
+export interface BindingEntry {
+  platform: Platform;
+  name: string;
+  target?: string;
+  kind?: "color" | "dimension" | "text" | "leaf";
+  opposite?: true;
+  role?: FontRole;
+}
+export interface ModeResult {
+  tree: TokenNode;
+  errors: string[];
+}
+export interface Analysis {
+  errors: string[];
+  leaves: Leaves;
+  modes: Partial<Record<Mode, Leaves>>;
+}
+export interface NativeValue {
+  css?: string;
+  dart?: string;
+}
+export interface FragmentPair {
+  css: string;
+  dart: string;
+}
+export interface HeaderInput {
+  sourcePath: string;
+  sourceDigest: string;
+  generatorDigest: string;
+  generatorFiles: string[];
+}
 const META_KEYS = ["$type", "$value", "$description", "$extensions"];
 // Every path segment becomes part of a CSS custom property and a Dart identifier.
 const SEGMENT = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const WHOLE_REFERENCE = /^\{([^{}]+)\}$/;
 
-const isObject = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
-const isNumber = (value) => typeof value === "number" && Number.isFinite(value);
-const inRange = (value, low, high) => isNumber(value) && value >= low && value <= high;
+const isObject = (value: unknown): value is JsonObject => typeof value === "object" && value !== null && !Array.isArray(value);
+const isNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+const inRange = (value: unknown, low: number, high: number): boolean => isNumber(value) && value >= low && value <= high;
 
 // ---- leaf index ----
 
 /** Walks the tree. Returns Map(path -> { path, layer, type, value, extensions }). */
-export function collectLeaves(tree, errors) {
-  const leaves = new Map();
-  const walk = (node, trail, inheritedType) => {
-    const type = node.$type ?? inheritedType;
+export function collectLeaves(tree: TokenNode, errors: string[]): Leaves {
+  const leaves: Leaves = new Map();
+  const walk = (node: TokenNode, trail: string[], inheritedType: string | undefined): void => {
+    const type = (node.$type ?? inheritedType) as string | undefined;
     for (const [name, child] of Object.entries(node)) {
       const parent = trail.join(".") || "(root)";
       if (name.startsWith("$")) {
@@ -44,15 +119,15 @@ export function collectLeaves(tree, errors) {
       if (!isObject(child)) {
         errors.push(`${childPath}: must be a group or a token object`);
       } else if ("$value" in child) {
-        addLeaf(childTrail, child, child.$type ?? type);
+        addLeaf(childTrail, child, (child.$type ?? type) as string | undefined);
       } else {
         walk(child, childTrail, type);
       }
     }
   };
-  const addLeaf = (trail, leaf, type) => {
+  const addLeaf = (trail: string[], leaf: JsonObject, type: string | undefined) => {
     const leafPath = trail.join(".");
-    if (trail.length < 2 || !LAYERS.includes(trail[0])) {
+    if (trail.length < 2 || !(LAYERS as readonly string[]).includes(trail[0]!)) {
       return errors.push(`${leafPath}: token is not inside a layer (${LAYERS.join(", ")})`);
     }
     if ("$extensions" in leaf && !isObject(leaf.$extensions)) {
@@ -61,10 +136,10 @@ export function collectLeaves(tree, errors) {
     if (type === undefined) {
       return errors.push(`${leafPath}: missing $type (none on the token or any parent group)`);
     }
-    if (!TYPES.includes(type)) {
+    if (!(TYPES as readonly string[]).includes(type)) {
       return errors.push(`${leafPath}: unsupported $type ${JSON.stringify(type)} (accepted: ${TYPES.join(", ")})`);
     }
-    leaves.set(leafPath, { path: leafPath, layer: trail[0], type, value: leaf.$value, extensions: leaf.$extensions });
+    leaves.set(leafPath, { path: leafPath, layer: trail[0] as Layer, type: type as TokenType, value: leaf.$value, extensions: leaf.$extensions });
   };
   walk(tree, [], undefined);
   return leaves;
@@ -76,7 +151,7 @@ const HEX_COLOR = /^#(?:[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/;
 const PX = /^(?:\d+(?:\.\d+)?)px$/;
 const MS = /^\d+ms$/;
 
-function literalProblem(leaf) {
+function literalProblem(leaf: Leaf): string | null {
   const { type, value, path } = leaf;
   const segments = path.split(".");
   switch (type) {
@@ -91,7 +166,7 @@ function literalProblem(leaf) {
         ? null
         : "fontFamily must be a nonempty array of nonempty strings";
     case "fontWeight":
-      return Number.isInteger(value) && value >= 100 && value <= 900 && value % 100 === 0
+      return Number.isInteger(value) && (value as number) >= 100 && (value as number) <= 900 && (value as number) % 100 === 0
         ? null
         : "fontWeight must be an integer from 100 to 900 in steps of 100";
     case "number":
@@ -112,8 +187,8 @@ function literalProblem(leaf) {
 }
 
 /** Source profile checks that do not depend on the mode. */
-export function validateProfile(tree) {
-  const errors = [];
+export function validateProfile(tree: TokenNode): { errors: string[]; leaves: Leaves } {
+  const errors: string[] = [];
   const leaves = collectLeaves(tree, errors);
   for (const leaf of leaves.values()) {
     if (leaf.layer !== "primitive") continue;
@@ -130,12 +205,12 @@ export function validateProfile(tree) {
  * Dark promotes the dark value into $value. The tree argument is never changed.
  * Only dark reads the declaration, so only the dark run checks it.
  */
-export function projectMode(tree, mode) {
-  const errors = [];
+export function projectMode(tree: TokenNode, mode: Mode): ModeResult {
+  const errors: string[] = [];
   const projected = structuredClone(tree);
-  const declaredAt = (node) => (isObject(node.$extensions) ? node.$extensions[MODE_KEY] : undefined);
-  const walk = (node, trail, inheritedType) => {
-    const type = node.$type ?? inheritedType;
+  const declaredAt = (node: JsonObject): unknown => (isObject(node.$extensions) ? node.$extensions[MODE_KEY] : undefined);
+  const walk = (node: JsonObject, trail: string[], inheritedType: string | undefined): void => {
+    const type = (node.$type ?? inheritedType) as string | undefined;
     if (mode === "dark" && declaredAt(node) !== undefined) {
       const groupPath = trail.join(".") || "(root)";
       errors.push(
@@ -147,11 +222,11 @@ export function projectMode(tree, mode) {
     for (const [name, child] of Object.entries(node)) {
       if (name.startsWith("$") || !isObject(child)) continue;
       const childTrail = [...trail, name];
-      if ("$value" in child) project(child, childTrail, child.$type ?? type);
+      if ("$value" in child) project(child, childTrail, (child.$type ?? type) as string | undefined);
       else walk(child, childTrail, type);
     }
   };
-  const project = (leaf, trail, type) => {
+  const project = (leaf: JsonObject, trail: string[], type: string | undefined) => {
     const leafPath = trail.join(".");
     const declared = declaredAt(leaf);
     const semanticColor = leafPath.startsWith("semantic.color.");
@@ -185,7 +260,7 @@ export function projectMode(tree, mode) {
 // ---- reference graph (spec rules 2 and 5) ----
 
 /** Follows whole references from a leaf. Stops at a literal, a missing target or a repeat. */
-export function chainFrom(leaves, start) {
+export function chainFrom(leaves: Leaves, start: string): string[] {
   const chain = [start];
   let current = leaves.get(start);
   while (current) {
@@ -198,19 +273,19 @@ export function chainFrom(leaves, start) {
   return chain;
 }
 
-const describe = (leaves, path) => chainFrom(leaves, path).join(" -> ");
+const describe = (leaves: Leaves, path: string): string => chainFrom(leaves, path).join(" -> ");
 
 /** Graph checks for one projected mode. Appends "[mode] path: cause (chain: ...)" messages. */
-export function validateGraph(leaves, mode, errors) {
-  const groups = new Set();
+export function validateGraph(leaves: Leaves, mode: Mode, errors: string[]): void {
+  const groups = new Set<string>();
   for (const leafPath of leaves.keys()) {
     const segments = leafPath.split(".");
     for (let length = 1; length < segments.length; length += 1) groups.add(segments.slice(0, length).join("."));
   }
-  const reportedCycles = new Set();
+  const reportedCycles = new Set<string>();
   for (const leaf of leaves.values()) {
     if (leaf.layer === "primitive") continue;
-    const fail = (cause) => errors.push(`[${mode}] ${leaf.path}: ${cause} (chain: ${describe(leaves, leaf.path)})`);
+    const fail = (cause: string) => errors.push(`[${mode}] ${leaf.path}: ${cause} (chain: ${describe(leaves, leaf.path)})`);
     if (typeof leaf.value !== "string") {
       fail("value must be one whole brace reference");
       continue;
@@ -224,13 +299,13 @@ export function validateGraph(leaves, mode, errors) {
       );
       continue;
     }
-    const target = leaves.get(match[1]);
+    const target = leaves.get(match[1]!);
     if (!target) {
-      fail(groups.has(match[1]) ? `reference target ${match[1]} is a group` : `reference target ${match[1]} does not exist`);
+      fail(groups.has(match[1]!) ? `reference target ${match[1]} is a group` : `reference target ${match[1]} does not exist`);
       continue;
     }
     const chain = chainFrom(leaves, leaf.path);
-    const repeat = chain.indexOf(chain.at(-1));
+    const repeat = chain.indexOf(chain.at(-1)!);
     if (repeat !== chain.length - 1) {
       const cycle = chain.slice(repeat);
       const key = [...new Set(cycle)].sort().join("|");
@@ -248,14 +323,14 @@ export function validateGraph(leaves, mode, errors) {
 }
 
 /** True when a path segment names the role itself or ends with it (disabled-opacity). */
-const hasRole = (segments, role) => segments.some((segment) => segment === role || segment.endsWith(`-${role}`));
+const hasRole = (segments: string[], role: string): boolean => segments.some((segment) => segment === role || segment.endsWith(`-${role}`));
 
 /** Opacity and line-height bounds on the resolved value, whenever any hop of the chain has that role. */
-export function validateBounds(leaves, mode, errors) {
+export function validateBounds(leaves: Leaves, mode: Mode, errors: string[]): void {
   for (const leaf of leaves.values()) {
     if (leaf.layer === "primitive" || leaf.type !== "number") continue;
     const chain = chainFrom(leaves, leaf.path);
-    const end = leaves.get(chain.at(-1));
+    const end = leaves.get(chain.at(-1)!);
     if (end?.layer !== "primitive" || !isNumber(end.value)) continue;
     const segments = chain.flatMap((hop) => hop.split("."));
     const problem =
@@ -265,24 +340,24 @@ export function validateBounds(leaves, mode, errors) {
   }
 }
 
-const cssName = (leafPath) => `--mf-${leafPath.replaceAll(".", "-")}`;
-const dartName = (leafPath) =>
+const cssName = (leafPath: string): string => `--mf-${leafPath.replaceAll(".", "-")}`;
+const dartName = (leafPath: string): string =>
   leafPath.split(/[.-]/).map((word, index) => (index ? word.charAt(0).toUpperCase() + word.slice(1) : word)).join("");
 
 // Dart class per plan decision 5: colours live in DesignTokensLight/Dark, other values in DesignTokens.
-const dartClass = (leaf) => (leaf.type === "color" ? "DesignTokensLight/DesignTokensDark" : "DesignTokens");
+const dartClass = (leaf: Leaf): string => (leaf.type === "color" ? "DesignTokensLight/DesignTokensDark" : "DesignTokens");
 
 /**
  * Two semantic or component paths must not produce the same CSS name (one :root/.dark namespace) or
  * the same Dart field name in one class. Public dashboard names are kept out of --mf- in validateBindings.
  */
-export function validateNames(leaves, errors) {
-  const namers = [
+export function validateNames(leaves: Leaves, errors: string[]): void {
+  const namers: [string, (leaf: Leaf) => [string, string]][] = [
     ["CSS", (leaf) => ["", cssName(leaf.path)]],
     ["Dart", (leaf) => [dartClass(leaf), dartName(leaf.path)]],
   ];
   for (const [kind, convert] of namers) {
-    const seen = new Map();
+    const seen = new Map<string, string>();
     for (const leaf of leaves.values()) {
       if (leaf.layer === "primitive") continue;
       const [scope, name] = convert(leaf);
@@ -301,10 +376,10 @@ export function validateNames(leaves, errors) {
  * kind is the required target: "color" or "dimension" (a leaf of that type), "text" (a
  * semantic.text.<role> group) or "leaf" (a leaf of any type).
  */
-export function listBindings(bindings) {
-  const list = [];
+export function listBindings(bindings: Bindings): BindingEntry[] {
+  const list: BindingEntry[] = [];
   const dashboard = bindings.dashboard ?? {};
-  for (const entry of dashboard.colors ?? []) {
+  for (const entry of Array.isArray(dashboard.colors) ? dashboard.colors : []) {
     for (const name of entry.properties ?? []) list.push({ platform: "dashboard", name, target: entry.source, kind: "color" });
   }
   for (const [name, target] of Object.entries(dashboard.scalars ?? {})) {
@@ -331,30 +406,67 @@ export function listBindings(bindings) {
 }
 
 /** The bindings that point at a path (a leaf, or a group that contains it). */
-export function bindingsAt(list, leafPath) {
+export function bindingsAt(list: BindingEntry[], leafPath: string): BindingEntry[] {
   return list.filter(
     ({ target }) => typeof target === "string" && target && (target === leafPath || leafPath.startsWith(`${target}.`)),
   );
 }
 
 /** Role of a semantic font-family path on one platform, or undefined. */
-export function fontRole(bindings, leafPath, platform) {
+export function fontRole(bindings: Bindings, leafPath: string, platform: Platform): (FontRole & { name: string }) | undefined {
   const entry = bindings.fonts?.paths?.[leafPath];
   const name = isObject(entry) ? entry[platform] : entry;
-  return name === undefined ? undefined : { name, ...bindings.fonts.roles?.[name] };
+  return name === undefined ? undefined : { name, ...bindings.fonts?.roles?.[name] };
 }
 
 const TEXT_ROLE = /^semantic\.text\.[^.]+$/;
 // Every bound text role must carry these members: both platforms read each one.
 const TEXT_MEMBERS = [["font-family", "fontFamily"], ["font-size", "dimension"], ["line-height", "number"], ["font-weight", "fontWeight"]];
 
-export function validateBindings(bindings, leaves, errors) {
-  const groups = new Set();
+export function validateBindings(bindings: Bindings, leaves: Leaves, errors: string[]): void {
+  // The formats read these members with no fallback (see ValidBindings), so each must exist here.
+  const required: [string, unknown][] = [
+    ["dashboard", bindings.dashboard],
+    ["dashboard.scalars", bindings.dashboard?.scalars],
+    ["dashboard.text", bindings.dashboard?.text],
+    ["app", bindings.app],
+    ["app.colorScheme", bindings.app?.colorScheme],
+    ["app.inversePrimary", bindings.app?.inversePrimary],
+    ["fonts", bindings.fonts],
+    ["fonts.roles", bindings.fonts?.roles],
+  ];
+  for (const [member, value] of required) {
+    if (!isObject(value)) errors.push(`bindings.json: ${member} must be an object`);
+  }
+  const inverseField = bindings.app?.inversePrimary?.field;
+  if (isObject(bindings.app?.inversePrimary) && (typeof inverseField !== "string" || !inverseField)) {
+    errors.push(`bindings.json: app.inversePrimary.field must be a nonempty string, found ${JSON.stringify(inverseField)}`);
+  }
+  // Parsed JSON can hold null, an object or a string here despite the declared type.
+  const colors = bindings.dashboard?.colors;
+  if (isObject(bindings.dashboard) && !Array.isArray(colors)) errors.push("bindings.json: dashboard.colors must be an array");
+  (Array.isArray(colors) ? colors : []).forEach((entry, index) => {
+    const source: unknown = entry.source;
+    if (typeof source !== "string" || !source) {
+      errors.push(`bindings.json: dashboard.colors[${index}].source must be a nonempty string, found ${JSON.stringify(source)}`);
+    }
+    const properties: unknown = entry.properties;
+    if (!Array.isArray(properties)) {
+      errors.push(`bindings.json: dashboard.colors[${index}].properties must be an array`);
+      return;
+    }
+    properties.forEach((property: unknown, position) => {
+      if (typeof property !== "string") {
+        errors.push(`bindings.json: dashboard.colors[${index}].properties[${position}] must be a string, found ${JSON.stringify(property)}`);
+      }
+    });
+  });
+  const groups = new Set<string>();
   for (const leafPath of leaves.keys()) {
     const segments = leafPath.split(".");
     for (let length = 1; length < segments.length; length += 1) groups.add(segments.slice(0, length).join("."));
   }
-  const claimed = new Map();
+  const claimed = new Map<string, string>();
   for (const binding of listBindings(bindings)) {
     const key = `${binding.platform} ${binding.name}`;
     if (claimed.has(key)) {
@@ -403,7 +515,7 @@ export function validateBindings(bindings, leaves, errors) {
     }
     const named = isObject(entry) ? [entry.dashboard, entry.app] : [entry];
     for (const roleName of named) {
-      if (!roles[roleName]) errors.push(`bindings.json: fonts.paths ${fontPath}: unknown role ${JSON.stringify(roleName)}`);
+      if (!roles[roleName!]) errors.push(`bindings.json: fonts.paths ${fontPath}: unknown role ${JSON.stringify(roleName)}`);
     }
   }
   for (const leaf of leaves.values()) {
@@ -414,13 +526,13 @@ export function validateBindings(bindings, leaves, errors) {
 }
 
 // Names the formats add on top of the leaf names (leaf names are checked in validateNames).
-const SCALAR_PLACEMENT = { "--radius": "root", "--spacing": "theme" };
+const SCALAR_PLACEMENT: Record<string, "root" | "theme"> = { "--radius": "root", "--spacing": "theme" };
 const PUBLIC_NAME = /^--[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const TEXT_STEP = /^--text-[a-z0-9]+$/;
 
-export function validateOutputNames(bindings, errors) {
-  const names = new Map();
-  const claim = (name, where) => {
+export function validateOutputNames(bindings: Bindings, errors: string[]): void {
+  const names = new Map<string, string>();
+  const claim = (name: string, where: string): void => {
     if (names.has(name)) errors.push(`name collision: ${name} is produced twice in the dashboard output (${names.get(name)} and ${where})`);
     else names.set(name, where);
   };
@@ -458,46 +570,46 @@ export function validateOutputNames(bindings, errors) {
 // A leaf whose last segment is font-size gets rem (16 px per rem). Every other dimension gets px.
 // Multiplying or dividing by 16 is exact in binary floating point, so no precision is lost.
 
-const dartDouble = (value) => (Number.isInteger(value) ? value.toFixed(1) : String(value));
-const cssFamily = (name) => (/^[A-Za-z0-9_-]+$/.test(name) ? name : `"${name}"`);
+const dartDouble = (value: number): string => (Number.isInteger(value) ? value.toFixed(1) : String(value));
+const cssFamily = (name: string): string => (/^[A-Za-z0-9_-]+$/.test(name) ? name : `"${name}"`);
 
 /** CSS value of one dimension leaf from its resolved value (px, or rem from a font-size target). */
-export function cssDimension(path, value) {
+export function cssDimension(path: string[], value: string): string {
   const match = /^(.+)(px|rem)$/.exec(value);
   if (!match) throw new Error(`${path.join(".")}: resolved dimension ${JSON.stringify(value)} is not px or rem`);
   const px = match[2] === "rem" ? parseFloat(match[1]) * 16 : parseFloat(match[1]);
   return path.at(-1) === "font-size" ? `${px / 16}rem` : `${px}px`;
 }
 
-export function cssValue(type, value) {
+export function cssValue(type: string, value: unknown): string {
   switch (type) {
     case "fontFamily":
-      return value.map(cssFamily).join(", ");
+      return (value as string[]).map(cssFamily).join(", ");
     case "cubicBezier":
-      return `cubic-bezier(${value.join(", ")})`;
+      return `cubic-bezier(${(value as number[]).join(", ")})`;
     default:
       return String(value);
   }
 }
 
-export function dartValue(type, value) {
+export function dartValue(type: string, value: unknown): string {
   switch (type) {
     case "color": {
-      const digits = value.slice(1).toUpperCase();
+      const digits = (value as string).slice(1).toUpperCase();
       return `0x${digits.length === 6 ? `FF${digits}` : digits.slice(6) + digits.slice(0, 6)}`;
     }
     case "dimension":
-      return dartDouble(parseFloat(value));
+      return dartDouble(parseFloat(value as string));
     case "fontFamily":
-      return `[${value.map((name) => `'${name}'`).join(", ")}]`;
+      return `[${(value as string[]).map((name) => `'${name}'`).join(", ")}]`;
     case "fontWeight":
       return `FontWeight.w${value}`;
     case "number":
-      return dartDouble(value);
+      return dartDouble(value as number);
     case "duration":
-      return `Duration(milliseconds: ${value.slice(0, -2).replace(/^0+(?=\d)/, "")})`;
+      return `Duration(milliseconds: ${(value as string).slice(0, -2).replace(/^0+(?=\d)/, "")})`;
     case "cubicBezier":
-      return `Cubic(${value.map(dartDouble).join(", ")})`;
+      return `Cubic(${(value as number[]).map(dartDouble).join(", ")})`;
     default:
       return String(value);
   }
@@ -505,10 +617,10 @@ export function dartValue(type, value) {
 
 // ---- formats: one fragment per mode, joined by build.mjs ----
 
-const emitted = (dictionary) => dictionary.allTokens.filter((token) => token.path[0] !== "primitive");
-const byPath = (dictionary) => new Map(dictionary.allTokens.map((token) => [token.path.join("."), token]));
+const emitted = (dictionary: Dictionary): TransformedToken[] => dictionary.allTokens.filter((token) => token.path[0] !== "primitive");
+const byPath = (dictionary: Dictionary): Map<string, TransformedToken> => new Map(dictionary.allTokens.map((token) => [token.path.join("."), token]));
 
-export function headerLines({ sourcePath, sourceDigest, generatorDigest, generatorFiles }) {
+export function headerLines({ sourcePath, sourceDigest, generatorDigest, generatorFiles }: HeaderInput): string[] {
   return [
     "GENERATED FILE. DO NOT EDIT.",
     `Source: ${sourcePath} (not in Git), sha256 ${sourceDigest}`,
@@ -518,17 +630,17 @@ export function headerLines({ sourcePath, sourceDigest, generatorDigest, generat
 }
 
 /** CSS fragment for one mode. Light: @theme inline and :root. Dark: .dark. */
-function formatCss(mode, bindings) {
-  return ({ dictionary }) => {
+function formatCss(mode: Mode, bindings: ValidBindings) {
+  return ({ dictionary }: { dictionary: Dictionary }): string => {
     const tokens = byPath(dictionary);
     // The dashboard formatter (vp check) lowercases hex digits, so the file carries lowercase hex.
     // The digits and the alpha-last order are the authored ones.
-    const value = (token) => {
-      if (token.$type === "fontFamily") return fontRole(bindings, token.path.join("."), "dashboard").dashboard.stack;
+    const value = (token: TransformedToken): string => {
+      if (token.$type === "fontFamily") return fontRole(bindings, token.path.join("."), "dashboard")!.dashboard!.stack as string;
       return token.$type === "color" ? token.$value.toLowerCase() : token.$value;
     };
     const publicColors = (bindings.dashboard.colors ?? []).flatMap((entry) =>
-      entry.properties.map((property) => `  ${property}: var(${cssName(entry.source)});`),
+      entry.properties.map((property: string) => `  ${property}: var(${cssName(entry.source)});`),
     );
     const colorVars = emitted(dictionary)
       .filter((token) => mode === "light" || token.$type === "color")
@@ -537,13 +649,13 @@ function formatCss(mode, bindings) {
     const theme = Object.values(bindings.fonts.roles).map((role) => `  ${role.dashboard.property}: ${role.dashboard.stack};`);
     const scalars = Object.entries(bindings.dashboard.scalars);
     for (const [name, target] of scalars) {
-      if (SCALAR_PLACEMENT[name] === "theme") theme.push(`  ${name}: ${tokens.get(target).$value};`);
+      if (SCALAR_PLACEMENT[name] === "theme") theme.push(`  ${name}: ${tokens.get(target)!.$value};`);
     }
     for (const [name, role] of Object.entries(bindings.dashboard.text)) {
       theme.push(
-        `  ${name}: ${tokens.get(`${role}.font-size`).$value};`,
-        `  ${name}--line-height: ${tokens.get(`${role}.line-height`).$value};`,
-        `  ${name}--font-weight: ${tokens.get(`${role}.font-weight`).$value};`,
+        `  ${name}: ${tokens.get(`${role}.font-size`)!.$value};`,
+        `  ${name}--line-height: ${tokens.get(`${role}.line-height`)!.$value};`,
+        `  ${name}--font-weight: ${tokens.get(`${role}.font-weight`)!.$value};`,
       );
     }
     const rootScalars = scalars
@@ -553,7 +665,7 @@ function formatCss(mode, bindings) {
   };
 }
 
-const DART_TYPES = {
+const DART_TYPES: Record<TokenType, string> = {
   color: "Color",
   dimension: "double",
   fontFamily: "String",
@@ -564,7 +676,7 @@ const DART_TYPES = {
 };
 
 /** One static const line, wrapped the way dart format wraps it (80 columns). */
-export function dartDeclaration(type, name, expression) {
+export function dartDeclaration(type: string, name: string, expression: string): string {
   const head = `  static const ${type} ${name} = `;
   if (head.length + expression.length + 1 <= 80) return `${head}${expression};`;
   const call = /^(\w+)\((.*)\)$/.exec(expression);
@@ -575,19 +687,19 @@ export function dartDeclaration(type, name, expression) {
 }
 
 /** Dart fragment for one mode. Light: DesignTokens and DesignTokensLight. Dark: DesignTokensDark. */
-function formatDart(mode, bindings) {
+function formatDart(mode: Mode, bindings: ValidBindings) {
   const className = mode === "light" ? "DesignTokensLight" : "DesignTokensDark";
   const opposite = mode === "light" ? "DesignTokensDark" : "DesignTokensLight";
-  return ({ dictionary }) => {
-    const shared = [];
-    const colors = [];
+  return ({ dictionary }: { dictionary: Dictionary }): string => {
+    const shared: string[] = [];
+    const colors: string[] = [];
     for (const token of emitted(dictionary)) {
       const leafPath = token.path.join(".");
       const name = dartName(leafPath);
       if (token.$type === "color") colors.push(dartDeclaration("Color", name, `Color(${token.$value})`));
       else if (token.$type === "fontFamily") {
-        shared.push(dartDeclaration("String", name, `'${fontRole(bindings, leafPath, "app").app}'`));
-      } else shared.push(dartDeclaration(DART_TYPES[token.$type], name, token.$value));
+        shared.push(dartDeclaration("String", name, `'${fontRole(bindings, leafPath, "app")!.app}'`));
+      } else shared.push(dartDeclaration(DART_TYPES[token.$type as TokenType], name, token.$value));
     }
     const fields = Object.entries(bindings.app.colorScheme).map(([field, source]) => `    ${field}: ${dartName(source)},`);
     const { field, source } = bindings.app.inversePrimary;
@@ -598,7 +710,7 @@ function formatDart(mode, bindings) {
       `    ${field}: ${opposite}.${dartName(source)},`,
       "  );",
     ];
-    const classText = (name, members) => [`abstract final class ${name} {`, ...members, "}"].join("\n");
+    const classText = (name: string, members: string[]): string => [`abstract final class ${name} {`, ...members, "}"].join("\n");
     const own = classText(className, [...colors, "", ...scheme]);
     return mode === "light" ? [classText("DesignTokens", shared), own].join("\n\n") : own;
   };
@@ -611,28 +723,28 @@ const noBindings = () => {
 };
 
 /** Builds a fresh dictionary for one mode from the parsed source. The source object is not changed. */
-export async function createDictionary(tree, mode, bindings) {
+export async function createDictionary(tree: TokenNode, mode: Mode, bindings?: Bindings): Promise<StyleDictionary> {
   const dictionary = new StyleDictionary({
-    tokens: structuredClone(tree),
+    tokens: structuredClone(tree) as DesignTokens,
     log: { warnings: "error", verbosity: "silent" },
     preprocessors: ["mf/mode"],
     hooks: {
       preprocessors: {
-        "mf/mode": (tokens) => {
+        "mf/mode": (tokens: PreprocessedTokens) => {
           const { tree: projected, errors } = projectMode(tokens, mode);
           if (errors.length) throw new Error(errors.join("\n"));
-          return projected;
+          return projected as PreprocessedTokens;
         },
       },
       formats: bindings
-        ? { "mf/css": formatCss(mode, bindings), "mf/dart": formatDart(mode, bindings) }
+        ? { "mf/css": formatCss(mode, bindings as ValidBindings), "mf/dart": formatDart(mode, bindings as ValidBindings) }
         : { "mf/css": noBindings, "mf/dart": noBindings },
       transforms: {
         // The full path is the unique name, so Style Dictionary's collision warning only fires on a real clash.
         "mf/name": { type: "name", transform: (token) => token.path.join(".") },
         "mf/css": {
           type: "value",
-          transform: (token) => cssValue(token.$type, token.$value),
+          transform: (token) => cssValue(token.$type as string, token.$value),
         },
         "mf/css/dimension": {
           type: "value",
@@ -642,7 +754,7 @@ export async function createDictionary(tree, mode, bindings) {
         },
         "mf/dart": {
           type: "value",
-          transform: (token) => dartValue(token.$type, token.$value),
+          transform: (token) => dartValue(token.$type as string, token.$value),
         },
       },
     },
@@ -656,23 +768,23 @@ export async function createDictionary(tree, mode, bindings) {
 }
 
 /** Resolved native values for one mode: Map(path -> { css, dart }). */
-export async function nativeValues(dictionary) {
-  const values = new Map();
+export async function nativeValues(dictionary: StyleDictionary): Promise<Map<string, NativeValue>> {
+  const values = new Map<string, NativeValue>();
   const [css, dart] = await Promise.all([dictionary.getPlatformTokens("css"), dictionary.getPlatformTokens("dart")]);
   for (const token of css.allTokens) values.set(token.path.join("."), { css: token.$value });
-  for (const token of dart.allTokens) values.get(token.path.join(".")).dart = token.$value;
+  for (const token of dart.allTokens) values.get(token.path.join("."))!.dart = token.$value;
   return values;
 }
 
 /** The CSS and Dart fragments of one mode, in memory (the formatting API writes nothing). */
-export async function formatFragments(dictionary) {
+export async function formatFragments(dictionary: StyleDictionary): Promise<FragmentPair> {
   const [[css], [dart]] = await Promise.all([dictionary.formatPlatform("css"), dictionary.formatPlatform("dart")]);
-  return { css: css.output, dart: dart.output };
+  return { css: css.output as string, dart: dart.output as string };
 }
 
 /** Joins the two mode fragments into the final file texts. */
-export function assemble({ header, light, dark }) {
-  const comment = (prefix) => header.map((line) => `${prefix}${line}`.trimEnd());
+export function assemble({ header, light, dark }: { header: string[]; light: FragmentPair; dark: FragmentPair }): FragmentPair {
+  const comment = (prefix: string): string[] => header.map((line) => `${prefix}${line}`.trimEnd());
   return {
     css: ["/*", ...comment(" * "), " */", "", light.css, "", dark.css, ""].join("\n"),
     dart: [...comment("// "), "", "import 'package:flutter/material.dart';", "", light.dart, "", dark.dart, ""].join("\n"),
@@ -680,10 +792,10 @@ export function assemble({ header, light, dark }) {
 }
 
 /** Runs every source check. Returns { errors, leaves, modes: { light, dark } } with projected leaves. */
-export function analyze(tree, bindings) {
+export function analyze(tree: TokenNode, bindings: Bindings): Analysis {
   const profile = validateProfile(tree);
   const errors = [...profile.errors];
-  const modes = {};
+  const modes: Analysis["modes"] = {};
   if (errors.length) return { errors, leaves: profile.leaves, modes };
   validateNames(profile.leaves, errors);
   for (const mode of MODES) {

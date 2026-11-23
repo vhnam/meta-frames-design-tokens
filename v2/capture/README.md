@@ -6,8 +6,8 @@ Not in Git. Read-only on both clients. Disposable scripts, same idea as `baselin
 
 - `dashboard-capture.mjs`: copy of `baseline/capture/dashboard-capture.mjs` (sha256 `a45ae031992d…`), extended.
 - `app_capture_test.dart`: copy of `baseline/capture/app_baseline_test.dart` (sha256 `4b06cda12526…`), extended.
-- `compare.mjs`: compares a capture JSON with the expectations in `../../oracle.mjs`.
-- Property names, spec stacks and the expected values come from `oracle.mjs`. It imports nothing from the generator.
+- `compare.mjs`: compares a capture JSON with the expectations in `../../oracle.ts`.
+- Property names, spec stacks and the expected values come from `oracle.ts`. It imports nothing from the generator.
 
 ## Run
 

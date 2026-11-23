@@ -19,7 +19,7 @@ import {
   dartNameOf,
   APP_TEXT_SLOTS,
   expectedApp,
-} from "./oracle.mjs";
+} from "./oracle.ts";
 import { compareApp, compareDashboard } from "./v2/capture/compare.mjs";
 
 const here = import.meta.dirname;
@@ -641,4 +641,43 @@ test("compareApp accepts the exact height tolerance and reports missing samples"
   const report = compareApp(capture, leaves);
   assert.equal(flagged(report, "light", heightCheck)?.actual, "missing");
   assert.ok(flagged(report, "dark", heightCheck));
+});
+
+// ---- Slice 3 fix round 1: readSource and dimension validation ----
+
+const changedSource = (change) => {
+  const tree = JSON.parse(sourceText);
+  change(tree);
+  return JSON.stringify(tree);
+};
+
+test("readSource rejects a root that is not an object", () => {
+  assert.throws(() => readSource("42"), { message: "oracle: v2/tokens.json root must be an object" });
+  assert.throws(() => readSource("[]"), { message: "oracle: v2/tokens.json root must be an object" });
+  assert.throws(() => readSource("null"), { message: "oracle: v2/tokens.json root must be an object" });
+});
+
+test("readSource names a child that is not an object", () => {
+  const text = changedSource((tree) => { tree.primitive.radius.sm = 7; });
+  assert.throws(() => readSource(text), { message: "oracle: primitive.radius.sm must be an object" });
+});
+
+for (const value of [6, "6em", "-6px", "px"]) {
+  test(`a dimension leaf with ${JSON.stringify(value)} is named, not converted`, () => {
+    const text = changedSource((tree) => { tree.primitive.radius.md.$value = value; });
+    const { leaves } = readSource(text);
+    assert.throws(() => canonical(leaves, "primitive.radius.md", "light"), {
+      message: `oracle: primitive.radius.md: dimension must be a px string, found ${JSON.stringify(value)}`,
+    });
+    assert.throws(() => expectedApp(leaves), { message: /oracle: primitive\.radius\.md: dimension must be a px string/ });
+  });
+}
+
+test("a dimension leaf too large to be finite is named, not converted", () => {
+  const value = `1${"0".repeat(400)}px`;
+  const text = changedSource((tree) => { tree.primitive.radius.md.$value = value; });
+  const { leaves } = readSource(text);
+  assert.throws(() => canonical(leaves, "primitive.radius.md", "light"), {
+    message: `oracle: primitive.radius.md: dimension must be a px string, found ${JSON.stringify(value)}`,
+  });
 });
