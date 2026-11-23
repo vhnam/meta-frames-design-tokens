@@ -4,11 +4,11 @@ import { join } from "node:path";
 import { test } from "node:test";
 import { isDeepStrictEqual } from "node:util";
 import {
-  canonical,
+  canonical as oracleCanonical,
   COLOR_SCHEME,
   DASHBOARD_PUBLIC,
-  expectedCss,
-  expectedDart,
+  expectedCss as oracleExpectedCss,
+  expectedDart as oracleExpectedDart,
   FONT_ROLES,
   INVERSE_PRIMARY,
   NAV,
@@ -18,9 +18,20 @@ import {
   cssNameOf,
   dartNameOf,
   APP_TEXT_SLOTS,
-  expectedApp,
+  expectedApp as oracleExpectedApp,
 } from "./oracle.ts";
+// @ts-expect-error compare.mjs has no declarations until it becomes compare.ts (Slice 5).
 import { compareApp, compareDashboard } from "./v2/capture/compare.mjs";
+
+// A parsed or captured JSON document that a test reads at arbitrary keys.
+type Tree = any;
+// The oracle's structured results are read at arbitrary keys in these tests.
+const canonical = oracleCanonical as (leaves: Tree, path: Tree, mode: Tree) => Tree;
+const expectedCss = oracleExpectedCss as (leaves: Tree) => Tree;
+const expectedDart = oracleExpectedDart as (leaves: Tree) => Tree;
+const expectedApp = oracleExpectedApp as (leaves: Tree) => Tree;
+// A map whose missing key is a test failure at the property read: get() is typed as present.
+type Present<Value> = { get(key: string): Value } & Map<string, Value>;
 
 const here = import.meta.dirname;
 const sourceText = readFileSync(join(here, "v2/tokens.json"), "utf8");
@@ -29,14 +40,14 @@ const dartPath = join(here, "../meta-frames-app/lib/ui/core/design_tokens.g.dart
 
 // ---- parsers for the generated files ----
 
-function parseCss(text) {
-  const blocks = {};
-  const duplicates = [];
+function parseCss(text: string) {
+  const blocks: Record<string, Present<string>> = {};
+  const duplicates: string[] = [];
   const clean = text.replace(/\/\*[\s\S]*?\*\//g, "");
   for (const [, selector, body] of clean.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-    const key = selector.trim();
-    const properties = new Map();
-    for (const declaration of body.split(";")) {
+    const key = selector!.trim();
+    const properties = new Map<string, string>() as Present<string>;
+    for (const declaration of body!.split(";")) {
       const trimmed = declaration.trim();
       if (!trimmed) continue;
       const split = trimmed.indexOf(": ");
@@ -49,28 +60,28 @@ function parseCss(text) {
   return { blocks, duplicates };
 }
 
-function parseDart(text) {
-  const classes = {};
+function parseDart(text: string) {
+  const classes: Record<string, Present<{ type: string; expression: string }>> = {};
   const clean = text.replace(/^\s*\/\/.*$/gm, "");
   for (const [, name, body] of clean.matchAll(/abstract final class (\w+) \{([\s\S]*?)\n\}/g)) {
-    const fields = new Map();
-    for (const statement of body.replace(/\s+/g, " ").split(";")) {
+    const fields = new Map<string, { type: string; expression: string }>() as Present<{ type: string; expression: string }>;
+    for (const statement of body!.replace(/\s+/g, " ").split(";")) {
       const match = /^\s*static const (\w+) (\w+) = (.+)$/.exec(statement);
       // dart format may wrap a call over lines and add a trailing comma: compare the call itself
-      if (match) fields.set(match[2], { type: match[1], expression: match[3].trim().replace(/\(\s+/g, "(").replace(/,?\s*\)$/, ")") });
+      if (match) fields.set(match[2]!, { type: match[1]!, expression: match[3]!.trim().replace(/\(\s+/g, "(").replace(/,?\s*\)$/, ")") });
     }
-    classes[name] = fields;
+    classes[name!] = fields;
   }
   return classes;
 }
 
-function dartCanon(type, expression) {
-  const number = (text) => (/^-?\d+(\.\d+)?$/.test(text) ? Number(text) : NaN);
+function dartCanon(type: string, expression: string) {
+  const number = (text: string) => (/^-?\d+(\.\d+)?$/.test(text) ? Number(text) : NaN);
   switch (type) {
     case "Color": {
       const match = /^Color\(0x([0-9A-F]{8})\)$/.exec(expression);
       if (!match) return null;
-      const byte = (index) => parseInt(match[1].slice(index * 2, index * 2 + 2), 16);
+      const byte = (index: number) => parseInt(match[1].slice(index * 2, index * 2 + 2), 16);
       return { a: byte(0), r: byte(1), g: byte(2), b: byte(3) };
     }
     case "double":
@@ -92,7 +103,7 @@ function dartCanon(type, expression) {
 
 const same = isDeepStrictEqual;
 
-function cssMatches(actual, expected) {
+function cssMatches(actual: Tree, expected: Tree) {
   if (actual === undefined) return false;
   if (expected.kind === "var") return actual === `var(${expected.name})`;
   if (expected.kind === "stack") return actual === expected.stack.join(", ");
@@ -102,7 +113,7 @@ function cssMatches(actual, expected) {
       return /^#(?:[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(actual) && same(parseHex(actual), canon);
     case "dimension": {
       const match = /^(\d[\d.e-]*)(px|rem)$/.exec(actual);
-      return Boolean(match) && match[2] === canon.cssUnit && Number(match[1]) === canon.cssNumber;
+      return Boolean(match) && match![2] === canon.cssUnit && Number(match![1]) === canon.cssNumber;
     }
     case "fontWeight":
     case "number":
@@ -119,9 +130,9 @@ function cssMatches(actual, expected) {
 }
 
 /** Compares generated texts with the oracle. Returns a list of mismatch descriptions. */
-export function compareOutputs(source, cssText, dartText) {
-  const mismatches = [];
-  const note = (where, expected, actual) => mismatches.push(`${where}: expected ${JSON.stringify(expected)}, found ${JSON.stringify(actual)}`);
+export function compareOutputs(source: Tree, cssText: string, dartText: string) {
+  const mismatches: string[] = [];
+  const note = (where: string, expected: Tree, actual: Tree) => mismatches.push(`${where}: expected ${JSON.stringify(expected)}, found ${JSON.stringify(actual)}`);
   const { leaves } = readSource(source);
   const css = parseCss(cssText);
   for (const duplicate of css.duplicates) note("css duplicate property", "once", duplicate);
@@ -133,18 +144,18 @@ export function compareOutputs(source, cssText, dartText) {
       note(`css ${selector}`, "a block", "missing");
       continue;
     }
-    for (const [property, expected] of wantedCss[name]) {
+    for (const [property, expected] of (wantedCss as Tree)[name]) {
       if (!cssMatches(actual.get(property), expected)) note(`css ${selector} ${property}`, expected, actual.get(property));
     }
     for (const property of actual.keys()) {
-      if (!wantedCss[name].has(property)) note(`css ${selector} ${property}`, "no such property", actual.get(property));
+      if (!(wantedCss as Tree)[name].has(property)) note(`css ${selector} ${property}`, "no such property", actual.get(property));
     }
   }
   const dart = parseDart(dartText);
   const wantedDart = expectedDart(leaves);
   const classes = { DesignTokens: wantedDart.shared, DesignTokensLight: wantedDart.light, DesignTokensDark: wantedDart.dark };
   for (const [className, wanted] of Object.entries(classes)) {
-    const actual = dart[className];
+    const actual = dart[className!];
     if (!actual) {
       note(`dart ${className}`, "a class", "missing");
       continue;
@@ -162,7 +173,7 @@ export function compareOutputs(source, cssText, dartText) {
     const scheme = dart[className]?.get("colorScheme");
     const wanted = wantedDart.schemes[mode];
     const body = scheme && /^ColorScheme\((.*)\)$/.exec(scheme.expression)?.[1];
-    const actual = new Map((body ?? "").split(",").map((part) => part.trim()).filter(Boolean).map((part) => part.split(/:\s*/)));
+    const actual = new Map((body ?? "").split(",").map((part: Tree) => part.trim()).filter(Boolean).map((part: Tree) => part.split(/:\s*/)));
     if (!scheme || scheme.type !== "ColorScheme" || !body) note(`dart ${className}.colorScheme`, "a ColorScheme", scheme);
     for (const [field, expected] of wanted) if (actual.get(field) !== expected) note(`dart ${className}.colorScheme.${field}`, expected, actual.get(field));
     for (const field of actual.keys()) if (!wanted.has(field)) note(`dart ${className}.colorScheme.${field}`, "no such argument", actual.get(field));
@@ -186,7 +197,7 @@ test("the oracle covers 184 semantic and component leaves and the spec tables", 
   assert.equal(COLOR_SCHEME.length + 1, 31);
   const css = expectedCss(leaves);
   assert.equal(css.root.size, 184 + 32 + 1);
-  const colours = semanticAndComponentPaths(leaves).filter((path) => leaves.get(path).type === "color").length;
+  const colours = semanticAndComponentPaths(leaves).filter((path) => leaves.get(path)!.type === "color").length;
   assert.equal(css.dark.size, colours + 32);
   assert.equal(css.theme.size, 3 + 1 + 7 * 3);
 });
@@ -224,7 +235,7 @@ test("the nav bindings and inversePrimary point at the specified opposite and sa
 test("the oracle detects a changed colour, a swapped alpha order and a wrong font stack", () => {
   const css = cssText();
   const dart = dartText();
-  const detects = (name, changedCss, changedDart) => {
+  const detects = (name: string, changedCss: string, changedDart: string) => {
     const found = compareOutputs(sourceText, changedCss, changedDart);
     assert.ok(found.length > 0, name);
   };
@@ -274,12 +285,12 @@ test("the nav bindings match the independent nav table", () => {
 
 // ---- Slice 4: decision 7 app expectations and the capture comparison ----
 
-const hexByte = (hexText) => parseHex(hexText);
+const hexByte = (hexText: string) => parseHex(hexText);
 
 test("decision 7 expectations hold the plan's literal values", () => {
   const { leaves } = readSource(sourceText);
   const wanted = expectedApp(leaves);
-  const slot = (name) => wanted.text.get(name);
+  const slot = (name: string) => wanted.text.get(name);
   assert.deepEqual(slot("displayLarge"), { family: "SpaceGrotesk", size: 30, height: 1.25, weight: 700 });
   assert.deepEqual(slot("headlineSmall"), { family: "SpaceGrotesk", size: 24, height: 1.25, weight: 600 });
   assert.deepEqual(slot("titleLarge"), { family: "SpaceGrotesk", size: 20, height: 1.375, weight: 600 });
@@ -302,17 +313,17 @@ test("decision 7 expectations hold the plan's literal values", () => {
   assert.deepEqual(wanted.light.disabled, { base: hexByte("#0f172a"), alpha: 0.38 });
 });
 
-const argbOf = ({ r, g, b, a }) => ((a << 24) | (r << 16) | (g << 8) | b) >>> 0;
-const colorEntry = (color, alphaExact = color.a / 255) => ({ argb: argbOf(color), alphaExact });
+const argbOf = ({ r, g, b, a }: Tree) => ((a << 24) | (r << 16) | (g << 8) | b) >>> 0;
+const colorEntry = (color: Tree, alphaExact = color.a / 255) => ({ argb: argbOf(color), alphaExact });
 
 /** An app capture that matches the oracle exactly. */
-function perfectApp(leaves) {
+function perfectApp(leaves: Tree): Tree {
   const wanted = expectedApp(leaves);
   const box = { paddingLeft: 16, paddingRight: 16, paddingTop: 0, paddingBottom: 0, minHeight: 48 };
-  const view = (mode) => {
+  const view = (mode: Tree) => {
     const expected = wanted[mode];
     const disabled = { argb: argbOf({ ...expected.disabled.base, a: Math.round(expected.disabled.alpha * 255) }), alphaExact: expected.disabled.alpha };
-    const sample = (slotName, scale) => ({ ...wanted.text.get(slotName), boxHeight: 20 * scale });
+    const sample = (slotName: string, scale: Tree) => ({ ...wanted.text.get(slotName), boxHeight: 20 * scale });
     return {
       colorScheme: {
         ...Object.fromEntries(COLOR_SCHEME.map(([field, path]) => [field, argbOf(canonical(leaves, path, mode))])),
@@ -346,8 +357,8 @@ function perfectApp(leaves) {
   };
 }
 
-const clone = (value) => JSON.parse(JSON.stringify(value));
-const flagged = (report, mode, property) => report.mismatches.find((entry) => entry.mode === mode && entry.property === property);
+const clone = (value: Tree) => JSON.parse(JSON.stringify(value));
+const flagged = (report: Tree, mode: Tree, property: string) => report.mismatches.find((entry: Tree) => entry.mode === mode && entry.property === property);
 
 test("compareApp accepts a capture that matches the oracle", () => {
   const { leaves } = readSource(sourceText);
@@ -384,24 +395,24 @@ test("compareApp reports each decision 7 regression with property, mode, expecte
   assert.ok(flagged(report, "dark", "sample data height ratio @2.0x"));
 });
 
-const measureOf = (color) => {
+const measureOf = (color: Tree) => {
   const alpha = color.a / 255;
-  const over = (backdrop) => [...[color.r, color.g, color.b].map((channel) => Math.round(channel * alpha + backdrop * (1 - alpha))), 255];
+  const over = (backdrop: Tree) => [...[color.r, color.g, color.b].map((channel) => Math.round(channel * alpha + backdrop * (1 - alpha))), 255];
   return { painted: "x", rgbaAlone: [color.r, color.g, color.b, color.a], rgbaOverWhite: over(255), rgbaOverBlack: over(0) };
 };
 
 /** A dashboard capture that matches the oracle exactly. */
-function perfectDashboard(leaves) {
+function perfectDashboard(leaves: Tree): Tree {
   const expected = expectedCss(leaves);
   const publicPath = new Map(DASHBOARD_PUBLIC);
   const tokenPath = new Map(semanticAndComponentPaths(leaves).map((path) => [cssNameOf(path), path]));
-  const declared = ({ type, canon }) =>
+  const declared = ({ type, canon }: Tree) =>
     type === "dimension" ? `${canon.cssNumber}${canon.cssUnit}`
       : type === "duration" ? `${canon.milliseconds}ms`
         : type === "cubicBezier" ? `cubic-bezier(${canon.join(", ")})`
           : String(canon);
-  const view = (mode) => {
-    const properties = {};
+  const view = (mode: Tree) => {
+    const properties: Tree = {};
     for (const [name, wanted] of expected.root) {
       if (wanted.kind === "var" && name === "--radius") properties[name] = { declared: "6px" };
       else if (wanted.kind === "var") properties[name] = { declared: "", ...measureOf(canonical(leaves, publicPath.get(name), mode)) };
@@ -409,12 +420,12 @@ function perfectDashboard(leaves) {
       else if (wanted.type === "color") properties[name] = { declared: "", ...measureOf(canonical(leaves, tokenPath.get(name), mode)) };
       else properties[name] = { declared: declared(wanted) };
     }
-    const publicColor = (name) => measureOf(canonical(leaves, publicPath.get(name), mode));
+    const publicColor = (name: string) => measureOf(canonical(leaves, publicPath.get(name), mode));
     const ring = canonical(leaves, publicPath.get("--ring"), mode);
-    const sizes = {};
+    const sizes: Tree = {};
     for (const size of ["16px", "20px"]) {
       const root = Number.parseFloat(size);
-      const text = {};
+      const text: Tree = {};
       for (const [step] of [["xs"], ["sm"], ["base"], ["lg"], ["xl"], ["2xl"], ["3xl"]]) {
         const fontSize = expected.theme.get(`--text-${step}`).canon.cssNumber * root;
         text[step] = {
@@ -497,7 +508,7 @@ test("compareDashboard rejects a capture with no 20px root measurements", () => 
 
   const report = compareDashboard(capture, leaves);
   for (const mode of ["light", "dark"]) {
-    assert.ok(report.mismatches.some((item) => item.mode === mode && item.property.includes("20px")), mode);
+    assert.ok(report.mismatches.some((item: Tree) => item.mode === mode && item.property.includes("20px")), mode);
   }
 });
 
@@ -507,7 +518,7 @@ test("compareDashboard rejects a focus ring with no visible outline", () => {
   Object.assign(capture.modes.light.focusRing, { outlineStyle: "none", outlineWidth: "0px" });
 
   const report = compareDashboard(capture, leaves);
-  assert.ok(report.mismatches.some((item) => item.mode === "light" && item.property.startsWith("focus ring")));
+  assert.ok(report.mismatches.some((item: Tree) => item.mode === "light" && item.property.startsWith("focus ring")));
 });
 
 test("compareDashboard requires a nonempty used-font sample", () => {
@@ -539,7 +550,7 @@ test("compareDashboard requires both root sizes in both modes whatever the captu
   delete capture.modes.dark.sizes["16px"];
   const report = compareDashboard(capture, leaves);
   assert.ok(flagged(report, "dark", "root size 16px record"));
-  assert.ok(!report.mismatches.some((item) => item.mode === "light" && item.property.startsWith("root size")));
+  assert.ok(!report.mismatches.some((item: Tree) => item.mode === "light" && item.property.startsWith("root size")));
 });
 
 test("compareDashboard accepts a visible focus ring and rejects a hidden style or non-numeric width", () => {
@@ -561,7 +572,7 @@ test("compareApp requires a width record for every registered family and rejects
   const report = compareApp(capture, leaves);
   for (const family of ["SpaceGrotesk", "GeistMono", "JetBrainsMono"]) assert.ok(flagged(report, "all", `${family} asset loaded`), family);
   delete capture.fonts;
-  assert.equal(compareApp(capture, leaves).mismatches.filter((item) => item.property.endsWith("asset loaded")).length, 3);
+  assert.equal(compareApp(capture, leaves).mismatches.filter((item: Tree) => item.property.endsWith("asset loaded")).length, 3);
 });
 
 test("compareDashboard reports each missing focus outline field", () => {
@@ -645,7 +656,7 @@ test("compareApp accepts the exact height tolerance and reports missing samples"
 
 // ---- Slice 3 fix round 1: readSource and dimension validation ----
 
-const changedSource = (change) => {
+const changedSource = (change: (tree: Tree) => void) => {
   const tree = JSON.parse(sourceText);
   change(tree);
   return JSON.stringify(tree);
@@ -658,13 +669,13 @@ test("readSource rejects a root that is not an object", () => {
 });
 
 test("readSource names a child that is not an object", () => {
-  const text = changedSource((tree) => { tree.primitive.radius.sm = 7; });
+  const text = changedSource((tree: Tree) => { tree.primitive.radius.sm = 7; });
   assert.throws(() => readSource(text), { message: "oracle: primitive.radius.sm must be an object" });
 });
 
 for (const value of [6, "6em", "-6px", "px"]) {
   test(`a dimension leaf with ${JSON.stringify(value)} is named, not converted`, () => {
-    const text = changedSource((tree) => { tree.primitive.radius.md.$value = value; });
+    const text = changedSource((tree: Tree) => { tree.primitive.radius.md.$value = value; });
     const { leaves } = readSource(text);
     assert.throws(() => canonical(leaves, "primitive.radius.md", "light"), {
       message: `oracle: primitive.radius.md: dimension must be a px string, found ${JSON.stringify(value)}`,
@@ -675,7 +686,7 @@ for (const value of [6, "6em", "-6px", "px"]) {
 
 test("a dimension leaf too large to be finite is named, not converted", () => {
   const value = `1${"0".repeat(400)}px`;
-  const text = changedSource((tree) => { tree.primitive.radius.md.$value = value; });
+  const text = changedSource((tree: Tree) => { tree.primitive.radius.md.$value = value; });
   const { leaves } = readSource(text);
   assert.throws(() => canonical(leaves, "primitive.radius.md", "light"), {
     message: `oracle: primitive.radius.md: dimension must be a px string, found ${JSON.stringify(value)}`,

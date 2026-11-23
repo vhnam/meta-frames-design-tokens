@@ -15,11 +15,16 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { test } from "node:test";
+import type { TestContext } from "node:test";
+
+// A parsed JSON document that a test edits at an arbitrary token path.
+type Tree = any;
+type Changes = Record<string, string | null>;
 
 const here = import.meta.dirname;
-const read = (name) => readFileSync(join(here, name), "utf8");
+const read = (name: string) => readFileSync(join(here, name), "utf8");
 const source = read("v2/tokens.json");
-const files = {
+const files: Record<string, string> = {
   "build.mjs": read("build.mjs"),
   "build.ts": read("build.ts"),
   "hooks.ts": read("hooks.ts"),
@@ -30,13 +35,13 @@ const files = {
   "v2/tokens.json": source,
 };
 const bindingsSource = files["bindings.json"];
-const tokenAt = (tokens, path) => path.split(".").reduce((group, key) => group[key], tokens);
+const tokenAt = (tokens: Tree, path: string): Tree => path.split(".").reduce((group: Tree, key: string) => group[key], tokens);
 
 // ---- fixture: a temporary workspace with the tool files and the real node_modules ----
 
-function snapshot(root) {
-  const state = {};
-  const walk = (directory) => {
+function snapshot(root: string): Record<string, string> {
+  const state: Record<string, string> = {};
+  const walk = (directory: string) => {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {
       const full = join(directory, entry.name);
       if (entry.name === "node_modules") continue;
@@ -48,7 +53,9 @@ function snapshot(root) {
   return state;
 }
 
-function fixture(context, changes = {}, { siblings = ["meta-frames-dashboard", "meta-frames-app"], installedLock = true, installedVersion } = {}) {
+type FixtureOptions = { siblings?: string[]; installedLock?: boolean; installedVersion?: string };
+
+function fixture(context: TestContext, changes: Changes = {}, { siblings = ["meta-frames-dashboard", "meta-frames-app"], installedLock = true, installedVersion }: FixtureOptions = {}) {
   const directory = mkdtempSync(join(tmpdir(), "mf-token-test-"));
   context.after(() => rmSync(directory, { recursive: true, force: true }));
   const tools = join(directory, "meta-frames-design-tokens");
@@ -74,11 +81,11 @@ function fixture(context, changes = {}, { siblings = ["meta-frames-dashboard", "
   return { directory, script: join(tools, "build.mjs") };
 }
 
-const run = (script, directory, flags = ["--inspect"]) =>
+const run = (script: string, directory: string, flags = ["--inspect"]) =>
   spawnSync(process.execPath, [script, ...flags], { cwd: directory, encoding: "utf8" });
 
 /** Runs --inspect on a changed copy. The run must fail with `expected` and write nothing. */
-function rejectsInput(context, changes, expected, options) {
+function rejectsInput(context: TestContext, changes: Changes, expected: string, options?: FixtureOptions) {
   const { directory, script } = fixture(context, changes, options);
   const before = snapshot(directory);
   const result = run(script, directory);
@@ -90,7 +97,7 @@ function rejectsInput(context, changes, expected, options) {
   assert.deepEqual(snapshot(directory), before);
 }
 
-function acceptsInput(context, changes) {
+function acceptsInput(context: TestContext, changes: Changes) {
   const { directory, script } = fixture(context, changes);
   const before = snapshot(directory);
   const result = run(script, directory);
@@ -100,40 +107,43 @@ function acceptsInput(context, changes) {
   return parseInspect(result.stdout);
 }
 
-const mutate = (json, change) => {
+const mutate = (json: string, change: (value: Tree) => void) => {
   const value = JSON.parse(json);
   change(value);
   return JSON.stringify(value, null, 2);
 };
-const changeSource = (change) => ({ "v2/tokens.json": mutate(source, change) });
-const changeBindings = (change) => ({ "bindings.json": mutate(bindingsSource, change) });
-const firstLeaf = (tokens, group) => {
-  const walk = (node, trail) => {
-    for (const [name, child] of Object.entries(node)) {
+const changeSource = (change: (value: Tree) => void) => ({ "v2/tokens.json": mutate(source, change) });
+const changeBindings = (change: (value: Tree) => void) => ({ "bindings.json": mutate(bindingsSource, change) });
+const firstLeaf = (tokens: Tree, group: string) => {
+  const walk = (node: Tree, trail: string[]): string | undefined => {
+    for (const [name, child] of Object.entries<Tree>(node)) {
       if (name.startsWith("$")) continue;
       if ("$value" in child) return [...trail, name].join(".");
       const found = walk(child, [...trail, name]);
       if (found) return found;
     }
   };
-  return walk(tokenAt(tokens, group), [group]);
+  return walk(tokenAt(tokens, group), [group])!;
 };
 
 /** Parses --inspect output into Map("mode path" -> { field: value }) plus the summary lines. */
-function parseInspect(output) {
-  const blocks = new Map();
-  const summary = {};
-  let fields;
+// A missing block is a test failure at the property read, as before: get() is typed as present.
+type Blocks = { get(key: string): Record<string, string> } & Map<string, Record<string, string>>;
+
+function parseInspect(output: string) {
+  const blocks = new Map<string, Record<string, string>>() as Blocks;
+  const summary: Record<string, number> = {};
+  let fields: Record<string, string> | undefined;
   for (const line of output.trimEnd().split("\n")) {
     if (line.startsWith("summary ")) {
-      const [, mode, count] = /^summary (\w+): (\d+)/.exec(line);
-      summary[mode] = Number(count);
+      const [, mode, count] = /^summary (\w+): (\d+)/.exec(line)!;
+      summary[mode!] = Number(count);
     } else if (!line.startsWith(" ")) {
       fields = {};
       blocks.set(line, fields);
     } else {
       const separator = line.indexOf(":");
-      fields[line.slice(0, separator).trim()] = line.slice(separator + 1).trim();
+      fields![line.slice(0, separator).trim()] = line.slice(separator + 1).trim();
     }
   }
   return { blocks, summary };
@@ -143,13 +153,13 @@ function parseInspect(output) {
 
 test("the source file is the reviewed snapshot with the spec counts", () => {
   assert.equal(createHash("sha256").update(source).digest("hex"), "04e51a389123747a5b4dbfbe13e6f47d7083e28c4aaf02469a1fc46b1217baa9");
-  const counts = { primitive: 0, semantic: 0, component: 0 };
+  const counts: Record<string, number> = { primitive: 0, semantic: 0, component: 0 };
   let colorsWithDark = 0;
-  const walk = (node, trail) => {
-    for (const [name, child] of Object.entries(node)) {
+  const walk = (node: Tree, trail: string[]): void => {
+    for (const [name, child] of Object.entries<Tree>(node)) {
       if (name.startsWith("$")) continue;
       if ("$value" in child) {
-        counts[trail[0]] += 1;
+        counts[trail[0]!]! += 1;
         if (trail.slice(0, 2).join(".") === "semantic.color" && child.$extensions?.["com.metaframes.modes"]?.dark) colorsWithDark += 1;
       } else {
         walk(child, [...trail, name]);
@@ -161,7 +171,7 @@ test("the source file is the reviewed snapshot with the spec counts", () => {
   assert.equal(colorsWithDark, 39);
 });
 
-test("inspect lists every leaf for each mode, resolves modes and writes nothing", (context) => {
+test("inspect lists every leaf for each mode, resolves modes and writes nothing", (context: TestContext) => {
   const { directory, script } = fixture(context);
   const before = snapshot(directory);
   const result = run(script, directory);
@@ -173,7 +183,7 @@ test("inspect lists every leaf for each mode, resolves modes and writes nothing"
   for (const mode of ["light", "dark"]) {
     assert.equal([...blocks.keys()].filter((key) => key.startsWith(`${mode} `)).length, 184);
   }
-  const indicator = (mode) => blocks.get(`${mode} component.nav.indicator`);
+  const indicator = (mode: string) => blocks.get(`${mode} component.nav.indicator`);
   assert.equal(indicator("light").css, "#047857");
   assert.equal(indicator("dark").css, "#34D399");
   assert.match(indicator("dark").chain, /component\.nav\.indicator -> semantic\.color\.action\.accent -> primitive\.color\.emerald\.400/);
@@ -185,7 +195,7 @@ test("inspect lists every leaf for each mode, resolves modes and writes nothing"
   assert.equal(blocks.get("light semantic.text.body.font-size").dart, "16.0");
 });
 
-test("inspect shows the authored font chain and the bound output per platform", (context) => {
+test("inspect shows the authored font chain and the bound output per platform", (context: TestContext) => {
   const { directory, script } = fixture(context);
   const { blocks } = parseInspect(run(script, directory).stdout);
   const heading = blocks.get("light semantic.text.display.font-family");
@@ -197,7 +207,7 @@ test("inspect shows the authored font chain and the bound output per platform", 
   assert.match(label["output.app"], /^JetBrainsMono/);
 });
 
-test("without a flag the runner exits nonzero and writes nothing", (context) => {
+test("without a flag the runner exits nonzero and writes nothing", (context: TestContext) => {
   const { directory, generate } = generateFixture(context, { "bindings.json": null });
   const before = snapshot(directory);
   const result = generate();
@@ -206,7 +216,7 @@ test("without a flag the runner exits nonzero and writes nothing", (context) => 
   assert.deepEqual(snapshot(directory), before);
 });
 
-test("rejects an unknown flag", (context) => {
+test("rejects an unknown flag", (context: TestContext) => {
   const { directory, script } = fixture(context);
   const result = run(script, directory, ["--write"]);
   assert.equal(result.status, 2);
@@ -215,15 +225,15 @@ test("rejects an unknown flag", (context) => {
 
 // ---- accepted shapes ----
 
-test("accepts a forward reference (component group before primitives)", (context) => {
+test("accepts a forward reference (component group before primitives)", (context: TestContext) => {
   const tokens = JSON.parse(source);
   const reordered = { $description: tokens.$description, component: tokens.component, semantic: tokens.semantic, primitive: tokens.primitive };
   const { summary } = acceptsInput(context, { "v2/tokens.json": JSON.stringify(reordered) });
   assert.deepEqual(summary, { light: 184, dark: 184 });
 });
 
-test("accepts a shared target", (context) => {
-  const { blocks } = acceptsInput(context, changeSource((tokens) => {
+test("accepts a shared target", (context: TestContext) => {
+  const { blocks } = acceptsInput(context, changeSource((tokens: Tree) => {
     const canvas = tokenAt(tokens, "semantic.color.bg.canvas");
     const surface = tokenAt(tokens, "semantic.color.bg.surface");
     surface.$value = canvas.$value;
@@ -233,8 +243,8 @@ test("accepts a shared target", (context) => {
   assert.equal(blocks.get("dark semantic.color.bg.surface").css, blocks.get("dark semantic.color.bg.canvas").css);
 });
 
-test("accepts an explicit identical light and dark pair", (context) => {
-  const { blocks } = acceptsInput(context, changeSource((tokens) => {
+test("accepts an explicit identical light and dark pair", (context: TestContext) => {
+  const { blocks } = acceptsInput(context, changeSource((tokens: Tree) => {
     const canvas = tokenAt(tokens, "semantic.color.bg.canvas");
     canvas.$extensions["com.metaframes.modes"].dark = canvas.$value;
   }));
@@ -245,7 +255,7 @@ test("one source gives light, dark, light again without a change (rule 4)", asyn
   const hooks = await import("./hooks.ts");
   const tree = JSON.parse(source);
   const original = structuredClone(tree);
-  const indicator = async (mode) => (await hooks.nativeValues(await hooks.createDictionary(tree, mode))).get("component.nav.indicator").css;
+  const indicator = async (mode: "light" | "dark") => (await hooks.nativeValues(await hooks.createDictionary(tree, mode))).get("component.nav.indicator")!.css;
   assert.equal(await indicator("light"), "#047857");
   assert.equal(await indicator("dark"), "#34D399");
   assert.equal(await indicator("light"), "#047857");
@@ -263,126 +273,126 @@ const surface = "semantic.color.bg.surface";
 const tokens = JSON.parse(source);
 const spaceLeaf = firstLeaf(tokens, "primitive.space");
 
-for (const [name, changes, expected] of [
+for (const [name, changes, expected] of ([
   ["missing source", { "v2/tokens.json": null }, "meta-frames-design-tokens/v2/tokens.json: source missing"],
   ["invalid JSON", { "v2/tokens.json": "{" }, "meta-frames-design-tokens/v2/tokens.json: invalid JSON"],
   ["falsy source root", { "v2/tokens.json": "false" }, "meta-frames-design-tokens/v2/tokens.json: root must be an object"],
   ["duplicate key", { "v2/tokens.json": source.replace('"white": {', '"white": {"$value": "#FFFFFF"}, "white": {') }, "primitive.color.white: duplicate path in meta-frames-design-tokens/v2/tokens.json"],
-  ["missing type", changeSource((value) => { delete value.primitive.color.$type; }), `${colorLeaf}: missing $type`],
-  ["unsupported type", changeSource((value) => { value.primitive.color.$type = "gradient"; }), `${colorLeaf}: unsupported $type "gradient"`],
-  ["invalid colour literal", changeSource((value) => { tokenAt(value, colorLeaf).$value = "#12345"; }), `${colorLeaf}: color must be # plus six or eight hex digits`],
-  ["invalid unit", changeSource((value) => { tokenAt(value, spaceLeaf).$value = "4em"; }), `${spaceLeaf}: dimension must be`],
-  ["negative dimension", changeSource((value) => { tokenAt(value, spaceLeaf).$value = "-4px"; }), `${spaceLeaf}: dimension must be`],
-  ["bad font weight", changeSource((value) => { value.primitive.font.weight.bold.$value = 750; }), "primitive.font.weight.bold: fontWeight must be"],
-  ["empty font family", changeSource((value) => { value.primitive.font.family.sans.$value = []; }), "primitive.font.family.sans: fontFamily must be"],
-  ["opacity above 1", changeSource((value) => { value.primitive.opacity["38"].$value = 1.5; }), "primitive.opacity.38: opacity must be within [0, 1]"],
-  ["zero line height", changeSource((value) => { value.primitive.font["line-height"].tight.$value = 0; }), "primitive.font.line-height.tight: line height must be positive"],
-  ["fractional duration", changeSource((value) => { value.primitive.duration.fast.$value = "10.5ms"; }), "primitive.duration.fast: duration must be"],
-  ["cubic out of range", changeSource((value) => { value.primitive.easing.standard.$value = [2, 0, 0, 1]; }), "primitive.easing.standard: cubicBezier must be"],
-  ["ambiguous segment with a dot", changeSource((value) => { value.primitive.color["a.b"] = { $value: "#FFFFFF" }; }), 'primitive.color: ambiguous path segment "a.b"'],
-  ["ambiguous segment with a brace", changeSource((value) => { value.primitive.color["{x}"] = { $value: "#FFFFFF" }; }), 'primitive.color: ambiguous path segment "{x}"'],
-  ["ambiguous segment starting with $", changeSource((value) => { value.primitive.color.$bad = { $value: "#FFFFFF" }; }), 'primitive.color: ambiguous path segment "$bad"'],
-  ["literal in a semantic leaf", changeSource((value) => { tokenAt(value, canvas).$value = "#FFFFFF"; }), `[light] ${canvas}: semantic value must be one whole brace reference, found literal "#FFFFFF"`],
-  ["malformed reference", changeSource((value) => { tokenAt(value, canvas).$value = `prefix {${colorLeaf}}`; }), `[light] ${canvas}: malformed reference`],
-  ["missing reference target", changeSource((value) => { tokenAt(value, canvas).$value = "{primitive.color.nope}"; }), `[light] ${canvas}: reference target primitive.color.nope does not exist (chain: ${canvas} -> primitive.color.nope)`],
-  ["group reference target", changeSource((value) => { tokenAt(value, canvas).$value = "{primitive.color.slate}"; }), `[light] ${canvas}: reference target primitive.color.slate is a group`],
-  ["self cycle", changeSource((value) => { tokenAt(value, canvas).$value = `{${canvas}}`; }), `[light] ${canvas}: reference cycle ${canvas} -> ${canvas}`],
-  ["multi-leaf cycle", changeSource((value) => {
+  ["missing type", changeSource((value: Tree) => { delete value.primitive.color.$type; }), `${colorLeaf}: missing $type`],
+  ["unsupported type", changeSource((value: Tree) => { value.primitive.color.$type = "gradient"; }), `${colorLeaf}: unsupported $type "gradient"`],
+  ["invalid colour literal", changeSource((value: Tree) => { tokenAt(value, colorLeaf).$value = "#12345"; }), `${colorLeaf}: color must be # plus six or eight hex digits`],
+  ["invalid unit", changeSource((value: Tree) => { tokenAt(value, spaceLeaf).$value = "4em"; }), `${spaceLeaf}: dimension must be`],
+  ["negative dimension", changeSource((value: Tree) => { tokenAt(value, spaceLeaf).$value = "-4px"; }), `${spaceLeaf}: dimension must be`],
+  ["bad font weight", changeSource((value: Tree) => { value.primitive.font.weight.bold.$value = 750; }), "primitive.font.weight.bold: fontWeight must be"],
+  ["empty font family", changeSource((value: Tree) => { value.primitive.font.family.sans.$value = []; }), "primitive.font.family.sans: fontFamily must be"],
+  ["opacity above 1", changeSource((value: Tree) => { value.primitive.opacity["38"].$value = 1.5; }), "primitive.opacity.38: opacity must be within [0, 1]"],
+  ["zero line height", changeSource((value: Tree) => { value.primitive.font["line-height"].tight.$value = 0; }), "primitive.font.line-height.tight: line height must be positive"],
+  ["fractional duration", changeSource((value: Tree) => { value.primitive.duration.fast.$value = "10.5ms"; }), "primitive.duration.fast: duration must be"],
+  ["cubic out of range", changeSource((value: Tree) => { value.primitive.easing.standard.$value = [2, 0, 0, 1]; }), "primitive.easing.standard: cubicBezier must be"],
+  ["ambiguous segment with a dot", changeSource((value: Tree) => { value.primitive.color["a.b"] = { $value: "#FFFFFF" }; }), 'primitive.color: ambiguous path segment "a.b"'],
+  ["ambiguous segment with a brace", changeSource((value: Tree) => { value.primitive.color["{x}"] = { $value: "#FFFFFF" }; }), 'primitive.color: ambiguous path segment "{x}"'],
+  ["ambiguous segment starting with $", changeSource((value: Tree) => { value.primitive.color.$bad = { $value: "#FFFFFF" }; }), 'primitive.color: ambiguous path segment "$bad"'],
+  ["literal in a semantic leaf", changeSource((value: Tree) => { tokenAt(value, canvas).$value = "#FFFFFF"; }), `[light] ${canvas}: semantic value must be one whole brace reference, found literal "#FFFFFF"`],
+  ["malformed reference", changeSource((value: Tree) => { tokenAt(value, canvas).$value = `prefix {${colorLeaf}}`; }), `[light] ${canvas}: malformed reference`],
+  ["missing reference target", changeSource((value: Tree) => { tokenAt(value, canvas).$value = "{primitive.color.nope}"; }), `[light] ${canvas}: reference target primitive.color.nope does not exist (chain: ${canvas} -> primitive.color.nope)`],
+  ["group reference target", changeSource((value: Tree) => { tokenAt(value, canvas).$value = "{primitive.color.slate}"; }), `[light] ${canvas}: reference target primitive.color.slate is a group`],
+  ["self cycle", changeSource((value: Tree) => { tokenAt(value, canvas).$value = `{${canvas}}`; }), `[light] ${canvas}: reference cycle ${canvas} -> ${canvas}`],
+  ["multi-leaf cycle", changeSource((value: Tree) => {
     tokenAt(value, canvas).$value = `{${surface}}`;
     tokenAt(value, surface).$value = `{${canvas}}`;
   }), `[light] ${canvas}: reference cycle ${canvas} -> ${surface} -> ${canvas}`],
-  ["skipped layer", changeSource((value) => { tokenAt(value, "component.nav.bg").$value = `{${colorLeaf}}`; }), `[light] component.nav.bg: skipped layer: component references primitive at ${colorLeaf} (chain: component.nav.bg -> ${colorLeaf})`],
-  ["same-layer edge", changeSource((value) => { tokenAt(value, canvas).$value = `{${surface}}`; }), `[light] ${canvas}: same-layer edge to ${surface}`],
-  ["reversed edge", changeSource((value) => { tokenAt(value, canvas).$value = "{component.nav.bg}"; }), `[light] ${canvas}: reversed edge to component.nav.bg`],
-  ["type mismatch", changeSource((value) => { tokenAt(value, canvas).$value = `{${spaceLeaf}}`; }), `[light] ${canvas}: type mismatch: color references dimension at ${spaceLeaf}`],
-  ["dark-only type mismatch", changeSource((value) => { tokenAt(value, canvas).$extensions["com.metaframes.modes"].dark = `{${spaceLeaf}}`; }), `[dark] ${canvas}: type mismatch: color references dimension at ${spaceLeaf} (chain: ${canvas} -> ${spaceLeaf})`],
-  ["dark-only missing target", changeSource((value) => { tokenAt(value, canvas).$extensions["com.metaframes.modes"].dark = "{primitive.color.nope}"; }), `[dark] ${canvas}: reference target primitive.color.nope does not exist`],
-  ["missing dark value", changeSource((value) => { delete tokenAt(value, canvas).$extensions; }), `[dark] ${canvas}: missing dark value`],
-  ["unknown mode", changeSource((value) => { tokenAt(value, canvas).$extensions["com.metaframes.modes"].dim = `{${colorLeaf}}`; }), `[dark] ${canvas}: unknown mode "dim"`],
-  ["mode declaration on a primitive", changeSource((value) => { tokenAt(value, colorLeaf).$extensions = { "com.metaframes.modes": { dark: `{${colorLeaf}}` } }; }), `[dark] ${colorLeaf}: mode declaration outside semantic.color`],
-  ["mode declaration on a component", changeSource((value) => { tokenAt(value, "component.nav.bg").$extensions = { "com.metaframes.modes": { dark: `{${surface}}` } }; }), "[dark] component.nav.bg: mode declaration outside semantic.color"],
-  ["non-object extensions", changeSource((value) => { tokenAt(value, canvas).$extensions = []; }), `${canvas}: $extensions must be an object`],
+  ["skipped layer", changeSource((value: Tree) => { tokenAt(value, "component.nav.bg").$value = `{${colorLeaf}}`; }), `[light] component.nav.bg: skipped layer: component references primitive at ${colorLeaf} (chain: component.nav.bg -> ${colorLeaf})`],
+  ["same-layer edge", changeSource((value: Tree) => { tokenAt(value, canvas).$value = `{${surface}}`; }), `[light] ${canvas}: same-layer edge to ${surface}`],
+  ["reversed edge", changeSource((value: Tree) => { tokenAt(value, canvas).$value = "{component.nav.bg}"; }), `[light] ${canvas}: reversed edge to component.nav.bg`],
+  ["type mismatch", changeSource((value: Tree) => { tokenAt(value, canvas).$value = `{${spaceLeaf}}`; }), `[light] ${canvas}: type mismatch: color references dimension at ${spaceLeaf}`],
+  ["dark-only type mismatch", changeSource((value: Tree) => { tokenAt(value, canvas).$extensions["com.metaframes.modes"].dark = `{${spaceLeaf}}`; }), `[dark] ${canvas}: type mismatch: color references dimension at ${spaceLeaf} (chain: ${canvas} -> ${spaceLeaf})`],
+  ["dark-only missing target", changeSource((value: Tree) => { tokenAt(value, canvas).$extensions["com.metaframes.modes"].dark = "{primitive.color.nope}"; }), `[dark] ${canvas}: reference target primitive.color.nope does not exist`],
+  ["missing dark value", changeSource((value: Tree) => { delete tokenAt(value, canvas).$extensions; }), `[dark] ${canvas}: missing dark value`],
+  ["unknown mode", changeSource((value: Tree) => { tokenAt(value, canvas).$extensions["com.metaframes.modes"].dim = `{${colorLeaf}}`; }), `[dark] ${canvas}: unknown mode "dim"`],
+  ["mode declaration on a primitive", changeSource((value: Tree) => { tokenAt(value, colorLeaf).$extensions = { "com.metaframes.modes": { dark: `{${colorLeaf}}` } }; }), `[dark] ${colorLeaf}: mode declaration outside semantic.color`],
+  ["mode declaration on a component", changeSource((value: Tree) => { tokenAt(value, "component.nav.bg").$extensions = { "com.metaframes.modes": { dark: `{${surface}}` } }; }), "[dark] component.nav.bg: mode declaration outside semantic.color"],
+  ["non-object extensions", changeSource((value: Tree) => { tokenAt(value, canvas).$extensions = []; }), `${canvas}: $extensions must be an object`],
   ["missing bindings file", { "bindings.json": null }, "meta-frames-design-tokens/bindings.json: bindings missing"],
-  ["binding target missing", changeBindings((value) => { value.dashboard.colors[2].source = "semantic.color.bg.nope"; }), "bindings.json: dashboard binding --card: target path semantic.color.bg.nope does not exist"],
-  ["app binding target missing", changeBindings((value) => { value.app.colorScheme.primary = "semantic.color.action.nope"; }), "bindings.json: app binding ColorScheme.primary: target path semantic.color.action.nope does not exist"],
-  ["public name claimed twice", changeBindings((value) => { value.dashboard.colors.push({ properties: ["--background"], source: canvas }); }), "bindings.json: dashboard public name --background is claimed by two bindings"],
+  ["binding target missing", changeBindings((value: Tree) => { value.dashboard.colors[2].source = "semantic.color.bg.nope"; }), "bindings.json: dashboard binding --card: target path semantic.color.bg.nope does not exist"],
+  ["app binding target missing", changeBindings((value: Tree) => { value.app.colorScheme.primary = "semantic.color.action.nope"; }), "bindings.json: app binding ColorScheme.primary: target path semantic.color.action.nope does not exist"],
+  ["public name claimed twice", changeBindings((value: Tree) => { value.dashboard.colors.push({ properties: ["--background"], source: canvas }); }), "bindings.json: dashboard public name --background is claimed by two bindings"],
   ["duplicate key in bindings", { "bindings.json": bindingsSource.replace('"outputs": {', '"outputs": {}, "outputs": {') }, "outputs: duplicate path in meta-frames-design-tokens/bindings.json"],
-  ["missing dashboard section", changeBindings((value) => { delete value.dashboard; }), "bindings.json: dashboard must be an object"],
-  ["missing dashboard.scalars", changeBindings((value) => { delete value.dashboard.scalars; }), "bindings.json: dashboard.scalars must be an object"],
-  ["missing dashboard.text", changeBindings((value) => { delete value.dashboard.text; }), "bindings.json: dashboard.text must be an object"],
-  ["dashboard colors missing", changeBindings((value) => { delete value.dashboard.colors; }), "bindings.json: dashboard.colors must be an array"],
-  ["dashboard colors null", changeBindings((value) => { value.dashboard.colors = null; }), "bindings.json: dashboard.colors must be an array"],
-  ["dashboard colors object", changeBindings((value) => { value.dashboard.colors = { background: "semantic.color.bg.canvas" }; }), "bindings.json: dashboard.colors must be an array"],
-  ["dashboard colors string", changeBindings((value) => { value.dashboard.colors = "semantic.color.bg.canvas"; }), "bindings.json: dashboard.colors must be an array"],
-  ["dashboard color entry without properties", changeBindings((value) => { delete value.dashboard.colors[0].properties; }), "bindings.json: dashboard.colors[0].properties must be an array"],
-  ["dashboard color entry without source, empty properties", changeBindings((value) => { value.dashboard.colors.push({ properties: [] }); }), "bindings.json: dashboard.colors[26].source must be a nonempty string, found undefined"],
-  ["dashboard color entry without source, with properties", changeBindings((value) => { delete value.dashboard.colors[0].source; }), "bindings.json: dashboard.colors[0].source must be a nonempty string, found undefined"],
-  ["dashboard color entry with an empty source", changeBindings((value) => { value.dashboard.colors[0].source = ""; }), 'bindings.json: dashboard.colors[0].source must be a nonempty string, found ""'],
-  ["dashboard color property that is not a string", changeBindings((value) => { value.dashboard.colors[0].properties.push(7); }), "bindings.json: dashboard.colors[0].properties[1] must be a string, found 7"],
-  ["missing app section", changeBindings((value) => { delete value.app; }), "bindings.json: app must be an object"],
-  ["missing app.colorScheme", changeBindings((value) => { delete value.app.colorScheme; }), "bindings.json: app.colorScheme must be an object"],
-  ["missing app.inversePrimary", changeBindings((value) => { delete value.app.inversePrimary; }), "bindings.json: app.inversePrimary must be an object"],
-  ["missing app.inversePrimary.field", changeBindings((value) => { delete value.app.inversePrimary.field; }), "bindings.json: app.inversePrimary.field must be a nonempty string"],
-  ["missing app.inversePrimary.source", changeBindings((value) => { delete value.app.inversePrimary.source; }), "bindings.json: app binding ColorScheme.inversePrimary: target must be a token path string, found undefined"],
-  ["missing fonts section", changeBindings((value) => { delete value.fonts; }), "bindings.json: fonts must be an object"],
-  ["missing fonts section (existing check)", changeBindings((value) => { delete value.fonts; }), "semantic.text.display.font-family: font-family path has no role in bindings.json fonts.paths"],
-  ["missing fonts.roles", changeBindings((value) => { delete value.fonts.roles; }), "bindings.json: fonts.roles must be an object"],
-  ["missing fonts.roles (existing check)", changeBindings((value) => { delete value.fonts.roles; }), 'bindings.json: fonts.paths semantic.text.display.font-family: unknown role "heading"'],
-  ["font role without dashboard.property", changeBindings((value) => { delete value.fonts.roles.heading.dashboard.property; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
-  ["font role without dashboard.stack", changeBindings((value) => { delete value.fonts.roles.heading.dashboard.stack; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
-  ["font role without app", changeBindings((value) => { delete value.fonts.roles.heading.app; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
-  ["font path without a role", changeBindings((value) => { delete value.fonts.paths["semantic.text.data.font-family"]; }), "semantic.text.data.font-family: font-family path has no role"],
-  ["unknown font role", changeBindings((value) => { value.fonts.paths["semantic.text.data.font-family"] = "serif"; }), 'bindings.json: fonts.paths semantic.text.data.font-family: unknown role "serif"'],
-  ["font path that is not a font", changeBindings((value) => { value.fonts.paths[canvas] = "body"; }), `bindings.json: fonts.paths ${canvas}: not a fontFamily leaf`],
+  ["missing dashboard section", changeBindings((value: Tree) => { delete value.dashboard; }), "bindings.json: dashboard must be an object"],
+  ["missing dashboard.scalars", changeBindings((value: Tree) => { delete value.dashboard.scalars; }), "bindings.json: dashboard.scalars must be an object"],
+  ["missing dashboard.text", changeBindings((value: Tree) => { delete value.dashboard.text; }), "bindings.json: dashboard.text must be an object"],
+  ["dashboard colors missing", changeBindings((value: Tree) => { delete value.dashboard.colors; }), "bindings.json: dashboard.colors must be an array"],
+  ["dashboard colors null", changeBindings((value: Tree) => { value.dashboard.colors = null; }), "bindings.json: dashboard.colors must be an array"],
+  ["dashboard colors object", changeBindings((value: Tree) => { value.dashboard.colors = { background: "semantic.color.bg.canvas" }; }), "bindings.json: dashboard.colors must be an array"],
+  ["dashboard colors string", changeBindings((value: Tree) => { value.dashboard.colors = "semantic.color.bg.canvas"; }), "bindings.json: dashboard.colors must be an array"],
+  ["dashboard color entry without properties", changeBindings((value: Tree) => { delete value.dashboard.colors[0].properties; }), "bindings.json: dashboard.colors[0].properties must be an array"],
+  ["dashboard color entry without source, empty properties", changeBindings((value: Tree) => { value.dashboard.colors.push({ properties: [] }); }), "bindings.json: dashboard.colors[26].source must be a nonempty string, found undefined"],
+  ["dashboard color entry without source, with properties", changeBindings((value: Tree) => { delete value.dashboard.colors[0].source; }), "bindings.json: dashboard.colors[0].source must be a nonempty string, found undefined"],
+  ["dashboard color entry with an empty source", changeBindings((value: Tree) => { value.dashboard.colors[0].source = ""; }), 'bindings.json: dashboard.colors[0].source must be a nonempty string, found ""'],
+  ["dashboard color property that is not a string", changeBindings((value: Tree) => { value.dashboard.colors[0].properties.push(7); }), "bindings.json: dashboard.colors[0].properties[1] must be a string, found 7"],
+  ["missing app section", changeBindings((value: Tree) => { delete value.app; }), "bindings.json: app must be an object"],
+  ["missing app.colorScheme", changeBindings((value: Tree) => { delete value.app.colorScheme; }), "bindings.json: app.colorScheme must be an object"],
+  ["missing app.inversePrimary", changeBindings((value: Tree) => { delete value.app.inversePrimary; }), "bindings.json: app.inversePrimary must be an object"],
+  ["missing app.inversePrimary.field", changeBindings((value: Tree) => { delete value.app.inversePrimary.field; }), "bindings.json: app.inversePrimary.field must be a nonempty string"],
+  ["missing app.inversePrimary.source", changeBindings((value: Tree) => { delete value.app.inversePrimary.source; }), "bindings.json: app binding ColorScheme.inversePrimary: target must be a token path string, found undefined"],
+  ["missing fonts section", changeBindings((value: Tree) => { delete value.fonts; }), "bindings.json: fonts must be an object"],
+  ["missing fonts section (existing check)", changeBindings((value: Tree) => { delete value.fonts; }), "semantic.text.display.font-family: font-family path has no role in bindings.json fonts.paths"],
+  ["missing fonts.roles", changeBindings((value: Tree) => { delete value.fonts.roles; }), "bindings.json: fonts.roles must be an object"],
+  ["missing fonts.roles (existing check)", changeBindings((value: Tree) => { delete value.fonts.roles; }), 'bindings.json: fonts.paths semantic.text.display.font-family: unknown role "heading"'],
+  ["font role without dashboard.property", changeBindings((value: Tree) => { delete value.fonts.roles.heading.dashboard.property; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
+  ["font role without dashboard.stack", changeBindings((value: Tree) => { delete value.fonts.roles.heading.dashboard.stack; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
+  ["font role without app", changeBindings((value: Tree) => { delete value.fonts.roles.heading.app; }), "bindings.json: fonts.roles.heading needs dashboard.property, dashboard.stack and app"],
+  ["font path without a role", changeBindings((value: Tree) => { delete value.fonts.paths["semantic.text.data.font-family"]; }), "semantic.text.data.font-family: font-family path has no role"],
+  ["unknown font role", changeBindings((value: Tree) => { value.fonts.paths["semantic.text.data.font-family"] = "serif"; }), 'bindings.json: fonts.paths semantic.text.data.font-family: unknown role "serif"'],
+  ["font path that is not a font", changeBindings((value: Tree) => { value.fonts.paths[canvas] = "body"; }), `bindings.json: fonts.paths ${canvas}: not a fontFamily leaf`],
   ["missing Node pin", { ".node-version": null }, "meta-frames-design-tokens/.node-version: Node pin file missing"],
   ["Node pin mismatch", { ".node-version": "0.0.0\n" }, "meta-frames-design-tokens/.node-version: needs Node 0.0.0"],
-  ["lockfile version mismatch", { "package-lock.json": mutate(files["package-lock.json"], (lock) => { lock.packages["node_modules/style-dictionary"].version = "0.0.1"; }) }, "meta-frames-design-tokens/package-lock.json: node_modules/style-dictionary is 0.0.1"],
-  ["range in the manifest", { "package.json": mutate(files["package.json"], (manifest) => { manifest.dependencies["style-dictionary"] = "^5.6.0"; }) }, "meta-frames-design-tokens/package.json: style-dictionary must be pinned to an exact version"],
-]) {
-  test(`rejects ${name}`, (context) => rejectsInput(context, changes, expected));
+  ["lockfile version mismatch", { "package-lock.json": mutate(files["package-lock.json"], (lock: Tree) => { lock.packages["node_modules/style-dictionary"].version = "0.0.1"; }) }, "meta-frames-design-tokens/package-lock.json: node_modules/style-dictionary is 0.0.1"],
+  ["range in the manifest", { "package.json": mutate(files["package.json"], (manifest: Tree) => { manifest.dependencies["style-dictionary"] = "^5.6.0"; }) }, "meta-frames-design-tokens/package.json: style-dictionary must be pinned to an exact version"],
+] as [string, Changes, string][])) {
+  test(`rejects ${name}`, (context: TestContext) => rejectsInput(context, changes, expected));
 }
 
-test("rejects a wrong installed version", (context) => {
+test("rejects a wrong installed version", (context: TestContext) => {
   rejectsInput(context, {}, "meta-frames-design-tokens/node_modules/style-dictionary: installed style-dictionary is 0.0.0", { installedVersion: "0.0.0" });
 });
 
-test("rejects an install that did not come from npm ci", (context) => {
+test("rejects an install that did not come from npm ci", (context: TestContext) => {
   rejectsInput(context, {}, "meta-frames-design-tokens/node_modules/.package-lock.json: file missing", { installedLock: false });
 });
 
 for (const missing of ["meta-frames-dashboard", "meta-frames-app"]) {
-  test(`rejects a missing ${missing} checkout`, (context) => {
+  test(`rejects a missing ${missing} checkout`, (context: TestContext) => {
     rejectsInput(context, {}, `${missing}: sibling checkout missing`, {
       siblings: ["meta-frames-dashboard", "meta-frames-app"].filter((name) => name !== missing),
     });
   });
 }
 
-test("reports a skipped layer reached through a dark override", (context) => {
+test("reports a skipped layer reached through a dark override", (context: TestContext) => {
   const nav = "component.nav.bg";
-  const changes = changeSource((tree) => {
+  const changes = changeSource((tree: Tree) => {
     tokenAt(tree, canvas).$extensions["com.metaframes.modes"].dark = `{${nav}}`;
     tokenAt(tree, nav).$value = `{${colorLeaf}}`;
   });
   rejectsInput(context, changes, `[dark] ${nav}: skipped layer: component references primitive at ${colorLeaf} (chain: ${nav} -> ${colorLeaf})`);
 });
 
-test("reports a cycle and its repeated path from an incoming dark edge", (context) => {
+test("reports a cycle and its repeated path from an incoming dark edge", (context: TestContext) => {
   const nav = "component.nav.bg";
-  const changes = changeSource((tree) => {
+  const changes = changeSource((tree: Tree) => {
     tokenAt(tree, canvas).$extensions["com.metaframes.modes"].dark = `{${surface}}`;
     tokenAt(tree, surface).$extensions["com.metaframes.modes"].dark = `{${nav}}`;
   });
   rejectsInput(context, changes, `[dark] ${canvas}: reference cycle ${surface} -> ${nav} -> ${surface} (chain: ${canvas} -> ${surface} -> ${nav} -> ${surface})`);
 });
 
-test("rejects a reference in a primitive", (context) => {
-  rejectsInput(context, changeSource((tree) => {
+test("rejects a reference in a primitive", (context: TestContext) => {
+  rejectsInput(context, changeSource((tree: Tree) => {
     tokenAt(tree, colorLeaf).$value = "{primitive.color.white}";
   }), `${colorLeaf}: color must be`);
 });
 
-test("resolves a component font size through both aliases in both modes", (context) => {
+test("resolves a component font size through both aliases in both modes", (context: TestContext) => {
   const { blocks } = acceptsInput(context, {});
   for (const mode of ["light", "dark"]) {
     const button = blocks.get(`${mode} component.button.font-size`);
@@ -391,9 +401,9 @@ test("resolves a component font size through both aliases in both modes", (conte
   }
 });
 
-test("applies rem to a font-size role that shares a generic dimension", (context) => {
+test("applies rem to a font-size role that shares a generic dimension", (context: TestContext) => {
   const role = "semantic.text.label.font-size";
-  const { blocks } = acceptsInput(context, changeSource((tree) => {
+  const { blocks } = acceptsInput(context, changeSource((tree: Tree) => {
     tree.primitive.measure = { $type: "dimension", shared: { $value: "18px" } };
     tokenAt(tree, role).$value = "{primitive.measure.shared}";
     tree.semantic.space.gap.xs.$value = "{primitive.measure.shared}";
@@ -404,8 +414,8 @@ test("applies rem to a font-size role that shares a generic dimension", (context
   }
 });
 
-test("rejects disabled opacity above 1 after renaming its primitive group", (context) => {
-  rejectsInput(context, changeSource((tree) => {
+test("rejects disabled opacity above 1 after renaming its primitive group", (context: TestContext) => {
+  rejectsInput(context, changeSource((tree: Tree) => {
     tree.primitive.alpha = tree.primitive.opacity;
     delete tree.primitive.opacity;
     tree.primitive.alpha["38"].$value = 1.5;
@@ -413,14 +423,14 @@ test("rejects disabled opacity above 1 after renaming its primitive group", (con
   }), "[light] semantic.opacity.disabled:");
 });
 
-test("rejects a mode declaration on a group outside semantic.color", (context) => {
-  rejectsInput(context, changeSource((tree) => {
+test("rejects a mode declaration on a group outside semantic.color", (context: TestContext) => {
+  rejectsInput(context, changeSource((tree: Tree) => {
     tree.primitive.color.$extensions = { "com.metaframes.modes": { dark: "{primitive.color.white}" } };
   }), "[dark] primitive.color: mode declaration outside semantic.color");
 });
 
-test("rejects a mode declaration on a number inside semantic.color", (context) => {
-  rejectsInput(context, changeSource((tree) => {
+test("rejects a mode declaration on a number inside semantic.color", (context: TestContext) => {
+  rejectsInput(context, changeSource((tree: Tree) => {
     tree.semantic.color.measure = {
       $type: "number",
       $value: "{primitive.font.line-height.tight}",
@@ -438,21 +448,21 @@ test("rejects distinct token paths that produce the same public names", async ()
   assert.match(errors.join("\n"), /collision[^\n]*componentButtonFontSize/i);
 });
 
-test("rejects a group target for a Flutter ColorScheme field", (context) => {
-  rejectsInput(context, changeBindings((value) => {
+test("rejects a group target for a Flutter ColorScheme field", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => {
     value.app.colorScheme.primary = "semantic.color.action";
   }), "bindings.json: app binding ColorScheme.primary:");
 });
 
-test("preserves a duration above Number.MAX_SAFE_INTEGER in the Dart literal", (context) => {
-  const { blocks } = acceptsInput(context, changeSource((tree) => {
+test("preserves a duration above Number.MAX_SAFE_INTEGER in the Dart literal", (context: TestContext) => {
+  const { blocks } = acceptsInput(context, changeSource((tree: Tree) => {
     tree.primitive.duration.fast.$value = "9007199254740993ms";
   }));
   assert.equal(blocks.get("primitive primitive.duration.fast").dart, "Duration(milliseconds: 9007199254740993)");
 });
 
-test("preserves a fractional font size when converting px to rem", (context) => {
-  const { blocks } = acceptsInput(context, changeSource((tree) => {
+test("preserves a fractional font size when converting px to rem", (context: TestContext) => {
+  const { blocks } = acceptsInput(context, changeSource((tree: Tree) => {
     tree.primitive.font.size.sm.$value = "0.0001px";
   }));
   const { css } = blocks.get("light component.button.font-size");
@@ -460,8 +470,8 @@ test("preserves a fractional font size when converting px to rem", (context) => 
   assert.equal(Number.parseFloat(css), 0.0001 / 16);
 });
 
-test("keeps component spacing in px when it aliases a font-size leaf", (context) => {
-  const { blocks } = acceptsInput(context, changeSource((tree) => {
+test("keeps component spacing in px when it aliases a font-size leaf", (context: TestContext) => {
+  const { blocks } = acceptsInput(context, changeSource((tree: Tree) => {
     tree.component.button.gap.$value = "{semantic.text.label.font-size}";
   }));
   for (const mode of ["light", "dark"]) {
@@ -471,53 +481,53 @@ test("keeps component spacing in px when it aliases a font-size leaf", (context)
   }
 });
 
-test("rejects an invalid opacity when only the component slot names the role", (context) => {
-  rejectsInput(context, changeSource((tree) => {
+test("rejects an invalid opacity when only the component slot names the role", (context: TestContext) => {
+  rejectsInput(context, changeSource((tree: Tree) => {
     tree.primitive.alpha = { $type: "number", large: { $value: 1.5 } };
     tree.semantic.alpha = { $type: "number", large: { $value: "{primitive.alpha.large}" } };
     tree.component.button["disabled-opacity"].$value = "{semantic.alpha.large}";
   }), "[light] component.button.disabled-opacity: opacity must be within [0, 1]");
 });
 
-test("rejects a public alias that claims a generated CSS name", (context) => {
-  rejectsInput(context, changeBindings((value) => {
+test("rejects a public alias that claims a generated CSS name", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => {
     value.dashboard.colors[0].properties.push("--mf-semantic-color-bg-canvas");
   }), "bindings.json: dashboard public name --mf-semantic-color-bg-canvas");
 });
 
-test("accepts equal Dart field names when the tokens use separate classes", (context) => {
-  acceptsInput(context, changeSource((tree) => {
+test("accepts equal Dart field names when the tokens use separate classes", (context: TestContext) => {
+  acceptsInput(context, changeSource((tree: Tree) => {
     tree.component.button["track-2"] = { $type: "dimension", $value: "{semantic.space.gap.xs}" };
     tree.component.button.track2 = { $type: "color", $value: "{semantic.color.bg.canvas}" };
   }));
 });
 
-test("rejects a dashboard text binding to a non-text group", (context) => {
-  rejectsInput(context, changeBindings((value) => {
+test("rejects a dashboard text binding to a non-text group", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => {
     value.dashboard.text["--text-base"] = "semantic.color.bg";
   }), "bindings.json: dashboard binding --text-base:");
 });
 
-test("rejects a text-role group as the target of an app radius binding", (context) => {
-  rejectsInput(context, changeBindings((value) => {
+test("rejects a text-role group as the target of an app radius binding", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => {
     value.app.theme.kRadius = "semantic.text.body";
   }), "bindings.json: app binding kRadius:");
 });
 
-test("reports an invalid app theme target by binding name", (context) => {
-  rejectsInput(context, changeBindings((value) => {
+test("reports an invalid app theme target by binding name", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => {
     value.app.theme.kRadius = null;
   }), "bindings.json: app binding kRadius:");
 });
 
-test("rejects a dimension leaf as the target of a Flutter ColorScheme field", (context) => {
-  rejectsInput(context, changeBindings((value) => {
+test("rejects a dimension leaf as the target of a Flutter ColorScheme field", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => {
     value.app.colorScheme.primary = "semantic.space.gap.xs";
   }), "bindings.json: app binding ColorScheme.primary:");
 });
 
-test("removes leading zeros from a Dart duration without losing integer precision", (context) => {
-  const { blocks } = acceptsInput(context, changeSource((tree) => {
+test("removes leading zeros from a Dart duration without losing integer precision", (context: TestContext) => {
+  const { blocks } = acceptsInput(context, changeSource((tree: Tree) => {
     tree.primitive.duration.fast.$value = "000ms";
     tree.primitive.duration.normal.$value = "09007199254740993ms";
   }));
@@ -525,8 +535,8 @@ test("removes leading zeros from a Dart duration without losing integer precisio
   assert.equal(blocks.get("primitive primitive.duration.normal").dart, "Duration(milliseconds: 9007199254740993)");
 });
 
-test("keeps zero and fractional dimensions through per-leaf unit changes", (context) => {
-  const { blocks } = acceptsInput(context, changeSource((tree) => {
+test("keeps zero and fractional dimensions through per-leaf unit changes", (context: TestContext) => {
+  const { blocks } = acceptsInput(context, changeSource((tree: Tree) => {
     tree.primitive.measure = {
       $type: "dimension",
       zero: { $value: "0px" },
@@ -570,14 +580,14 @@ test("applies suffixed opacity and line-height bounds to primitives", async () =
   assert.match(errors.join("\n"), /primitive\.compact-line-height: line height must be positive/);
 });
 
-test("rejects a mode declaration on a group inside semantic.color", (context) => {
-  rejectsInput(context, changeSource((tree) => {
+test("rejects a mode declaration on a group inside semantic.color", (context: TestContext) => {
+  rejectsInput(context, changeSource((tree: Tree) => {
     tree.semantic.color.bg.$extensions = { "com.metaframes.modes": { dark: "{primitive.color.white}" } };
   }), "[dark] semantic.color.bg: mode declaration on a group");
 });
 
-test("rejects a bound text role that lacks a required line height", (context) => {
-  rejectsInput(context, changeSource((tree) => {
+test("rejects a bound text role that lacks a required line height", (context: TestContext) => {
+  rejectsInput(context, changeSource((tree: Tree) => {
     delete tree.semantic.text.body["line-height"];
   }), "bindings.json: dashboard binding --text-base:");
 });
@@ -614,19 +624,19 @@ test("checks the presence and type of each text role member for both platforms",
 
 const CSS_OUTPUT = "meta-frames-dashboard/src/styles/design-tokens.generated.css";
 const DART_OUTPUT = "meta-frames-app/lib/ui/core/design_tokens.g.dart";
-const sha = (value) => createHash("sha256").update(value).digest("hex");
+const sha = (value: Tree) => createHash("sha256").update(value).digest("hex");
 
-function generateFixture(context, changes) {
+function generateFixture(context: TestContext, changes: Changes = {}) {
   const made = fixture(context, changes);
   mkdirSync(join(made.directory, dirname(CSS_OUTPUT)), { recursive: true });
   mkdirSync(join(made.directory, dirname(DART_OUTPUT)), { recursive: true });
   const outputs = { css: join(made.directory, CSS_OUTPUT), dart: join(made.directory, DART_OUTPUT) };
-  return { ...made, outputs, generate: (flags = [], nodeFlags = []) => spawnSync(process.execPath, [...nodeFlags, made.script, ...flags], { cwd: made.directory, encoding: "utf8" }) };
+  return { ...made, outputs, generate: (flags: string[] = [], nodeFlags: string[] = []) => spawnSync(process.execPath, [...nodeFlags, made.script, ...flags], { cwd: made.directory, encoding: "utf8" }) };
 }
 
-const outputBytes = ({ outputs }) => [readFileSync(outputs.css), readFileSync(outputs.dart)];
+const outputBytes = ({ outputs }: { outputs: { css: string; dart: string } }) => [readFileSync(outputs.css), readFileSync(outputs.dart)];
 
-test("generate writes both files, and a second run gives identical bytes", (context) => {
+test("generate writes both files, and a second run gives identical bytes", (context: TestContext) => {
   const made = generateFixture(context);
   const first = made.generate();
   assert.equal(first.status, 0, first.stderr);
@@ -638,12 +648,12 @@ test("generate writes both files, and a second run gives identical bytes", (cont
   assert.equal(made.generate(["--check"]).status, 0);
 });
 
-test("headers carry the source digest and one generator digest, with no timestamp", (context) => {
+test("headers carry the source digest and one generator digest, with no timestamp", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   const [css, dart] = outputBytes(made).map(String);
   const sourceDigest = sha(source);
-  const generator = (text) => /Generator: sha256 ([0-9a-f]{64}) of/.exec(text)[1];
+  const generator = (text: string) => /Generator: sha256 ([0-9a-f]{64}) of/.exec(text)![1];
   for (const text of [css, dart]) {
     assert.ok(text.includes(`Source: meta-frames-design-tokens/v2/tokens.json (not in Git), sha256 ${sourceDigest}`));
     assert.doesNotMatch(text, /\d{4}-\d{2}-\d{2}|\/Users\/|\/tmp\//);
@@ -653,18 +663,18 @@ test("headers carry the source digest and one generator digest, with no timestam
   assert.ok(!css.includes("\r") && css.endsWith("\n") && dart.endsWith("\n"));
 });
 
-test("the generator digest follows the manifest and ignores the tests", (context) => {
-  const digestOf = (changes) => {
+test("the generator digest follows the manifest and ignores the tests", (context: TestContext) => {
+  const digestOf = (changes: Changes) => {
     const made = generateFixture(context, changes);
     assert.equal(made.generate().status, 0);
-    return /Generator: sha256 ([0-9a-f]{64})/.exec(String(readFileSync(made.outputs.css)))[1];
+    return /Generator: sha256 ([0-9a-f]{64})/.exec(String(readFileSync(made.outputs.css)))![1];
   };
   const base = digestOf({});
   assert.equal(digestOf({}), base);
-  assert.notEqual(digestOf({ "package.json": mutate(files["package.json"], (manifest) => { manifest.description = "changed"; }) }), base);
+  assert.notEqual(digestOf({ "package.json": mutate(files["package.json"], (manifest: Tree) => { manifest.description = "changed"; }) }), base);
 });
 
-test("fonts: CSS emits the dashboard stack, Dart the registration, and Inter never appears", (context) => {
+test("fonts: CSS emits the dashboard stack, Dart the registration, and Inter never appears", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   const [css, dart] = outputBytes(made).map(String);
@@ -674,7 +684,7 @@ test("fonts: CSS emits the dashboard stack, Dart the registration, and Inter nev
   assert.match(css, /--text-xs--line-height: 1\.375;/);
 });
 
-test("--check fails for a missing output and for a one-byte change, and names the file", (context) => {
+test("--check fails for a missing output and for a one-byte change, and names the file", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   const css = readFileSync(made.outputs.css);
@@ -695,18 +705,18 @@ test("--check fails for a missing output and for a one-byte change, and names th
   assert.deepEqual(snapshot(made.directory), before);
 });
 
-test("--check reports every affected destination", (context) => {
+test("--check reports every affected destination", (context: TestContext) => {
   const made = generateFixture(context);
   const result = made.generate(["--check"]);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes(`${CSS_OUTPUT}: missing`) && result.stderr.includes(`${DART_OUTPUT}: missing`), result.stderr);
 });
 
-test("an invalid graph leaves both outputs byte-identical", (context) => {
+test("an invalid graph leaves both outputs byte-identical", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   const bytes = outputBytes(made);
-  writeFileSync(join(made.directory, "meta-frames-design-tokens/v2/tokens.json"), mutate(source, (tree) => { tokenAt(tree, canvas).$value = `{${surface}}`; }));
+  writeFileSync(join(made.directory, "meta-frames-design-tokens/v2/tokens.json"), mutate(source, (tree: Tree) => { tokenAt(tree, canvas).$value = `{${surface}}`; }));
   const result = made.generate();
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("same-layer edge"), result.stderr);
@@ -714,7 +724,7 @@ test("an invalid graph leaves both outputs byte-identical", (context) => {
   assert.equal(readdirSync(join(made.directory, "meta-frames-design-tokens")).includes(".build.lock"), false);
 });
 
-test("an existing lock fails the build and is not deleted", (context) => {
+test("an existing lock fails the build and is not deleted", (context: TestContext) => {
   const made = generateFixture(context);
   const lock = join(made.directory, "meta-frames-design-tokens/.build.lock");
   writeFileSync(lock, "");
@@ -726,13 +736,13 @@ test("an existing lock fails the build and is not deleted", (context) => {
   assert.throws(() => readFileSync(made.outputs.dart));
 });
 
-test("the lock is gone after a successful build", (context) => {
+test("the lock is gone after a successful build", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   assert.equal(readdirSync(join(made.directory, "meta-frames-design-tokens")).includes(".build.lock"), false);
 });
 
-test("--inspect and --check do not take the lock", (context) => {
+test("--inspect and --check do not take the lock", (context: TestContext) => {
   const made = generateFixture(context);
   const lock = join(made.directory, "meta-frames-design-tokens/.build.lock");
   writeFileSync(lock, "");
@@ -741,14 +751,14 @@ test("--inspect and --check do not take the lock", (context) => {
   assert.ok(!made.generate(["--check"]).stderr.includes("lock"));
 });
 
-function faultFixture(context, body) {
+function faultFixture(context: TestContext, body: string) {
   const made = generateFixture(context);
   const fault = join(made.directory, "fault.mjs");
   writeFileSync(fault, `import fs from "node:fs";\n${body}`);
   return { ...made, fault };
 }
 
-test("a failed second rename reports the error first, removes the temporary file and says to regenerate", (context) => {
+test("a failed second rename reports the error first, removes the temporary file and says to regenerate", (context: TestContext) => {
   const made = faultFixture(context, `
     const rename = fs.renameSync;
     fs.renameSync = (from, to) => {
@@ -766,7 +776,7 @@ test("a failed second rename reports the error first, removes the temporary file
   assert.equal(readdirSync(join(made.directory, "meta-frames-design-tokens")).includes(".build.lock"), false);
 });
 
-test("a cleanup failure is named after the original error", (context) => {
+test("a cleanup failure is named after the original error", (context: TestContext) => {
   const made = faultFixture(context, `
     const rename = fs.renameSync;
     const remove = fs.rmSync;
@@ -787,7 +797,7 @@ test("a cleanup failure is named after the original error", (context) => {
   assert.match(result.stderr, /design_tokens\.g\.dart\.tmp-\d+: simulated cleanup failure/);
 });
 
-test("a missing destination directory fails before any write", (context) => {
+test("a missing destination directory fails before any write", (context: TestContext) => {
   const made = generateFixture(context);
   rmSync(dirname(made.outputs.dart), { recursive: true });
   const result = made.generate();
@@ -796,35 +806,35 @@ test("a missing destination directory fails before any write", (context) => {
   assert.throws(() => readFileSync(made.outputs.css));
 });
 
-test("rejects a public name that collides with a text-step companion", (context) => {
-  rejectsInput(context, changeBindings((value) => {
+test("rejects a public name that collides with a text-step companion", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => {
     value.dashboard.colors.push({ properties: ["--text-xs--line-height"], source: canvas });
   }), "name collision: --text-xs--line-height is produced twice in the dashboard output");
 });
 
-test("rejects a scalar with no placement and a malformed text step name", (context) => {
-  rejectsInput(context, changeBindings((value) => { value.dashboard.scalars["--gap"] = "semantic.space.gap.xs"; }), "bindings.json: dashboard binding --gap: no placement for this scalar");
-  rejectsInput(context, changeBindings((value) => {
+test("rejects a scalar with no placement and a malformed text step name", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => { value.dashboard.scalars["--gap"] = "semantic.space.gap.xs"; }), "bindings.json: dashboard binding --gap: no placement for this scalar");
+  rejectsInput(context, changeBindings((value: Tree) => {
     value.dashboard.text["--size-xs"] = value.dashboard.text["--text-xs"];
     delete value.dashboard.text["--text-xs"];
   }), "bindings.json: dashboard binding --size-xs: a text step name must look like --text-<step>");
 });
 
-test("rejects a Dart font registration that is not a plain identifier", (context) => {
-  rejectsInput(context, changeBindings((value) => { value.fonts.roles.mono.app = "Jet'Brains"; }), "bindings.json: fonts.roles.mono: app registration");
+test("rejects a Dart font registration that is not a plain identifier", (context: TestContext) => {
+  rejectsInput(context, changeBindings((value: Tree) => { value.fonts.roles.mono.app = "Jet'Brains"; }), "bindings.json: fonts.roles.mono: app registration");
 });
 
-test("the source digest comes from the same read as the parse", (context) => {
+test("the source digest comes from the same read as the parse", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   assert.ok(String(readFileSync(made.outputs.dart)).includes(`sha256 ${sha(source)}`));
-  const changed = mutate(source, (tree) => { tree.$description = "changed"; });
+  const changed = mutate(source, (tree: Tree) => { tree.$description = "changed"; });
   writeFileSync(join(made.directory, "meta-frames-design-tokens/v2/tokens.json"), changed);
   assert.equal(made.generate().status, 0);
   assert.ok(String(readFileSync(made.outputs.dart)).includes(`sha256 ${sha(changed)}`));
 });
 
-test("a failure staging the second output preserves both live files", (context) => {
+test("a failure staging the second output preserves both live files", (context: TestContext) => {
   const made = faultFixture(context, `
     const write = fs.writeFileSync;
     fs.writeFileSync = (file, ...args) => {
@@ -843,14 +853,14 @@ test("a failure staging the second output preserves both live files", (context) 
 
 // ---- Slice 3 fix round 1 ----
 
-for (const [name, change, expected] of [
-  ["a dashboard output outside the planned path", (value) => { value.outputs.dashboard = "../meta-frames-dashboard/src/styles/other.css"; }, "bindings.json: outputs.dashboard:"],
-  ["an app output outside the planned path", (value) => { value.outputs.app = "../meta-frames-app/lib/ui/core/other.dart"; }, "bindings.json: outputs.app:"],
-  ["an output that leaves the workspace", (value) => { value.outputs.app = "../../elsewhere/design_tokens.g.dart"; }, "bindings.json: outputs.app:"],
-  ["both outputs on one path", (value) => { value.outputs.dashboard = value.outputs.app; }, "bindings.json: outputs.dashboard and outputs.app resolve to the same path"],
-  ["a missing output", (value) => { delete value.outputs.app; }, "bindings.json: outputs.app:"],
-]) {
-  test(`rejects ${name} in every mode and writes nothing`, (context) => {
+for (const [name, change, expected] of ([
+  ["a dashboard output outside the planned path", (value: Tree) => { value.outputs.dashboard = "../meta-frames-dashboard/src/styles/other.css"; }, "bindings.json: outputs.dashboard:"],
+  ["an app output outside the planned path", (value: Tree) => { value.outputs.app = "../meta-frames-app/lib/ui/core/other.dart"; }, "bindings.json: outputs.app:"],
+  ["an output that leaves the workspace", (value: Tree) => { value.outputs.app = "../../elsewhere/design_tokens.g.dart"; }, "bindings.json: outputs.app:"],
+  ["both outputs on one path", (value: Tree) => { value.outputs.dashboard = value.outputs.app; }, "bindings.json: outputs.dashboard and outputs.app resolve to the same path"],
+  ["a missing output", (value: Tree) => { delete value.outputs.app; }, "bindings.json: outputs.app:"],
+] as [string, (value: Tree) => void, string][])) {
+  test(`rejects ${name} in every mode and writes nothing`, (context: TestContext) => {
     const made = generateFixture(context, changeBindings(change));
     mkdirSync(join(made.directory, "elsewhere"), { recursive: true });
     const before = snapshot(made.directory);
@@ -863,8 +873,8 @@ for (const [name, change, expected] of [
   });
 }
 
-test("accepts a path segment named like a JavaScript word (undefined-gap)", (context) => {
-  const made = generateFixture(context, changeSource((tree) => {
+test("accepts a path segment named like a JavaScript word (undefined-gap)", (context: TestContext) => {
+  const made = generateFixture(context, changeSource((tree: Tree) => {
     tree.component.button["undefined-gap"] = tree.component.button.gap;
     delete tree.component.button.gap;
   }));
@@ -875,8 +885,8 @@ test("accepts a path segment named like a JavaScript word (undefined-gap)", (con
 });
 
 for (const segment of ["gap inline", "Gap", "gap_inline", "-gap", "gap-", "gap--inline", "gap;inline"]) {
-  test(`rejects the path segment ${JSON.stringify(segment)} at the source, before any write`, (context) => {
-    const made = generateFixture(context, changeSource((tree) => {
+  test(`rejects the path segment ${JSON.stringify(segment)} at the source, before any write`, (context: TestContext) => {
+    const made = generateFixture(context, changeSource((tree: Tree) => {
       tree.component.button[segment] = tree.component.button.gap;
       delete tree.component.button.gap;
     }));
@@ -890,7 +900,7 @@ for (const segment of ["gap inline", "Gap", "gap_inline", "-gap", "gap-", "gap--
   });
 }
 
-test("--check reports stale CSS together with a missing app directory", (context) => {
+test("--check reports stale CSS together with a missing app directory", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   writeFileSync(made.outputs.css, `${readFileSync(made.outputs.css, "utf8")}/* edit */\n`);
@@ -902,7 +912,7 @@ test("--check reports stale CSS together with a missing app directory", (context
   assert.ok(!result.stderr.includes("destination directory missing"));
 });
 
-test("a failed close of the lock reports the close error and leaves no lock", (context) => {
+test("a failed close of the lock reports the close error and leaves no lock", (context: TestContext) => {
   const made = faultFixture(context, `
     const open = fs.openSync;
     const close = fs.closeSync;
@@ -924,9 +934,9 @@ test("a failed close of the lock reports the close error and leaves no lock", (c
   assert.throws(() => readFileSync(made.outputs.css));
 });
 
-const framedDigest = (named) => {
+const framedDigest = (named: [string, Buffer][]) => {
   const hash = createHash("sha256");
-  const frame = (bytes) => {
+  const frame = (bytes: Buffer) => {
     const length = Buffer.alloc(8);
     length.writeBigUInt64BE(BigInt(bytes.length));
     hash.update(length).update(bytes);
@@ -938,7 +948,7 @@ const framedDigest = (named) => {
   return hash.digest("hex");
 };
 
-test("bindings that change after the startup read do not reach the digest or the output", (context) => {
+test("bindings that change after the startup read do not reach the digest or the output", (context: TestContext) => {
   const made = faultFixture(context, `
     const read = fs.readFileSync;
     let changed = false;
@@ -955,11 +965,11 @@ test("bindings that change after the startup read do not reach the digest or the
   assert.equal(result.status, 0, result.stderr);
   const css = String(readFileSync(made.outputs.css));
   assert.match(css, /--background: var\(--mf-semantic-color-bg-canvas\);/);
-  const original = ["bindings.json", "build.mjs", "build.ts", "hooks.ts", "package-lock.json", "package.json", ".node-version"].map((name) => [name, Buffer.from(files[name])]);
-  assert.equal(/Generator: sha256 ([0-9a-f]{64})/.exec(css)[1], framedDigest(original));
+  const original = ["bindings.json", "build.mjs", "build.ts", "hooks.ts", "package-lock.json", "package.json", ".node-version"].map((name): [string, Buffer] => [name, Buffer.from(files[name]!)]);
+  assert.equal(/Generator: sha256 ([0-9a-f]{64})/.exec(css)![1], framedDigest(original));
 });
 
-test("each generator input is read once during a generate run", (context) => {
+test("each generator input is read once during a generate run", (context: TestContext) => {
   const made = faultFixture(context, `
     const read = fs.readFileSync;
     const names = [".node-version", "bindings.json", "build.mjs", "build.ts", "hooks.ts", "package-lock.json", "package.json"];
@@ -975,14 +985,14 @@ test("each generator input is read once during a generate run", (context) => {
   const result = spawnSync(process.execPath, ["--import", made.fault, made.script], { cwd: made.directory, encoding: "utf8", env: { ...process.env, READ_LOG: log } });
   assert.equal(result.status, 0, result.stderr);
   const reads = readFileSync(log, "utf8").split("\n");
-  const count = (name) => reads.filter((read) => read === name).length;
+  const count = (name: string) => reads.filter((read) => read === name).length;
   // The four data files are read once, by the startup snapshot. build.mjs, build.ts and hooks.ts are read
   // once by the snapshot and once by Node's module loader (the documented limit).
   for (const name of [".node-version", "bindings.json", "package-lock.json", "package.json"]) assert.equal(count(name), 1, name);
   for (const name of ["build.mjs", "build.ts", "hooks.ts"]) assert.ok(count(name) >= 1 && count(name) <= 2, name);
 });
 
-test("a Node without type stripping reports the entry error and writes nothing", (context) => {
+test("a Node without type stripping reports the entry error and writes nothing", (context: TestContext) => {
   const made = generateFixture(context);
   const before = snapshot(made.directory);
   const result = spawnSync(process.execPath, ["--no-strip-types", made.script], { cwd: made.directory, encoding: "utf8" });
@@ -995,7 +1005,7 @@ test("a Node without type stripping reports the entry error and writes nothing",
   assert.throws(() => readFileSync(made.outputs.dart));
 });
 
-test("an unsupported extension in a later hook import keeps the runner diagnostic", (context) => {
+test("an unsupported extension in a later hook import keeps the runner diagnostic", (context: TestContext) => {
   const { directory, script } = fixture(context, {
     "hooks.ts": 'await import("./unsupported.txt");\n' + files["hooks.ts"],
     "unsupported.txt": "",
@@ -1010,9 +1020,9 @@ test("an unsupported extension in a later hook import keeps the runner diagnosti
   assert.deepEqual(snapshot(directory), before);
 });
 
-test("rejects non-string and traversing destination values in every mode", (context) => {
+test("rejects non-string and traversing destination values in every mode", (context: TestContext) => {
   for (const target of [42, "../meta-frames-app/lib/ui/core/../theme.dart"]) {
-    const made = generateFixture(context, changeBindings((value) => {
+    const made = generateFixture(context, changeBindings((value: Tree) => {
       value.outputs.app = target;
     }));
     const before = snapshot(made.directory);
@@ -1025,7 +1035,7 @@ test("rejects non-string and traversing destination values in every mode", (cont
   }
 });
 
-test("does not overwrite a file reached through a linked destination directory", (context) => {
+test("does not overwrite a file reached through a linked destination directory", (context: TestContext) => {
   const made = generateFixture(context);
   const redirect = join(made.directory, "redirected-app");
   const original = join(redirect, "design_tokens.g.dart");
@@ -1039,8 +1049,8 @@ test("does not overwrite a file reached through a linked destination directory",
   assert.equal(result.status, 1);
 });
 
-test("rejects an invalid CSS public identifier before writing outputs", (context) => {
-  const made = generateFixture(context, changeBindings((value) => {
+test("rejects an invalid CSS public identifier before writing outputs", (context: TestContext) => {
+  const made = generateFixture(context, changeBindings((value: Tree) => {
     value.dashboard.colors[0].properties[0] = "--background undefined";
   }));
   const before = snapshot(made.directory);
@@ -1050,7 +1060,7 @@ test("rejects an invalid CSS public identifier before writing outputs", (context
   assert.deepEqual(snapshot(made.directory), before);
 });
 
-test("reports the cause of an input snapshot read failure", (context) => {
+test("reports the cause of an input snapshot read failure", (context: TestContext) => {
   const made = faultFixture(context, `
     const read = fs.readFileSync;
     fs.readFileSync = (file, ...args) => {
@@ -1069,7 +1079,7 @@ test("reports the cause of an input snapshot read failure", (context) => {
 
 // ---- Slice 3 fix round 2 ----
 
-test("refuses a destination file that is a symbolic link and leaves its target alone", (context) => {
+test("refuses a destination file that is a symbolic link and leaves its target alone", (context: TestContext) => {
   const made = generateFixture(context);
   const target = join(made.directory, "elsewhere.dart");
   writeFileSync(target, "unrelated file");
@@ -1081,7 +1091,7 @@ test("refuses a destination file that is a symbolic link and leaves its target a
   assert.throws(() => readFileSync(made.outputs.css));
 });
 
-test("a linked destination directory gives an error that names both paths, and writes nothing", (context) => {
+test("a linked destination directory gives an error that names both paths, and writes nothing", (context: TestContext) => {
   const made = generateFixture(context);
   const redirect = join(made.directory, "redirected-css");
   mkdirSync(redirect);
@@ -1094,7 +1104,7 @@ test("a linked destination directory gives an error that names both paths, and w
   assert.deepEqual(readdirSync(dirname(made.outputs.dart)), []);
 });
 
-test("--check reports a linked destination directory as an error for that destination only", (context) => {
+test("--check reports a linked destination directory as an error for that destination only", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   const redirect = join(made.directory, "redirected-app");
@@ -1108,15 +1118,15 @@ test("--check reports a linked destination directory as an error for that destin
   assert.ok(!result.stderr.includes(`${CSS_OUTPUT}:`));
 });
 
-test("an ordinary destination tree passes the link checks", (context) => {
+test("an ordinary destination tree passes the link checks", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   assert.equal(made.generate(["--check"]).status, 0);
 });
 
 for (const name of ["--Background", "--a_b", "--a;b", "--a--b", "--", "-a", "--a b", "--a:b"]) {
-  test(`rejects the dashboard public name ${JSON.stringify(name)} before writing`, (context) => {
-    const made = generateFixture(context, changeBindings((value) => {
+  test(`rejects the dashboard public name ${JSON.stringify(name)} before writing`, (context: TestContext) => {
+    const made = generateFixture(context, changeBindings((value: Tree) => {
       value.dashboard.colors[0].properties[0] = name;
     }));
     const before = snapshot(made.directory);
@@ -1129,15 +1139,15 @@ for (const name of ["--Background", "--a_b", "--a;b", "--a--b", "--", "-a", "--a
   });
 }
 
-test("rejects a font role property and a scalar that are not valid custom property names", (context) => {
-  const roleMade = generateFixture(context, changeBindings((value) => { value.fonts.roles.mono.dashboard.property = "--font mono"; }));
+test("rejects a font role property and a scalar that are not valid custom property names", (context: TestContext) => {
+  const roleMade = generateFixture(context, changeBindings((value: Tree) => { value.fonts.roles.mono.dashboard.property = "--font mono"; }));
   assert.ok(roleMade.generate().stderr.includes('bindings.json: dashboard public name "--font mono"'));
-  const scalarMade = generateFixture(context, changeBindings((value) => { value.dashboard.scalars["--Radius"] = value.dashboard.scalars["--radius"]; delete value.dashboard.scalars["--radius"]; }));
+  const scalarMade = generateFixture(context, changeBindings((value: Tree) => { value.dashboard.scalars["--Radius"] = value.dashboard.scalars["--radius"]; delete value.dashboard.scalars["--radius"]; }));
   assert.ok(scalarMade.generate().stderr.includes('bindings.json: dashboard public name "--Radius"'));
 });
 
 for (const [file, label] of [[".node-version", "Node pin"], ["package-lock.json", "lockfile"], ["package.json", "manifest"]]) {
-  test(`reports the cause when the ${label} cannot be read (not "missing")`, (context) => {
+  test(`reports the cause when the ${label} cannot be read (not "missing")`, (context: TestContext) => {
     const made = faultFixture(context, `
       const read = fs.readFileSync;
       fs.readFileSync = (target, ...rest) => {
@@ -1156,11 +1166,11 @@ for (const [file, label] of [[".node-version", "Node pin"], ["package-lock.json"
   });
 }
 
-test("a missing file is still reported as missing, with no read error", (context) => {
+test("a missing file is still reported as missing, with no read error", (context: TestContext) => {
   rejectsInput(context, { "package-lock.json": null }, "meta-frames-design-tokens/package-lock.json: file missing");
 });
 
-test("generates and checks through a linked checkout root", (context) => {
+test("generates and checks through a linked checkout root", (context: TestContext) => {
   const made = generateFixture(context);
   const checkout = join(made.directory, "meta-frames-app");
   const linkedCheckout = join(made.directory, "linked-app-checkout");
@@ -1175,7 +1185,7 @@ test("generates and checks through a linked checkout root", (context) => {
   assert.equal(check.status, 0, check.stderr);
 });
 
-test("--check reports a linked output and a missing peer without reading the link", (context) => {
+test("--check reports a linked output and a missing peer without reading the link", (context: TestContext) => {
   const made = generateFixture(context);
   const target = join(made.directory, "linked-directory");
   mkdirSync(target);
@@ -1187,8 +1197,8 @@ test("--check reports a linked output and a missing peer without reading the lin
   assert.ok(result.stderr.includes(`error: ${DART_OUTPUT}: missing`), result.stderr);
 });
 
-test("rejects an empty font-role public property before writing outputs", (context) => {
-  const made = generateFixture(context, changeBindings((value) => {
+test("rejects an empty font-role public property before writing outputs", (context: TestContext) => {
+  const made = generateFixture(context, changeBindings((value: Tree) => {
     value.fonts.roles.mono.dashboard.property = "";
   }));
   const before = snapshot(made.directory);
@@ -1197,7 +1207,7 @@ test("rejects an empty font-role public property before writing outputs", (conte
   assert.deepEqual(snapshot(made.directory), before);
 });
 
-test("does not write outside the checkout if the destination parent changes during staging", (context) => {
+test("does not write outside the checkout if the destination parent changes during staging", (context: TestContext) => {
   const made = faultFixture(context, `
     import path from "node:path";
     const write = fs.writeFileSync;
@@ -1221,7 +1231,7 @@ test("does not write outside the checkout if the destination parent changes duri
   assert.equal(result.status, 1);
 });
 
-test("--check reports an unreadable output with its cause and still checks the peer", (context) => {
+test("--check reports an unreadable output with its cause and still checks the peer", (context: TestContext) => {
   const made = generateFixture(context);
   assert.equal(made.generate().status, 0);
   chmodSync(made.outputs.css, 0o000);
@@ -1233,7 +1243,7 @@ test("--check reports an unreadable output with its cause and still checks the p
   assert.ok(result.stderr.includes(`error: ${DART_OUTPUT}: missing`), result.stderr);
 });
 
-test("generate reports a destination read error before replacing either output", (context) => {
+test("generate reports a destination read error before replacing either output", (context: TestContext) => {
   const made = faultFixture(context, `
     const read = fs.readFileSync;
     fs.readFileSync = (file, ...args) => {
@@ -1253,7 +1263,7 @@ test("generate reports a destination read error before replacing either output",
   assert.deepEqual(snapshot(made.directory), before);
 });
 
-test("reports any staged file left in a parent moved before the second link check", (context) => {
+test("reports any staged file left in a parent moved before the second link check", (context: TestContext) => {
   const made = faultFixture(context, `
     import path from "node:path";
     const write = fs.writeFileSync;
@@ -1284,7 +1294,7 @@ test("reports any staged file left in a parent moved before the second link chec
   }
 });
 
-test("names a staged file whose parent moved out of reach before the second link check", (context) => {
+test("names a staged file whose parent moved out of reach before the second link check", (context: TestContext) => {
   const made = faultFixture(context, `
     import path from "node:path";
     const write = fs.writeFileSync;
@@ -1307,7 +1317,7 @@ test("names a staged file whose parent moved out of reach before the second link
   assert.doesNotMatch(result.stderr, /Pending temporary files removed/);
 });
 
-test("cleanup preserves a same-named file that the generator did not stage", (context) => {
+test("cleanup preserves a same-named file that the generator did not stage", (context: TestContext) => {
   const made = faultFixture(context, `
     import path from "node:path";
     const write = fs.writeFileSync;
@@ -1338,7 +1348,7 @@ test("cleanup preserves a same-named file that the generator did not stage", (co
   }
 });
 
-test("a replacement parent directory stops generation before either rename", (context) => {
+test("a replacement parent directory stops generation before either rename", (context: TestContext) => {
   const made = faultFixture(context, `
     import path from "node:path";
     const write = fs.writeFileSync;
@@ -1360,7 +1370,7 @@ test("a replacement parent directory stops generation before either rename", (co
   assert.equal(readFileSync(join(`${dirname(made.outputs.dart)}-saved`, "design_tokens.g.dart"), "utf8"), "prior Dart");
 });
 
-test("a same-named file at the staging path is not overwritten or deleted", (context) => {
+test("a same-named file at the staging path is not overwritten or deleted", (context: TestContext) => {
   const made = generateFixture(context);
   writeFileSync(made.outputs.css, "prior CSS");
   writeFileSync(made.outputs.dart, "prior Dart");
@@ -1382,7 +1392,7 @@ test("a same-named file at the staging path is not overwritten or deleted", (con
   assert.ok(result.stderr.includes("it is not the file this run staged"), result.stderr);
 });
 
-test("a staging identity read failure stops both renames and names the pending file", (context) => {
+test("a staging identity read failure stops both renames and names the pending file", (context: TestContext) => {
   const made = faultFixture(context, `
     const lstat = fs.lstatSync;
     fs.lstatSync = (file, ...args) => {

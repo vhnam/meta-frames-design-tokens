@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "test": "node --test build.test.ts oracle.test.ts"
   },
   "dependencies": {
     "style-dictionary": "5.6.0"
