@@ -6,26 +6,26 @@
 
 // ---- the oracle's own types (not shared with the generator) ----
 
-export type Mode = "light" | "dark";
-export interface SourceLeaf {
+type Mode = "light" | "dark";
+interface SourceLeaf {
   type: string | undefined;
   value: unknown;
   dark: unknown;
 }
-export type Leaves = Map<string, SourceLeaf>;
-export interface Rgba {
+type Leaves = Map<string, SourceLeaf>;
+interface Rgba {
   r: number;
   g: number;
   b: number;
   a: number;
 }
-export interface DimensionCanon {
+interface DimensionCanon {
   px: number;
   cssUnit: "rem" | "px";
   cssNumber: number;
 }
-export type Canon = Rgba | DimensionCanon | { milliseconds: string } | { authored: unknown } | number | unknown[];
-export type CssExpectation =
+type Canon = Rgba | DimensionCanon | { milliseconds: string } | { authored: unknown } | number | unknown[];
+type CssExpectation =
   | { kind: "stack"; stack: string[] }
   | { kind: "value"; type: string | undefined; canon: Canon }
   | { kind: "var"; name: string };
@@ -123,7 +123,7 @@ export const FONT_ROLES: Record<string, { stack: string[]; registration: string;
   mono: { stack: ['"JetBrains Mono Variable"', "ui-monospace", "monospace"], registration: "JetBrainsMono", property: "--font-mono" },
 };
 // [semantic.text role, dashboard role, flutter role]
-export const TEXT_FONTS: [string, string, string][] = [
+const TEXT_FONTS: [string, string, string][] = [
   ["display", "heading", "heading"],
   ["heading-1", "heading", "heading"],
   ["heading-2", "heading", "heading"],
@@ -136,7 +136,7 @@ export const TEXT_FONTS: [string, string, string][] = [
 ];
 
 // ---- plan decision 6: dashboard text steps; radius and spacing ----
-export const TEXT_STEPS: [string, string][] = [
+const TEXT_STEPS: [string, string][] = [
   ["xs", "caption"],
   ["sm", "body-sm"],
   ["base", "body"],
@@ -145,14 +145,8 @@ export const TEXT_STEPS: [string, string][] = [
   ["2xl", "heading-1"],
   ["3xl", "display"],
 ];
-export const RADIUS_PATH = "semantic.radius.control";
-// Dashboard rounded-* utilities (hand-copied from meta-frames-dashboard/src/styles/index.css lines 46-48). rounded-sm is Dashboard composition and is not listed.
-export const DASHBOARD_RADII: Record<string, string> = {
-  "rounded-md": "semantic.radius.control",
-  "rounded-lg": "semantic.radius.surface",
-  "rounded-xl": "semantic.radius.surface",
-};
-export const SPACING_PATH = "semantic.space.gap.xs";
+const RADIUS_PATH = "semantic.radius.control";
+const SPACING_PATH = "semantic.space.gap.xs";
 
 // ---- independent source walk ----
 
@@ -186,7 +180,7 @@ export function readSource(text: string): { leaves: Leaves } {
 }
 
 /** Follows aliases to the primitive literal. Dark uses the dark value on a semantic colour. */
-export function resolve(leaves: Leaves, path: string, mode: Mode): { type: string | undefined; value: unknown } {
+function resolve(leaves: Leaves, path: string, mode: Mode): { type: string | undefined; value: unknown } {
   const type = leaves.get(path)?.type;
   let current = path;
   for (let hops = 0; hops < 10; hops += 1) {
@@ -244,7 +238,7 @@ export const dartNameOf = (path: string): string =>
   path.split(/[.-]/).map((word, index) => (index ? word[0]!.toUpperCase() + word.slice(1) : word)).join("");
 
 /** Role of a semantic text font-family path: [dashboard role, flutter role]. */
-export function fontRolesOf(path: string): [string, string] | null {
+function fontRolesOf(path: string): [string, string] | null {
   const match = /^semantic\.text\.([^.]+)\.font-family$/.exec(path);
   const row = match && TEXT_FONTS.find(([role]) => role === match[1]);
   return row ? [row[1], row[2]] : null;
@@ -279,7 +273,7 @@ export function expectedCss(leaves: Leaves): { theme: Map<string, CssExpectation
   return { theme, root, dark };
 }
 
-export const DART_TYPE: Record<string, string> = {
+const DART_TYPE: Record<string, string> = {
   color: "Color",
   dimension: "double",
   fontFamily: "String",
@@ -321,109 +315,5 @@ export function expectedDart(leaves: Leaves) {
     light: fields("light"),
     dark: fields("dark"),
     schemes: { light: scheme("light"), dark: scheme("dark") },
-  };
-}
-
-// ---- plan decision 7: app theme bindings (hand-copied from the plan table; no import from the generator) ----
-
-// Flutter family role -> registration name. Repeats FONT_ROLES on purpose: the table below names roles only.
-export const APP_FAMILY: Record<string, string> = { heading: "SpaceGrotesk", body: "GeistMono", mono: "JetBrainsMono" };
-
-// [TextTheme slot, semantic.text role, family role]. Size, line height, weight and family all come from the role.
-export const APP_TEXT_SLOTS: [string, string, string][] = [
-  ["displayLarge", "display", "heading"],
-  ["displayMedium", "display", "heading"],
-  ["displaySmall", "display", "heading"],
-  ["headlineLarge", "heading-1", "heading"],
-  ["headlineMedium", "heading-1", "heading"],
-  ["headlineSmall", "heading-1", "heading"],
-  ["titleLarge", "heading-2", "heading"],
-  ["titleMedium", "heading-3", "heading"],
-  ["titleSmall", "label", "mono"],
-  ["labelLarge", "label", "mono"],
-  ["labelMedium", "label", "mono"],
-  ["labelSmall", "caption", "mono"], // caption size, line height and weight; the family stays Mono
-  ["bodyLarge", "body", "body"],
-  ["bodyMedium", "body-sm", "body"],
-  ["bodySmall", "caption", "body"],
-];
-
-// Size-only bindings: [name, size path, family role or null, weight path or null].
-export const APP_SIZES: [string, string, string | null, string | null][] = [
-  ["appBarTitle", "semantic.text.heading-2.font-size", "heading", null],
-  ["dialogTitle", "semantic.text.heading-2.font-size", "heading", null],
-  ["buttonText", "component.button.font-size", "mono", "component.button.font-weight"],
-  ["inputLabel", "semantic.text.label.font-size", "mono", null],
-  ["chipLabel", "semantic.text.caption.font-size", "mono", null],
-  ["tabLabel", "semantic.text.caption.font-size", "mono", null],
-  ["segmentLabel", "semantic.text.caption.font-size", "mono", null],
-  ["monoStyleDefault", "semantic.text.caption.font-size", "mono", null],
-  ["navLabel", "semantic.text.caption.font-size", "mono", null],
-];
-
-// Corner radius paths. surface = kRadius users; control = kCorners ("shape") users.
-export const APP_RADII: Record<string, string> = {
-  card: "semantic.radius.surface",
-  dialog: "semantic.radius.surface",
-  bottomSheetTop: "semantic.radius.surface",
-  popupMenu: "semantic.radius.surface",
-  filledButton: "semantic.radius.control",
-  outlinedButton: "semantic.radius.control",
-  textButton: "semantic.radius.control",
-  floatingActionButton: "semantic.radius.control",
-  inputBorder: "semantic.radius.control",
-  segmentedButton: "semantic.radius.control",
-  navIndicator: "semantic.radius.control",
-};
-
-export const APP_BUTTON = {
-  paddingX: "component.button.padding-x",
-  paddingY: 0, // vertical padding is removed
-  minHeight: "component.button.height.lg",
-};
-export const APP_INPUT_FOCUS = { color: "component.input.border-focus", width: "component.focus-ring.width" };
-export const APP_SURFACES = { card: "component.card.bg", dialog: "component.dialog.bg" };
-// Disabled text and icon: onSurface (fg.default) at the disabled opacity, applied once.
-export const APP_DISABLED = { base: "semantic.color.fg.default", opacity: "semantic.opacity.disabled" };
-
-/** Expected app theme values from the source leaves. Colours are { r, g, b, a } bytes; sizes are plain numbers. */
-export function expectedApp(leaves: Leaves) {
-  const number = (path: string, mode: Mode = "light"): number => {
-    const { type, value } = resolve(leaves, path, mode);
-    return type === "dimension" ? parseFloat(value as string) : (value as number);
-  };
-  const color = (path: string, mode: Mode): Rgba => parseHex(resolve(leaves, path, mode).value as string);
-  const text = new Map(
-    APP_TEXT_SLOTS.map(([slot, role, family]) => [
-      slot,
-      {
-        family: APP_FAMILY[family]!,
-        size: number(`semantic.text.${role}.font-size`),
-        height: number(`semantic.text.${role}.line-height`),
-        weight: number(`semantic.text.${role}.font-weight`),
-      },
-    ]),
-  );
-  const sizes = new Map(
-    APP_SIZES.map(([name, sizePath, family, weightPath]) => [
-      name,
-      { size: number(sizePath), ...(family && { family: APP_FAMILY[family]! }), ...(weightPath && { weight: number(weightPath) }) },
-    ]),
-  );
-  const radii = new Map(Object.entries(APP_RADII).map(([name, path]) => [name, number(path)]));
-  const perMode = (mode: Mode) => ({
-    card: color(APP_SURFACES.card, mode),
-    dialog: color(APP_SURFACES.dialog, mode),
-    inputFocus: { color: color(APP_INPUT_FOCUS.color, mode), width: number(APP_INPUT_FOCUS.width) },
-    disabled: { base: color(APP_DISABLED.base, mode), alpha: number(APP_DISABLED.opacity) },
-    nav: Object.fromEntries(Object.entries(NAV).map(([name, path]) => [name, color(path, mode)])),
-  });
-  return {
-    text,
-    sizes,
-    radii,
-    button: { paddingX: number(APP_BUTTON.paddingX), paddingY: APP_BUTTON.paddingY, minHeight: number(APP_BUTTON.minHeight) },
-    light: perMode("light"),
-    dark: perMode("dark"),
   };
 }
