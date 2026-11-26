@@ -219,13 +219,13 @@ test('the generated files agree with the oracle: 0 mismatches', () => {
   assert.deepEqual(compareOutputs(sourceText, cssText(), dartText()), []);
 });
 
-test('the oracle covers 184 semantic and component leaves and the spec tables', () => {
+test('the oracle covers 220 semantic and component leaves and the spec tables', () => {
   const { leaves } = readSource(sourceText);
-  assert.equal(semanticAndComponentPaths(leaves).length, 184);
+  assert.equal(semanticAndComponentPaths(leaves).length, 220);
   assert.equal(DASHBOARD_PUBLIC.length, 32);
   assert.equal(COLOR_SCHEME.length + 1, 31);
   const css = expectedCss(leaves);
-  assert.equal(css.root.size, 184 + 32 + 1);
+  assert.equal(css.root.size, 220 + 32 + 1);
   const colours = semanticAndComponentPaths(leaves).filter(
     (path) => leaves.get(path)!.type === 'color',
   ).length;

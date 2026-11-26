@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Color roles: `primitive.color.violet` and `primitive.color.brand.stripe`; `semantic.color.process.{c41,e6,ecn2,bw}`, `highlight`, `activate`, `deactivate` and `brand.stripe`; components `chip.highlight`, `button.activate`, `button.deactivate` and `auth-card.stripe`.
+
 ## [0.2.0] - 2026-11-23
 
 ### Changed

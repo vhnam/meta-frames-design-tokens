@@ -174,7 +174,7 @@ function parseInspect(output: string) {
 test('the source file is the reviewed snapshot with the spec counts', () => {
   assert.equal(
     createHash('sha256').update(source).digest('hex'),
-    '04e51a389123747a5b4dbfbe13e6f47d7083e28c4aaf02469a1fc46b1217baa9',
+    '0091b2da032f6b25b135c2472e881ee57dbcfd808775e8052188af962a105cf8',
   );
   const counts: Record<string, number> = { primitive: 0, semantic: 0, component: 0 };
   let colorsWithDark = 0;
@@ -194,8 +194,8 @@ test('the source file is the reviewed snapshot with the spec counts', () => {
     }
   };
   walk(JSON.parse(source), []);
-  assert.deepEqual(counts, { primitive: 102, semantic: 106, component: 78 });
-  assert.equal(colorsWithDark, 39);
+  assert.deepEqual(counts, { primitive: 114, semantic: 128, component: 92 });
+  assert.equal(colorsWithDark, 61);
 });
 
 test('inspect lists every leaf for each mode, resolves modes and writes nothing', (context: TestContext) => {
@@ -205,10 +205,10 @@ test('inspect lists every leaf for each mode, resolves modes and writes nothing'
   assert.equal(result.status, 0, result.stderr);
   assert.deepEqual(snapshot(directory), before);
   const { blocks, summary } = parseInspect(result.stdout);
-  assert.deepEqual(summary, { light: 184, dark: 184 });
-  assert.equal([...blocks.keys()].filter((key) => key.startsWith('primitive ')).length, 102);
+  assert.deepEqual(summary, { light: 220, dark: 220 });
+  assert.equal([...blocks.keys()].filter((key) => key.startsWith('primitive ')).length, 114);
   for (const mode of ['light', 'dark']) {
-    assert.equal([...blocks.keys()].filter((key) => key.startsWith(`${mode} `)).length, 184);
+    assert.equal([...blocks.keys()].filter((key) => key.startsWith(`${mode} `)).length, 220);
   }
   const indicator = (mode: string) => blocks.get(`${mode} component.nav.indicator`);
   assert.equal(indicator('light').css, '#047857');
@@ -270,7 +270,7 @@ test('accepts a forward reference (component group before primitives)', (context
     primitive: tokens.primitive,
   };
   const { summary } = acceptsInput(context, { 'tokens/tokens.json': JSON.stringify(reordered) });
-  assert.deepEqual(summary, { light: 184, dark: 184 });
+  assert.deepEqual(summary, { light: 220, dark: 220 });
 });
 
 test('accepts a shared target', (context: TestContext) => {
