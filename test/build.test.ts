@@ -174,7 +174,7 @@ function parseInspect(output: string) {
 test('the source file is the reviewed snapshot with the spec counts', () => {
   assert.equal(
     createHash('sha256').update(source).digest('hex'),
-    '0091b2da032f6b25b135c2472e881ee57dbcfd808775e8052188af962a105cf8',
+    'ad9868c2dde00f25d599d23d7c494b5d412909549b979806762a56ec6db9385a',
   );
   const counts: Record<string, number> = { primitive: 0, semantic: 0, component: 0 };
   let colorsWithDark = 0;
@@ -2310,10 +2310,37 @@ test('a leaf $description is a comment on the line above its declaration in CSS 
 });
 
 test('a leaf without $description gets no comment and no extra line', async () => {
-  const plain = await fragments(() => {});
-  const described = await fragments((tokens) => {
-    tokenAt(tokens, 'semantic.color.bg.canvas').$description = 'Page background.';
-  });
+  // Self-contained input: one leaf and the smallest bindings the formatters need.
+  const hooks = await import('../src/hooks.ts');
+  const bindings = {
+    dashboard: { colors: [], scalars: {}, text: {} },
+    app: { colorScheme: {}, inversePrimary: { field: 'inversePrimary', source: 'none' } },
+    fonts: { roles: {} },
+  };
+  const build = async (description?: string) => {
+    const tree = {
+      primitive: { space: { $type: 'dimension', '1': { $value: '4px' } } },
+      semantic: {
+        space: {
+          $type: 'dimension',
+          inset: {
+            xs: {
+              $value: '{primitive.space.1}',
+              ...(description && { $description: description }),
+            },
+          },
+        },
+      },
+    };
+    const [light, dark] = await Promise.all(
+      (['light', 'dark'] as const).map(async (mode) =>
+        hooks.formatFragments(await hooks.createDictionary(tree, mode, bindings)),
+      ),
+    );
+    return { light, dark };
+  };
+  const plain = await build();
+  const described = await build('Padding.');
   assert.doesNotMatch(
     plain.light.css + plain.light.dart + plain.dark.css + plain.dark.dart,
     /\/\*|\/\/ /,
