@@ -789,8 +789,46 @@ export function headerLines({
   ];
 }
 
+/** Leaf descriptions by token path. Style Dictionary never sees them: it would resolve braces in the text. */
+type Descriptions = Map<string, string>;
+
+/** Removes every $description from the tree and returns the leaf ones. Group descriptions are dropped. */
+function takeDescriptions(tree: JsonObject): Descriptions {
+  const descriptions: Descriptions = new Map();
+  const walk = (node: JsonObject, trail: string[]): void => {
+    if (typeof node.$description === 'string' && '$value' in node)
+      descriptions.set(trail.join('.'), node.$description);
+    delete node.$description;
+    for (const [name, child] of Object.entries(node)) {
+      if (!name.startsWith('$') && isObject(child)) walk(child, [...trail, name]);
+    }
+  };
+  walk(tree, []);
+  return descriptions;
+}
+
+/**
+ * A leaf description as one comment line, or '' when it has none. Style Dictionary's own `comment`
+ * option sits in its built-in formats, and these formats are custom, so the text is read here.
+ * Whitespace collapses to one space (a line break would end a line comment) and a comment end
+ * marker gets a space inside (it would end a CSS comment).
+ */
+function descriptionComment(
+  descriptions: Descriptions,
+  token: TransformedToken,
+  open: string,
+  close = '',
+): string {
+  const text = descriptions
+    .get(token.path.join('.'))
+    ?.replace(/\s+/g, ' ')
+    .trim()
+    .replaceAll('*/', '* /');
+  return text ? `  ${open} ${text}${close}\n` : '';
+}
+
 /** CSS fragment for one mode. Light: @theme inline and :root. Dark: .dark. */
-function formatCss(mode: Mode, bindings: ValidBindings) {
+function formatCss(mode: Mode, bindings: ValidBindings, descriptions: Descriptions) {
   return ({ dictionary }: { dictionary: Dictionary }): string => {
     const tokens = byPath(dictionary);
     // The dashboard formatter (vp check) lowercases hex digits, so the file carries lowercase hex.
@@ -805,7 +843,10 @@ function formatCss(mode: Mode, bindings: ValidBindings) {
     );
     const colorVars = emitted(dictionary)
       .filter((token) => mode === 'light' || token.$type === 'color')
-      .map((token) => `  ${cssName(token.path.join('.'))}: ${value(token)};`);
+      .map(
+        (token) =>
+          `${descriptionComment(descriptions, token, '/*', ' */')}  ${cssName(token.path.join('.'))}: ${value(token)};`,
+      );
     if (mode === 'dark') return ['.dark {', ...colorVars, ...publicColors, '}'].join('\n');
     const theme = Object.values(bindings.fonts.roles).map(
       (role) => `  ${role.dashboard.property}: ${role.dashboard.stack};`,
@@ -865,7 +906,7 @@ export function dartDeclaration(type: string, name: string, expression: string):
 }
 
 /** Dart fragment for one mode. Light: DesignTokens and DesignTokensLight. Dark: DesignTokensDark. */
-function formatDart(mode: Mode, bindings: ValidBindings) {
+function formatDart(mode: Mode, bindings: ValidBindings, descriptions: Descriptions) {
   const className = mode === 'light' ? 'DesignTokensLight' : 'DesignTokensDark';
   const opposite = mode === 'light' ? 'DesignTokensDark' : 'DesignTokensLight';
   return ({ dictionary }: { dictionary: Dictionary }): string => {
@@ -874,13 +915,17 @@ function formatDart(mode: Mode, bindings: ValidBindings) {
     for (const token of emitted(dictionary)) {
       const leafPath = token.path.join('.');
       const name = dartName(leafPath);
+      const note = descriptionComment(descriptions, token, '//');
       if (token.$type === 'color')
-        colors.push(dartDeclaration('Color', name, `Color(${token.$value})`));
+        colors.push(note + dartDeclaration('Color', name, `Color(${token.$value})`));
       else if (token.$type === 'fontFamily') {
         shared.push(
-          dartDeclaration('String', name, `'${fontRole(bindings, leafPath, 'app')!.app}'`),
+          note + dartDeclaration('String', name, `'${fontRole(bindings, leafPath, 'app')!.app}'`),
         );
-      } else shared.push(dartDeclaration(DART_TYPES[token.$type as TokenType], name, token.$value));
+      } else
+        shared.push(
+          note + dartDeclaration(DART_TYPES[token.$type as TokenType], name, token.$value),
+        );
     }
     const fields = Object.entries(bindings.app.colorScheme).map(
       ([field, source]) => `    ${field}: ${dartName(source)},`,
@@ -912,8 +957,10 @@ export async function createDictionary(
   mode: Mode,
   bindings?: Bindings,
 ): Promise<StyleDictionary> {
+  const clone = structuredClone(tree) as JsonObject;
+  const descriptions = takeDescriptions(clone);
   const dictionary = new StyleDictionary({
-    tokens: structuredClone(tree) as DesignTokens,
+    tokens: clone as DesignTokens,
     log: { warnings: 'error', verbosity: 'silent' },
     preprocessors: ['mf/mode'],
     hooks: {
@@ -926,8 +973,8 @@ export async function createDictionary(
       },
       formats: bindings
         ? {
-            'mf/css': formatCss(mode, bindings as ValidBindings),
-            'mf/dart': formatDart(mode, bindings as ValidBindings),
+            'mf/css': formatCss(mode, bindings as ValidBindings, descriptions),
+            'mf/dart': formatDart(mode, bindings as ValidBindings, descriptions),
           }
         : { 'mf/css': noBindings, 'mf/dart': noBindings },
       transforms: {

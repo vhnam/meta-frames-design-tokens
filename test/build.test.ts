@@ -2276,3 +2276,99 @@ test('a staging identity read failure stops both renames and names the pending f
     result.stderr,
   );
 });
+
+// ---- leaf descriptions as comments ----
+
+async function fragments(change: (tokens: Tree) => void) {
+  const hooks = await import('../src/hooks.ts');
+  const tree = JSON.parse(source);
+  change(tree);
+  const bindings = JSON.parse(bindingsSource);
+  const [light, dark] = await Promise.all(
+    (['light', 'dark'] as const).map(async (mode) =>
+      hooks.formatFragments(await hooks.createDictionary(tree, mode, bindings)),
+    ),
+  );
+  return { light, dark };
+}
+
+const lineAbove = (text: string, needle: string) => {
+  const lines = text.split('\n');
+  return lines[lines.findIndex((line) => line.includes(needle)) - 1];
+};
+
+test('a leaf $description is a comment on the line above its declaration in CSS and Dart', async () => {
+  const { light, dark } = await fragments((tokens) => {
+    tokenAt(tokens, 'semantic.color.bg.canvas').$description = 'Page background.';
+    tokenAt(tokens, 'component.nav.indicator').$description = 'Active marker.';
+  });
+  for (const mode of [light, dark]) {
+    assert.equal(lineAbove(mode.css, '--mf-semantic-color-bg-canvas:'), '  /* Page background. */');
+    assert.equal(lineAbove(mode.css, '--mf-component-nav-indicator:'), '  /* Active marker. */');
+    assert.equal(lineAbove(mode.dart, ' semanticColorBgCanvas ='), '  // Page background.');
+  }
+});
+
+test('a leaf without $description gets no comment and no extra line', async () => {
+  const plain = await fragments(() => {});
+  const described = await fragments((tokens) => {
+    tokenAt(tokens, 'semantic.color.bg.canvas').$description = 'Page background.';
+  });
+  assert.doesNotMatch(
+    plain.light.css + plain.light.dart + plain.dark.css + plain.dark.dart,
+    /\/\*|\/\/ /,
+  );
+  // The only difference is the one comment line.
+  assert.equal(described.light.css.split('\n').length - plain.light.css.split('\n').length, 1);
+  assert.equal(described.light.dart.split('\n').length - plain.light.dart.split('\n').length, 1);
+});
+
+test('a group $description gives no comment', async () => {
+  const { light, dark } = await fragments((tokens) => {
+    tokens.semantic.$description = 'Group note.';
+    tokens.component.nav.$description = 'Nav group note.';
+  });
+  for (const text of [light.css, light.dart, dark.css, dark.dart])
+    assert.doesNotMatch(text, /Group note|Nav group note/);
+});
+
+test('a description cannot end the CSS comment or break the Dart comment', async () => {
+  const { light } = await fragments((tokens) => {
+    tokenAt(tokens, 'semantic.color.bg.canvas').$description = ' Ends */ here\n  and\r\nthere  ';
+    tokenAt(tokens, 'component.nav.indicator').$description = '   ';
+  });
+  assert.equal(
+    lineAbove(light.css, '--mf-semantic-color-bg-canvas:'),
+    '  /* Ends * / here and there */',
+  );
+  assert.equal(lineAbove(light.dart, ' semanticColorBgCanvas ='), '  // Ends * / here and there');
+  // A blank description counts as none.
+  assert.doesNotMatch(light.css, /\/\*\s*\*\//);
+  assert.doesNotMatch(light.dart, /\/\/ *\n/);
+});
+
+test('description text is never resolved as a token reference', async () => {
+  const { light, dark } = await fragments((tokens) => {
+    tokenAt(tokens, 'semantic.color.bg.canvas').$description = 'Use {literal} in examples.';
+    tokenAt(tokens, 'semantic.color.bg.surface').$description =
+      'Prefer {semantic.color.bg.canvas}.';
+  });
+  for (const mode of [light, dark]) {
+    assert.equal(
+      lineAbove(mode.css, '--mf-semantic-color-bg-canvas:'),
+      '  /* Use {literal} in examples. */',
+    );
+    assert.equal(
+      lineAbove(mode.dart, ' semanticColorBgCanvas ='),
+      '  // Use {literal} in examples.',
+    );
+    assert.equal(
+      lineAbove(mode.css, '--mf-semantic-color-bg-surface:'),
+      '  /* Prefer {semantic.color.bg.canvas}. */',
+    );
+    assert.equal(
+      lineAbove(mode.dart, ' semanticColorBgSurface ='),
+      '  // Prefer {semantic.color.bg.canvas}.',
+    );
+  }
+});
