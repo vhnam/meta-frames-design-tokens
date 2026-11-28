@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-28
+
+### Added
+
+- Color roles: `primitive.color.violet` and `primitive.color.brand.stripe`; `semantic.color.process.{c41,e6,ecn2,bw}`, `highlight`, `activate`, `deactivate` and `brand.stripe`; components `chip.highlight`, `button.activate`, `button.deactivate` and `auth-card.stripe`.
+- A leaf `$description` in `tokens/tokens.json` becomes a comment above its declaration in the generated CSS and Dart files. All 128 semantic tokens have a description that says when to use them. No value changes.
+- `pnpm test` checks WCAG contrast of semantic color pairs in light and dark mode: text pairs need at least 4.5:1, control borders at least 3:1.
+- CI on pull requests and pushes to `main`: format, lint, type check, tests, and a check that the generated files in the dashboard and app match the source. CI checks out both sibling repositories on the branch with the same name when it exists, otherwise on `main`.
+
 ## [0.2.0] - 2026-11-23
 
 ### Changed
@@ -32,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - pnpm scripts: `build`, `check`, `format`, `format:check`, `lint`, `typecheck`, `test`. Node is pinned in `engines.node`.
 - oxfmt (`.oxfmtrc.json`), oxlint (`.oxlintrc.json`) and Lefthook Git hooks (`lefthook.yml`).
 
-[Unreleased]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/vhnam/meta-frames-design-tokens/releases/tag/v0.1.0

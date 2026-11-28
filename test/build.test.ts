@@ -174,7 +174,7 @@ function parseInspect(output: string) {
 test('the source file is the reviewed snapshot with the spec counts', () => {
   assert.equal(
     createHash('sha256').update(source).digest('hex'),
-    '04e51a389123747a5b4dbfbe13e6f47d7083e28c4aaf02469a1fc46b1217baa9',
+    'ad9868c2dde00f25d599d23d7c494b5d412909549b979806762a56ec6db9385a',
   );
   const counts: Record<string, number> = { primitive: 0, semantic: 0, component: 0 };
   let colorsWithDark = 0;
@@ -194,8 +194,8 @@ test('the source file is the reviewed snapshot with the spec counts', () => {
     }
   };
   walk(JSON.parse(source), []);
-  assert.deepEqual(counts, { primitive: 102, semantic: 106, component: 78 });
-  assert.equal(colorsWithDark, 39);
+  assert.deepEqual(counts, { primitive: 114, semantic: 128, component: 92 });
+  assert.equal(colorsWithDark, 61);
 });
 
 test('inspect lists every leaf for each mode, resolves modes and writes nothing', (context: TestContext) => {
@@ -205,10 +205,10 @@ test('inspect lists every leaf for each mode, resolves modes and writes nothing'
   assert.equal(result.status, 0, result.stderr);
   assert.deepEqual(snapshot(directory), before);
   const { blocks, summary } = parseInspect(result.stdout);
-  assert.deepEqual(summary, { light: 184, dark: 184 });
-  assert.equal([...blocks.keys()].filter((key) => key.startsWith('primitive ')).length, 102);
+  assert.deepEqual(summary, { light: 220, dark: 220 });
+  assert.equal([...blocks.keys()].filter((key) => key.startsWith('primitive ')).length, 114);
   for (const mode of ['light', 'dark']) {
-    assert.equal([...blocks.keys()].filter((key) => key.startsWith(`${mode} `)).length, 184);
+    assert.equal([...blocks.keys()].filter((key) => key.startsWith(`${mode} `)).length, 220);
   }
   const indicator = (mode: string) => blocks.get(`${mode} component.nav.indicator`);
   assert.equal(indicator('light').css, '#047857');
@@ -270,7 +270,7 @@ test('accepts a forward reference (component group before primitives)', (context
     primitive: tokens.primitive,
   };
   const { summary } = acceptsInput(context, { 'tokens/tokens.json': JSON.stringify(reordered) });
-  assert.deepEqual(summary, { light: 184, dark: 184 });
+  assert.deepEqual(summary, { light: 220, dark: 220 });
 });
 
 test('accepts a shared target', (context: TestContext) => {
@@ -2275,4 +2275,127 @@ test('a staging identity read failure stops both renames and names the pending f
     ),
     result.stderr,
   );
+});
+
+// ---- leaf descriptions as comments ----
+
+async function fragments(change: (tokens: Tree) => void) {
+  const hooks = await import('../src/hooks.ts');
+  const tree = JSON.parse(source);
+  change(tree);
+  const bindings = JSON.parse(bindingsSource);
+  const [light, dark] = await Promise.all(
+    (['light', 'dark'] as const).map(async (mode) =>
+      hooks.formatFragments(await hooks.createDictionary(tree, mode, bindings)),
+    ),
+  );
+  return { light, dark };
+}
+
+const lineAbove = (text: string, needle: string) => {
+  const lines = text.split('\n');
+  return lines[lines.findIndex((line) => line.includes(needle)) - 1];
+};
+
+test('a leaf $description is a comment on the line above its declaration in CSS and Dart', async () => {
+  const { light, dark } = await fragments((tokens) => {
+    tokenAt(tokens, 'semantic.color.bg.canvas').$description = 'Page background.';
+    tokenAt(tokens, 'component.nav.indicator').$description = 'Active marker.';
+  });
+  for (const mode of [light, dark]) {
+    assert.equal(lineAbove(mode.css, '--mf-semantic-color-bg-canvas:'), '  /* Page background. */');
+    assert.equal(lineAbove(mode.css, '--mf-component-nav-indicator:'), '  /* Active marker. */');
+    assert.equal(lineAbove(mode.dart, ' semanticColorBgCanvas ='), '  // Page background.');
+  }
+});
+
+test('a leaf without $description gets no comment and no extra line', async () => {
+  // Self-contained input: one leaf and the smallest bindings the formatters need.
+  const hooks = await import('../src/hooks.ts');
+  const bindings = {
+    dashboard: { colors: [], scalars: {}, text: {} },
+    app: { colorScheme: {}, inversePrimary: { field: 'inversePrimary', source: 'none' } },
+    fonts: { roles: {} },
+  };
+  const build = async (description?: string) => {
+    const tree = {
+      primitive: { space: { $type: 'dimension', '1': { $value: '4px' } } },
+      semantic: {
+        space: {
+          $type: 'dimension',
+          inset: {
+            xs: {
+              $value: '{primitive.space.1}',
+              ...(description && { $description: description }),
+            },
+          },
+        },
+      },
+    };
+    const [light, dark] = await Promise.all(
+      (['light', 'dark'] as const).map(async (mode) =>
+        hooks.formatFragments(await hooks.createDictionary(tree, mode, bindings)),
+      ),
+    );
+    return { light, dark };
+  };
+  const plain = await build();
+  const described = await build('Padding.');
+  assert.doesNotMatch(
+    plain.light.css + plain.light.dart + plain.dark.css + plain.dark.dart,
+    /\/\*|\/\/ /,
+  );
+  // The only difference is the one comment line.
+  assert.equal(described.light.css.split('\n').length - plain.light.css.split('\n').length, 1);
+  assert.equal(described.light.dart.split('\n').length - plain.light.dart.split('\n').length, 1);
+});
+
+test('a group $description gives no comment', async () => {
+  const { light, dark } = await fragments((tokens) => {
+    tokens.semantic.$description = 'Group note.';
+    tokens.component.nav.$description = 'Nav group note.';
+  });
+  for (const text of [light.css, light.dart, dark.css, dark.dart])
+    assert.doesNotMatch(text, /Group note|Nav group note/);
+});
+
+test('a description cannot end the CSS comment or break the Dart comment', async () => {
+  const { light } = await fragments((tokens) => {
+    tokenAt(tokens, 'semantic.color.bg.canvas').$description = ' Ends */ here\n  and\r\nthere  ';
+    tokenAt(tokens, 'component.nav.indicator').$description = '   ';
+  });
+  assert.equal(
+    lineAbove(light.css, '--mf-semantic-color-bg-canvas:'),
+    '  /* Ends * / here and there */',
+  );
+  assert.equal(lineAbove(light.dart, ' semanticColorBgCanvas ='), '  // Ends * / here and there');
+  // A blank description counts as none.
+  assert.doesNotMatch(light.css, /\/\*\s*\*\//);
+  assert.doesNotMatch(light.dart, /\/\/ *\n/);
+});
+
+test('description text is never resolved as a token reference', async () => {
+  const { light, dark } = await fragments((tokens) => {
+    tokenAt(tokens, 'semantic.color.bg.canvas').$description = 'Use {literal} in examples.';
+    tokenAt(tokens, 'semantic.color.bg.surface').$description =
+      'Prefer {semantic.color.bg.canvas}.';
+  });
+  for (const mode of [light, dark]) {
+    assert.equal(
+      lineAbove(mode.css, '--mf-semantic-color-bg-canvas:'),
+      '  /* Use {literal} in examples. */',
+    );
+    assert.equal(
+      lineAbove(mode.dart, ' semanticColorBgCanvas ='),
+      '  // Use {literal} in examples.',
+    );
+    assert.equal(
+      lineAbove(mode.css, '--mf-semantic-color-bg-surface:'),
+      '  /* Prefer {semantic.color.bg.canvas}. */',
+    );
+    assert.equal(
+      lineAbove(mode.dart, ' semanticColorBgSurface ='),
+      '  // Prefer {semantic.color.bg.canvas}.',
+    );
+  }
 });
