@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-28
+
 ### Added
 
 - Color roles: `primitive.color.violet` and `primitive.color.brand.stripe`; `semantic.color.process.{c41,e6,ecn2,bw}`, `highlight`, `activate`, `deactivate` and `brand.stripe`; components `chip.highlight`, `button.activate`, `button.deactivate` and `auth-card.stripe`.
@@ -39,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - pnpm scripts: `build`, `check`, `format`, `format:check`, `lint`, `typecheck`, `test`. Node is pinned in `engines.node`.
 - oxfmt (`.oxfmtrc.json`), oxlint (`.oxlintrc.json`) and Lefthook Git hooks (`lefthook.yml`).
 
-[Unreleased]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/vhnam/meta-frames-design-tokens/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/vhnam/meta-frames-design-tokens/releases/tag/v0.1.0
